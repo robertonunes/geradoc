@@ -25,15 +25,15 @@ Aplicação
 
 2. Altere os dados dos seguintes arquivos:
 
-a. geradoc/system/application/config/config.php
+	a. geradoc/system/application/config/config.php
 	
-	$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
+		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
 
-b. geradoc/system/application/config/database.php
+	b. geradoc/system/application/config/database.php
 
-	$db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
-	$db['default']['username'] = "geradoc";		
-	$db['default']['password'] = "senha";
+		$db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
+		$db['default']['username'] = "geradoc";		
+		$db['default']['password'] = "senha";
 	
 3. Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
 
