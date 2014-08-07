@@ -29,13 +29,13 @@ Aplicação
 
 2. Altere os dados dos seguintes arquivos:
 
-2.1. geradoc/system/application/config/config.php
+* geradoc/system/application/config/config.php
 
 Linhas:
 	14: $config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
 
 
-2.2. geradoc/system/application/config/database.php
+* geradoc/system/application/config/database.php
 
 Linhas:
 	40: $db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
@@ -50,8 +50,8 @@ Linhas:
 Acesso ao sistema
 ===================================
 
-1. Login: 11111111111
-2. Senha: admin
+Login: 11111111111  
+Senha: admin  
 
 
 Observação
