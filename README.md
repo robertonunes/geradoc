@@ -6,9 +6,9 @@ Sistema Gerenciador de Documentos
 
 ﻿Versões utilizadas no desenvolvimento:
  
-Apache - 2.0.63
-PHP - 5.3.2
-MySQL Server - 5.1.44;
+1- Apache - 2.0.63
+2- PHP - 5.3.2
+3- MySQL Server - 5.1.44.
 
 
 ===================================
