@@ -6,12 +6,11 @@ Sistema Gerenciador de Documentos
 
 Versões utilizadas no desenvolvimento:
  
-1 - Apache 2.0.63
-2 - PHP 5.3.2
-3 - MySQL Server 5.1.44
+1. Apache 2.0.63
+2. PHP 5.3.2
+3. MySQL Server 5.1.44
 
 
-===================================
 Instalação
 ===================================
 
@@ -19,24 +18,24 @@ Instalação
 MySQL
 ===================================
 
-1 - Crie o banco de Dados "geradoc" e importe os dados do arquivo: geradoc/docs/geradoc.sql
-2 - Crie um usuário "geradoc" com permissões para criar e ler dados no banco criado.
+1. Crie o banco de Dados "geradoc" e importe os dados do arquivo: geradoc/docs/geradoc.sql
+2. Crie um usuário "geradoc" com permissões para criar e ler dados no banco criado.
 
 
 Aplicação
 ===================================
 
---> Copiar a pasta "geradoc" para a pastada de "htdocs" do APACHE
+1. Copiar a pasta "geradoc" para a pastada de "htdocs" do APACHE
 
-Altere os dados dos seguintes arquivos:
+2. Altere os dados dos seguintes arquivos:
 
-1 -> geradoc/system/application/config/config.php
+2.1. geradoc/system/application/config/config.php
 
 Linhas:
 	14: $config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
 
 
-2 -> geradoc/system/application/config/database.php
+2.2. geradoc/system/application/config/database.php
 
 Linhas:
 	40: $db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
@@ -44,18 +43,17 @@ Linhas:
 	42: $db['default']['password'] = "senha";	
 	
 
-3 -> Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
+3. Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
 
 
-===================================
+
 Acesso ao sistema
 ===================================
 
-Login: 11111111111
-Senha: admin
+1. Login: 11111111111
+2. Senha: admin
 
 
-===================================
 Observação
 ===================================
 
@@ -65,4 +63,3 @@ Em caso de dúvidas envie e-mail para:
 
 Tarso de Castro - tarsodecastro@gmail.com
 
-*************************
