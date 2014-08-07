@@ -41,8 +41,8 @@ Aplicação
 Acesso ao sistema
 ===================================
 
-Login: 11111111111  
-Senha: admin  
+* Login: 11111111111  
+* Senha: admin  
 
 
 Observação
