@@ -48,7 +48,7 @@ Acesso ao sistema:
 Observação:
 ===================================
 
-Favor manter os créditos dos programas que compõem o sistema.
+Favor manter os créditos nos programas que compõem o sistema.
 
-Em caso de dúvidas envie e-mail para tarsodecastro@gmail.com
+Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
 
