@@ -34,17 +34,14 @@ Aplicação
 	*Parâmetro:
 	$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
 
-
 2.2. geradoc/system/application/config/database.php
 
 	*Parâmetros:
 	$db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
 	$db['default']['username'] = "geradoc";		
-	$db['default']['password'] = "senha";	
-	
+	$db['default']['password'] = "senha";
 
 3. Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
-
 
 
 Acesso ao sistema
