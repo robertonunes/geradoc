@@ -25,11 +25,11 @@ Aplicação
 
 2. Altere os dados dos seguintes arquivos:
 
-	a. geradoc/system/application/config/config.php
-	'''
+* geradoc/system/application/config/config.php
+	
 	$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
-	'''
-	b. geradoc/system/application/config/database.php
+
+* geradoc/system/application/config/database.php
 
 	$db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
 	$db['default']['username'] = "geradoc";		
