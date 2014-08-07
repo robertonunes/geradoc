@@ -1,7 +1,7 @@
 GeraDoc - Sistema Gerenciador de Documentos
 ===========================================
 
-Instalação
+Instalação:
 ===================================
 
 Requisitos:
@@ -11,17 +11,17 @@ Requisitos:
 3. MySQL Server 5.1.44
 
 
-MySQL
+MySQL:
 ===================================
 
 1. Crie o banco de Dados "geradoc" e importe os dados do arquivo: geradoc/docs/geradoc.sql
 2. Crie um usuário "geradoc" com permissões para criar e ler dados no banco criado.
 
 
-Aplicação
+Aplicação:
 ===================================
 
-1. Copiar a pasta "geradoc" para a pastada de "htdocs" do APACHE
+1. Copie a pasta "geradoc" para a pastada de "htdocs" do APACHE
 
 2. Altere os dados dos seguintes arquivos:
 
@@ -38,14 +38,14 @@ Aplicação
 3. Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
 
 
-Acesso ao sistema
+Acesso ao sistema:
 ===================================
 
 * Login: 11111111111  
 * Senha: admin  
 
 
-Observação
+Observação:
 ===================================
 
 Favor manter os créditos dos programas que compõem o sistema.
