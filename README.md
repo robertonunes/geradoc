@@ -23,7 +23,7 @@ MySQL:
 Aplicação:
 ===================================
 
-1. Copie a pasta "geradoc" para a pastada de "htdocs" do APACHE
+1. Copie a pasta "geradoc" para a pasta "htdocs" do APACHE
 
 2. Altere os dados dos seguintes arquivos:
 
