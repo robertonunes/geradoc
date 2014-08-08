@@ -27,7 +27,7 @@ Aplicação:
 
 	a. geradoc/system/application/config/config.php
 	
-		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de publicação de seu servidor.
+		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
 	b. geradoc/system/application/config/database.php
 
