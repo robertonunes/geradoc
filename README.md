@@ -31,9 +31,9 @@ Aplicação:
 
 	b. geradoc/system/application/config/database.php
 
-		$db['default']['hostname'] = "localhost"; 	// colocar a url de publicação de seu servidor
-		$db['default']['username'] = "geradoc";		
-		$db['default']['password'] = "senha";
+		$db['default']['hostname'] = "host"; 		// substituir pelo seu servidor
+		$db['default']['username'] = "usuario";		// substituir pelo usuário do servidor
+		$db['default']['password'] = "senha";		// substituir pela senha do usuário do servidor
 	
 3. Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
 
