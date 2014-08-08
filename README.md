@@ -1,6 +1,8 @@
 GeraDoc - Sistema Gerenciador de Documentos
 ===========================================
 
+![Alt text](/screenshots/login.png?raw=true "Login")
+
 Instalação:
 ===================================
 
