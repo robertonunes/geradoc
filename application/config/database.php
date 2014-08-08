@@ -44,10 +44,10 @@
 $active_group = 'sso';
 $active_record = TRUE;
 
-$db['sso']['hostname'] = 'localhost';
-$db['sso']['username'] = 'root';
-$db['sso']['password'] = 'vidas1234'; //aesp
-$db['sso']['database'] = 'aesp_sso';
+$db['sso']['hostname'] = '';
+$db['sso']['username'] = '';
+$db['sso']['password'] = '';
+$db['sso']['database'] = '';
 $db['sso']['dbdriver'] = 'mysql';
 $db['sso']['dbprefix'] = '';
 $db['sso']['pconnect'] = TRUE; 
