@@ -38,29 +38,6 @@
 | the active record class
 */
 
-/* SSO */
-
-/*
-$active_group = 'sso';
-$active_record = TRUE;
-
-$db['sso']['hostname'] = '';
-$db['sso']['username'] = '';
-$db['sso']['password'] = '';
-$db['sso']['database'] = '';
-$db['sso']['dbdriver'] = 'mysql';
-$db['sso']['dbprefix'] = '';
-$db['sso']['pconnect'] = TRUE; 
-$db['sso']['db_debug'] = TRUE;
-$db['sso']['cache_on'] = FALSE;
-$db['sso']['cachedir'] = '';
-$db['sso']['char_set'] = 'utf8';
-$db['sso']['dbcollat'] = 'utf8_unicode_ci';
-$db['sso']['swap_pre'] = '';
-$db['sso']['autoinit'] = TRUE;
-$db['sso']['stricton'] = FALSE;
-*/
-
 /* DEFAULT */
 
 $active_group = 'default';
