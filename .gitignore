@@ -1,6 +1,4 @@
 
-application/config/database.php
-
 application/config/email.php
 
 .buildpath
@@ -10,3 +8,5 @@ application/config/email.php
 .settings/org.eclipse.php.core.prefs
 
 .settings/org.eclipse.wst.common.project.facet.core.xml
+
+application/config/database.php
