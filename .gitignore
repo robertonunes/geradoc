@@ -8,3 +8,11 @@ application/config/email.php
 application/config/database.php
 
 application/config/database.php
+
+.buildpath
+
+.project
+
+.settings/org.eclipse.php.core.prefs
+
+.settings/org.eclipse.wst.common.project.facet.core.xml
