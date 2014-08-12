@@ -4,66 +4,7 @@ $postedValue = htmlspecialchars($objeto->redacao);
 
 $stylesheet = file_get_contents(base_url().'css/pdf.css');
 
-$html = '
-
-		<style type="text/css">
-		<!--
-		#t1 {text-align: left;}
-		#t2 {text-align: center;}
-		#t3 {text-align: right;}
-		#t4 {text-align: justify;}
-
-		.conteudo {vertical-align: bottom; font-family:"Times New Roman",Times,serif; font-size: 15px; text-align: justify; line-height:100%; font-weight: normal;}
-		.data {text-align: right;}
-		.destinatario {text-align: left; line-height:150%;}
-		.redacao p{text-align: justify; line-height:150%;font-family:\'Times New Roman\',Times,serif; font-size: 15px;}
-		.remetente, .remetente p {text-align: center; line-height:150%; font-size: 15px;}
-		.cabecalho {
-		font-family:\'Times New Roman\',Times,serif;
-		font-size:13px;
-		color:black;
-		line-height: 125%;
-		padding: 5px;
-}
-		.ceara {
-		font-family:\'Times New Roman\',Times,serif;
-		font-size:17px;
-		color:black;
-		font-weight:bold;
-}
-
-		-->
-		.despacho_head{
-			width: 100%;
-			overflow: hidden;
-			border-collapse: collapse;
-			border-spacing: 0;
-		}
-		
-		.despacho_head td{
-			border: solid 1px black;
-			width: 50%;
-		}
-		
-		.redacao table{
-			border-width: 1px;
-			border-spacing: 0px !important;
-			border-collapse:collapse;
-			border-style: solid;
-			border-color: #000;
-		}
-		
-		.redacao table td,.redacao table th {
-			margin: 0;
-			padding: 4px;
-			border-width: 1px;
-			border-style: solid;
-			border-color: #000;
-		}
-		
-		</style>
-
-		<div class="conteudo">';
+$html = '<div class="conteudo">';
 $isOrdinary = ($objeto->tipoID == 1 or $objeto->tipoID == 2) ? TRUE : FALSE;
 if($isOrdinary){
 			// linhas acrescentadas em fevereiro de 2013 para retirar os "<br>" do campo "para"
