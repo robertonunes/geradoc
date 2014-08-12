@@ -1,5 +1,7 @@
 application/config/email.php
 
+application/config/databse.php
+
 .buildpath
 
 .project
