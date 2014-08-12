@@ -747,7 +747,7 @@ class Documento extends CI_Controller {
 		}
 		
 		
-		
+		/*
 		switch ($data['objeto']->tipoID) {
 		
 			case 1:
@@ -787,6 +787,9 @@ class Documento extends CI_Controller {
 				break;
 		
 		}
+		*/
+		
+		$this->load->view($this->area.'/pdf', $data);
 		
 	}
 	
