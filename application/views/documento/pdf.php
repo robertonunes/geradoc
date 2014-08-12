@@ -58,10 +58,6 @@ if(!$objeto->assinatura){
 	$objeto->assinatura = $objeto->remetNome . '<br>'.$objeto->remetCargoNome.' '.$objeto->remetSetorArtigo.' '.$objeto->remetSetorSigla.'';
 }
 
-
-
-
-
 if($objeto->tipoID == 3 or $objeto->tipoID == 5){
 	$html .= '
 		</p>
