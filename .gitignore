@@ -1,6 +1,6 @@
 application/config/email.php
 
-application/config/databse.php
+application/config/database.php
 
 .buildpath
 
