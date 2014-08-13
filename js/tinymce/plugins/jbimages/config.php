@@ -40,7 +40,7 @@
 	//$config['img_path'] = '/images'; // Relative to domain name
 
 	session_start();
-	$config['img_path'] = $_SESSION['base_url_upload'].'files'; // $_SESSION['base_url_upload'] esta setado em layouts/default.php
+	$config['img_path'] = $_SESSION['base_url_upload'].'files'; // $_SESSION['base_url_upload'] esta definido em layouts/default.php
 	$config['upload_path'] = $_SERVER['DOCUMENT_ROOT'] . $config['img_path']; // Physical path. [Usually works fine like this]
 
 

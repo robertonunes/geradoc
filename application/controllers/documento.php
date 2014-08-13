@@ -713,23 +713,13 @@ class Documento extends CI_Controller {
 		$data['objeto']->ano = $date->format('Y');
 		$data['objeto']->data = $this->_trata_data($data['objeto']->data);
 		$data['caminho_remetente'] = $this->getCaminho($data['objeto']->setor);
-		
+				
 		$data['objeto']->remetNome          = $this->_trata_contato($data['objeto']->remetNome);
 		$data['objeto']->remetCargoNome      = mb_convert_case($data['objeto']->remetCargoNome, MB_CASE_TITLE, "UTF-8");
 		$data['objeto']->remetSetorArtigo    ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
 
-		$this->audita();	
-		
-		/*
-		if($data['objeto']->tipoID == 9 ){
-			$this->load->view($this->area.'/documento_pdf_cepad', $data);
-		}elseif($data['objeto']->tipoID == 4 or $data['objeto']->tipoID == 6 or $data['objeto']->tipoID == 7 or $data['objeto']->tipoID == 8){ // 4 = PARECER TECNICO, 7 = ATO ADMINISTRATIVO, 8 = NOTA DE INSTRUCAO, 9 = NOTA DE ELOGIO
-			$this->load->view($this->area.'/documento_pdf_ato_adm', $data);
-		}else{
-			$this->load->view($this->area.'/documento_pdf', $data);
-		}
-		*/
-		
+			
+
 		// Definindo o cabecalho e o rodape do documento
 		$this->load->model('Tipo_model','',TRUE);
 		$timbre = $this->Tipo_model->get_by_id($data['objeto']->tipoID)->row();
@@ -737,7 +727,7 @@ class Documento extends CI_Controller {
 		if($timbre->cabecalho == null or $timbre->cabecalho == ''){
 			$data['cabecalho'] = '<img src="./images/header_'.$_SESSION['orgao_documento'].'.png"/>';
 		}else{
-			$data['cabecalho'] = str_replace("../../../", "./", $timbre->cabecalho); ;
+			$data['cabecalho'] = str_replace("../../../", "./", $timbre->cabecalho);
 		}
 		
 		if($timbre->rodape == null or $timbre->rodape == ''){
@@ -747,6 +737,47 @@ class Documento extends CI_Controller {
 		}
 		
 		
+		if($data['objeto']->tipoID == 3){ // 3 = Despacho, legado da AESP, nao da pra tirar por causa dos registros da tabela despacho_head, criada pelo Bruno. 
+			
+			$this->load->view($this->area.'/despacho_pdf', $data);
+			
+		}else{
+			
+			$data['objeto']->layout = str_replace('[tipo_doc]', $data['objeto']->tipoNome, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[numero]', $data['objeto']->numero, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[ano_doc]', $data['objeto']->ano, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[setor_doc]', $data['caminho_remetente'], $data['objeto']->layout);
+			
+			$data['objeto']->layout = str_replace('[data]', $data['objeto']->data, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[destinatario]', $data['objeto']->para, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[assunto]', $data['objeto']->assunto, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[referencia]', $data['objeto']->referencia, $data['objeto']->layout);
+			
+			$data['objeto']->layout = str_replace('[redacao]', $data['objeto']->redacao, $data['objeto']->layout);
+			
+			if(!$data['objeto']->assinatura){
+				$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
+			}
+			$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[remetente_setor_artigo]', $data['objeto']->remetSetorArtigo, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
+			
+			// --- Parecer Tecnico ---//
+			$data['objeto']->layout = str_replace('[objetivo]', $data['objeto']->objetivo, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[documentacao]', $data['objeto']->documentacao, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[analise]', $data['objeto']->analise, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[conclusao]', $data['objeto']->conclusao, $data['objeto']->layout);
+			
+			$this->load->view($this->area.'/pdf', $data);
+			
+		}
+		
+
+		//echo $data['objeto']->layout;
+		//exit;
+			
 		/*
 		switch ($data['objeto']->tipoID) {
 		
@@ -789,7 +820,9 @@ class Documento extends CI_Controller {
 		}
 		*/
 		
-		$this->load->view($this->area.'/pdf', $data);
+		$this->audita();
+		
+		
 		
 	}
 	

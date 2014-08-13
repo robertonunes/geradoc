@@ -190,7 +190,7 @@ class Documento_model extends CI_Model {
 	function get_by_id($id){
 
 		$sql =      "SELECT ";
-		$sql = $sql."d.*, t.id as tipoID, t.nome as tipoNome, t.abreviacao as tipoSigla, s.nome as setorNome, s.sigla as setorSigla, s.artigo as setorArtigo, o.nome as orgaoNome, o.sigla as orgaoSigla, remet.nome as remetNome, remetCargo.nome as remetCargoNome, remet.assinatura, remetSetor.artigo as remetSetorArtigo, remetSetor.sigla as remetSetorSigla, remetSetor.setorPai as remetSetorPai ";
+		$sql = $sql."d.*, t.id as tipoID, t.nome as tipoNome, t.abreviacao as tipoSigla, t.layout as layout, s.nome as setorNome, s.sigla as setorSigla, s.artigo as setorArtigo, o.nome as orgaoNome, o.sigla as orgaoSigla, remet.nome as remetNome, remetCargo.nome as remetCargoNome, remet.assinatura, remetSetor.artigo as remetSetorArtigo, remetSetor.sigla as remetSetorSigla, remetSetor.setorPai as remetSetorPai ";
 		$sql = $sql."FROM ";
 		$sql = $sql."documento as d, tipo as t, setor as s, orgao as o, contato as remet, cargo as remetCargo, setor as remetSetor ";
 		$sql = $sql."WHERE ";
