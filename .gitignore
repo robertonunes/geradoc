@@ -1,7 +1,5 @@
 application/config/email.php
 
-application/config/database.php
-
 .buildpath
 
 .project
@@ -11,3 +9,7 @@ application/config/database.php
 .settings/org.eclipse.wst.common.project.facet.core.xml
 
 .settings/org.eclipse.core.resources.prefs
+
+files/header_aesp5.png
+
+files/header_aesp6.png
