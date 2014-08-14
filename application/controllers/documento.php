@@ -288,6 +288,10 @@ class Documento extends CI_Controller {
 		$_SESSION['tipoSelecionado'] = $this->uri->segment(6) ? $this->uri->segment(6) : 0;
 			
 		$data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $_SESSION['tipoSelecionado'];
+		
+		$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+		
+		
 		//--- FIM ---//
 		
 		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
@@ -504,6 +508,9 @@ class Documento extends CI_Controller {
 		for($i=0 ; $i<=$num_of_tipos ; $i++)
 		if($i != $data['tipoSelecionado'])
 		unset($data['tiposDisponiveis'][$i]);
+		
+		$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+		
 		//--- FIM ---//
 		
 		$data['campoData']['value']          = $this->_trata_dataDoBancoParaForm($obj->data);
