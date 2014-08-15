@@ -289,8 +289,6 @@ class Documento extends CI_Controller {
 			
 		$data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $_SESSION['tipoSelecionado'];
 		
-		echo $data['tipoSelecionado'];
-		
 		if($data['tipoSelecionado'] != null){
 			$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
 		}else{
@@ -335,12 +333,28 @@ class Documento extends CI_Controller {
 					'redacao' => $this->input->post('campoRedacao'),
 					'carimbo' => $this->input->post('campoCarimbo'),
 					
-					'objetivo' => $this->input->post('campoObjetivo'),
-					'documentacao' => $this->input->post('campoDocumentacao'),
-					'analise' => $this->input->post('campoAnalise'),
-					'conclusao' => $this->input->post('campoConclusao'),
+					//'objetivo' => $this->input->post('campoObjetivo'),
+					//'documentacao' => $this->input->post('campoDocumentacao'),
+					//'analise' => $this->input->post('campoAnalise'),
+					//'conclusao' => $this->input->post('campoConclusao'),
 					
 			);
+			
+			if($this->input->post('campoObjetivo')){
+				$obj_do_form['objetivo'] = $this->input->post('campoObjetivo');
+			}
+			
+			if($this->input->post('campoDocumentacao')){
+				$obj_do_form['documentacao'] = $this->input->post('campoDocumentacao');
+			}
+			
+			if($this->input->post('campoAnalise')){
+				$obj_do_form['analise'] = $this->input->post('campoAnalise');
+			}
+			
+			if($this->input->post('campoConclusao')){
+				$obj_do_form['conclusao'] = $this->input->post('campoConclusao');
+			}
 			
 
 			//--- MAGICA DA CONTAGEM, MIOLO DO SISTEMA! ---//
@@ -572,11 +586,28 @@ class Documento extends CI_Controller {
 					'redacao' => $this->input->post('campoRedacao'),
 					'carimbo' => $this->input->post('campoCarimbo'),
 					
-					'objetivo' => $this->input->post('campoObjetivo'),
-					'documentacao' => $this->input->post('campoDocumentacao'),
-					'analise' => $this->input->post('campoAnalise'),
-					'conclusao' => $this->input->post('campoConclusao'),
+					//'objetivo' => $this->input->post('campoObjetivo'),
+					//'documentacao' => $this->input->post('campoDocumentacao'),
+					//'analise' => $this->input->post('campoAnalise'),
+					//'conclusao' => $this->input->post('campoConclusao'),
 			);
+			
+			if($this->input->post('campoObjetivo')){
+				$obj_do_form['objetivo'] = $this->input->post('campoObjetivo');
+			}
+				
+			if($this->input->post('campoDocumentacao')){
+				$obj_do_form['documentacao'] = $this->input->post('campoDocumentacao');
+			}
+				
+			if($this->input->post('campoAnalise')){
+				$obj_do_form['analise'] = $this->input->post('campoAnalise');
+			}
+				
+			if($this->input->post('campoConclusao')){
+				$obj_do_form['conclusao'] = $this->input->post('campoConclusao');
+			}
+			
 			
 			//--- MAGICA DA CONTAGEM, MIOLO DO SISTEMA! ---//
 			//$inicio_contagem = $this->Documento_model->get_tipo($obj_do_form['tipo'])->row()->inicio;
