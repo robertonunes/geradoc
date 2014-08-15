@@ -289,8 +289,20 @@ class Documento extends CI_Controller {
 			
 		$data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $_SESSION['tipoSelecionado'];
 		
+		
+		
+		//--- FIM ---//
+		
+		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
+		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
+		//--- fim --///
+		
+		
 		if($data['tipoSelecionado'] != null){
 			$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+			
+			$this->valida_campos_especiais($data['obj_tipo']);	
+			
 		}else{
 			$data['obj_tipo']->redacao = 'N';
 			$data['obj_tipo']->objetivo = 'N';
@@ -299,11 +311,6 @@ class Documento extends CI_Controller {
 			$data['obj_tipo']->conclusao = 'N';
 		}
 		
-		//--- FIM ---//
-		
-		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
-		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
-		//--- fim --///
 		
 		if ($this->form_validation->run($tipo_validacao) == FALSE) {
 			
@@ -416,6 +423,48 @@ class Documento extends CI_Controller {
 
 	}
 	
+	public function valida_campos_especiais($tipo){
+
+		$config = array();
+
+		if($tipo->objetivo == 'S'){
+			array_push($config, array(
+			'field'   => 'campoObjetivo',
+			'label'   => '<strong>Objetivo</strong>',
+			'rules'   => 'trim|required'
+					));
+		}
+			
+		if($tipo->documentacao == 'S'){			
+			array_push($config, array(
+			'field'   => 'campoDocumentacao',
+			'label'   => '<strong>Documentação</strong>',
+			'rules'   => 'trim|required'
+					));
+
+		}
+			
+		if($tipo->analise == 'S'){			
+			array_push($config, array(
+			'field'   => 'campoAnalise',
+			'label'   => '<strong>Análise</strong>',
+			'rules'   => 'trim|required'
+					));
+		}
+			
+		if($tipo->conclusao == 'S'){
+			array_push($config, array(
+			'field'   => 'campoConclusao',
+			'label'   => '<strong>Conclusão</strong>',
+			'rules'   => 'trim|required'
+					));
+		}
+
+		return $this->form_validation->set_rules($config);
+
+
+	}
+
 	function update($id){
 		
 		//--- VARIAVEIS COMUNS ---//
@@ -532,7 +581,7 @@ class Documento extends CI_Controller {
 		if($i != $data['tipoSelecionado'])
 		unset($data['tiposDisponiveis'][$i]);
 		
-		$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+		//$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
 		
 		//--- FIM ---//
 		
@@ -555,9 +604,16 @@ class Documento extends CI_Controller {
 			$tmp = NULL;
 		}
 			
-		//--- o tiopo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
+		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
 		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
 		//--- fim --///
+		
+		if($data['tipoSelecionado'] != null){
+			$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+			
+			$this->valida_campos_especiais($data['obj_tipo']);	
+			
+		}	
 		
 		if ($this->form_validation->run($tipo_validacao) == FALSE) {
 			
