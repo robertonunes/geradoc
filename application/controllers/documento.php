@@ -289,8 +289,17 @@ class Documento extends CI_Controller {
 			
 		$data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $_SESSION['tipoSelecionado'];
 		
-		$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+		echo $data['tipoSelecionado'];
 		
+		if($data['tipoSelecionado'] != null){
+			$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+		}else{
+			$data['obj_tipo']->redacao = 'N';
+			$data['obj_tipo']->objetivo = 'N';
+			$data['obj_tipo']->documentacao = 'N';
+			$data['obj_tipo']->analise = 'N';
+			$data['obj_tipo']->conclusao = 'N';
+		}
 		
 		//--- FIM ---//
 		
