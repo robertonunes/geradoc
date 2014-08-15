@@ -423,11 +423,11 @@ class Documento extends CI_Controller {
 
 	}
 	
-	public function valida_campos_especiais($tipo){
+	public function valida_campos_especiais($campo){
 
 		$config = array();
 
-		if($tipo->objetivo == 'S'){
+		if($campo->objetivo == 'S'){
 			array_push($config, array(
 			'field'   => 'campoObjetivo',
 			'label'   => '<strong>Objetivo</strong>',
@@ -435,7 +435,7 @@ class Documento extends CI_Controller {
 					));
 		}
 			
-		if($tipo->documentacao == 'S'){			
+		if($campo->documentacao == 'S'){			
 			array_push($config, array(
 			'field'   => 'campoDocumentacao',
 			'label'   => '<strong>Documentação</strong>',
@@ -444,7 +444,7 @@ class Documento extends CI_Controller {
 
 		}
 			
-		if($tipo->analise == 'S'){			
+		if($campo->analise == 'S'){			
 			array_push($config, array(
 			'field'   => 'campoAnalise',
 			'label'   => '<strong>Análise</strong>',
@@ -452,7 +452,7 @@ class Documento extends CI_Controller {
 					));
 		}
 			
-		if($tipo->conclusao == 'S'){
+		if($campo->conclusao == 'S'){
 			array_push($config, array(
 			'field'   => 'campoConclusao',
 			'label'   => '<strong>Conclusão</strong>',
