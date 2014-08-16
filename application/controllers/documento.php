@@ -297,18 +297,25 @@ class Documento extends CI_Controller {
 		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
 		//--- fim --///
 		
-		
+		//echo $data['tipoSelecionado'];
 		if($data['tipoSelecionado'] != null){
-			$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+			$obj_tipo = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
 			
-			$this->valida_campos_especiais($data['obj_tipo']);	
+			$data['flag_redacao'] = $obj_tipo->redacao;
+			$data['flag_objetivo'] = $obj_tipo->objetivo;
+			$data['flag_documentacao']= $obj_tipo->documentacao;
+			$data['flag_analise'] = $obj_tipo->analise;
+			$data['flag_conclusao'] = $obj_tipo->conclusao;
+			
+			$this->valida_campos_especiais($obj_tipo);	
 			
 		}else{
-			$data['obj_tipo']->redacao = 'N';
-			$data['obj_tipo']->objetivo = 'N';
-			$data['obj_tipo']->documentacao = 'N';
-			$data['obj_tipo']->analise = 'N';
-			$data['obj_tipo']->conclusao = 'N';
+			//echo "aqui";
+			$data['flag_redacao'] = 'N';
+			$data['flag_objetivo'] = 'N';
+			$data['flag_documentacao']= 'N';
+			$data['flag_analise'] = 'N';
+			$data['flag_conclusao'] = 'N';
 		}
 		
 		
@@ -609,9 +616,15 @@ class Documento extends CI_Controller {
 		//--- fim --///
 		
 		if($data['tipoSelecionado'] != null){
-			$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+			$obj_tipo = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
 			
-			$this->valida_campos_especiais($data['obj_tipo']);	
+			$data['flag_redacao'] = $obj_tipo->redacao;
+			$data['flag_objetivo'] = $obj_tipo->objetivo;
+			$data['flag_documentacao']= $obj_tipo->documentacao;
+			$data['flag_analise'] = $obj_tipo->analise;
+			$data['flag_conclusao'] = $obj_tipo->conclusao;
+			
+			$this->valida_campos_especiais($obj_tipo);	
 			
 		}	
 		
