@@ -164,6 +164,46 @@ class Documento extends CI_Controller {
 		$this->audita();
 		
 	}
+	
+	
+	public function set_validacao(){
+	
+		$config =  array(
+					
+				array(
+						'field' => 'campoData',
+						'label' => '<strong>data</strong>',
+						'rules' => 'trim|callback_valid_date'
+				),
+					
+				array(
+						'field' => 'campoRemetente',
+						'label' => '<strong>Remetente</strong>',
+						'rules' => 'required|greater_than[0]|trim'
+				),
+					
+				array(
+						'field' => 'campoTipo',
+						'label' => '<strong>Tipo</strong>',
+						'rules' => 'required|greater_than[0]|trim'
+				),
+					
+				array(
+						'field' => 'campoAssunto',
+						'label' => '<strong>Assunto</strong>',
+						'rules' => 'required|trim'
+				),
+					
+				array(
+						'field' => 'campoPara',
+						'label' => '<strong>Para</strong>',
+						'rules' => 'required|trim'
+				),
+	
+		);
+	
+		return $config;
+	}
 
 	function add(){
 		
@@ -191,10 +231,10 @@ class Documento extends CI_Controller {
 		$data['campoReferencia']      	= $this->Campo_model->documento('campoReferencia');
 		$data['campoRedacao']         	= $this->Campo_model->documento('campoRedacao');
 		
-		$data['campoObjetivo']         	= $this->Campo_model->documento('campoObjetivo');
-		$data['campoDocumentacao']      = $this->Campo_model->documento('campoDocumentacao');
-		$data['campoAnalise']         	= $this->Campo_model->documento('campoAnalise');
-		$data['campoConclusao']         = $this->Campo_model->documento('campoConclusao');
+		//$data['campoObjetivo']         	= $this->Campo_model->documento('campoObjetivo');
+		//$data['campoDocumentacao']      = $this->Campo_model->documento('campoDocumentacao');
+	//	$data['campoAnalise']         	= $this->Campo_model->documento('campoAnalise');
+		//$data['campoConclusao']         = $this->Campo_model->documento('campoConclusao');
 		
 		$data['campoCarimbo']           = $this->Campo_model->documento('campoCarimbo');
 		$data['carimbosDisponiveis'] 	= $this->Campo_model->documento('arrayCarimbos');
@@ -288,40 +328,59 @@ class Documento extends CI_Controller {
 		$_SESSION['tipoSelecionado'] = $this->uri->segment(6) ? $this->uri->segment(6) : 0;
 			
 		$data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $_SESSION['tipoSelecionado'];
-		
-		
-		
+
 		//--- FIM ---//
 		
-		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
-		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
-		//--- fim --///
 		
-		//echo $data['tipoSelecionado'];
+		//--- Validacao dos campos dinamicos ---//
+		$validacao = $this->set_validacao();
+		
+		$campos_dinamicos = '';
+		
 		if($data['tipoSelecionado'] != null){
+			
 			$obj_tipo = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
 			
-			$data['flag_redacao'] = $obj_tipo->redacao;
-			$data['flag_objetivo'] = $obj_tipo->objetivo;
-			$data['flag_documentacao']= $obj_tipo->documentacao;
-			$data['flag_analise'] = $obj_tipo->analise;
-			$data['flag_conclusao'] = $obj_tipo->conclusao;
-			
-			$this->valida_campos_especiais($obj_tipo);	
-			
-		}else{
-			//echo "aqui";
-			$data['flag_redacao'] = 'N';
-			$data['flag_objetivo'] = 'N';
-			$data['flag_documentacao']= 'N';
-			$data['flag_analise'] = 'N';
-			$data['flag_conclusao'] = 'N';
+			$this->load->model('Coluna_model','',TRUE);
+			$campos_especiais = $this->Coluna_model->list_all();
+
+			foreach ($campos_especiais as $key => $nome_campo){
+
+				if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
+					$campo = explode(';' , $obj_tipo->$nome_campo);
+				}else{
+					$campo[0] = $obj_tipo->$nome_campo;
+					$campo[1] = 'Sem rótulo';
+				}
+				
+				if($campo[0] == 'S'){
+
+					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : '';
+					
+					array_push($validacao, array(
+						'field' => 'campo_'.$nome_campo,
+						'label' => '<strong>'.$campo[1].'</strong>',
+						'rules' => 'trim|required'
+					));
+					
+					$data['input_campo'][$nome_campo] = form_textarea(array(
+							'name' 	=> 'campo_'.$nome_campo,
+							'id'	=> 'campo_'.$nome_campo,
+							'value'	=> $valor,
+							'rows'  => '10',
+					));
+
+				}	
+	
+			}	
+
 		}
-		
-		
-		if ($this->form_validation->run($tipo_validacao) == FALSE) {
-			
-			
+
+		$this->form_validation->set_rules($validacao);
+		//-- Fim da calidacao dos campos dinamicos ---//
+
+		if ($this->form_validation->run() == FALSE) {
+
 			if($data['tipoSelecionado'] == 4){ // 4 = parecer tecnico
 				
 				$this->load->view($this->area . "/" . $this->area.'_edit_parecer_tecnico', $data);
@@ -344,32 +403,18 @@ class Documento extends CI_Controller {
 					'assunto' => $this->input->post('campoAssunto'),
 					'referencia' => $this->input->post('campoReferencia'),
 					'para' => $this->input->post('campoPara'),
-					'redacao' => $this->input->post('campoRedacao'),
+					//'redacao' => $this->input->post('campoRedacao'),
 					'carimbo' => $this->input->post('campoCarimbo'),
-					
-					//'objetivo' => $this->input->post('campoObjetivo'),
-					//'documentacao' => $this->input->post('campoDocumentacao'),
-					//'analise' => $this->input->post('campoAnalise'),
-					//'conclusao' => $this->input->post('campoConclusao'),
-					
+	
 			);
 			
-			if($this->input->post('campoObjetivo')){
-				$obj_do_form['objetivo'] = $this->input->post('campoObjetivo');
-			}
 			
-			if($this->input->post('campoDocumentacao')){
-				$obj_do_form['documentacao'] = $this->input->post('campoDocumentacao');
+			foreach ($campos_especiais as $key => $nome_campo){
+				
+				if($this->input->post('campo_'.$nome_campo)){
+					$obj_do_form[$nome_campo] = $this->input->post('campo_'.$nome_campo);
+				}
 			}
-			
-			if($this->input->post('campoAnalise')){
-				$obj_do_form['analise'] = $this->input->post('campoAnalise');
-			}
-			
-			if($this->input->post('campoConclusao')){
-				$obj_do_form['conclusao'] = $this->input->post('campoConclusao');
-			}
-			
 
 			//--- MAGICA DA CONTAGEM, MIOLO DO SISTEMA! ---//
 			//$inicio_contagem = $this->Documento_model->get_tipo($obj_do_form['tipo'])->row()->inicio;
@@ -429,48 +474,6 @@ class Documento extends CI_Controller {
 		}
 
 	}
-	
-	public function valida_campos_especiais($campo){
-
-		$config = array();
-
-		if($campo->objetivo == 'S'){
-			array_push($config, array(
-			'field'   => 'campoObjetivo',
-			'label'   => '<strong>Objetivo</strong>',
-			'rules'   => 'trim|required'
-					));
-		}
-			
-		if($campo->documentacao == 'S'){			
-			array_push($config, array(
-			'field'   => 'campoDocumentacao',
-			'label'   => '<strong>Documentação</strong>',
-			'rules'   => 'trim|required'
-					));
-
-		}
-			
-		if($campo->analise == 'S'){			
-			array_push($config, array(
-			'field'   => 'campoAnalise',
-			'label'   => '<strong>Análise</strong>',
-			'rules'   => 'trim|required'
-					));
-		}
-			
-		if($campo->conclusao == 'S'){
-			array_push($config, array(
-			'field'   => 'campoConclusao',
-			'label'   => '<strong>Conclusão</strong>',
-			'rules'   => 'trim|required'
-					));
-		}
-
-		return $this->form_validation->set_rules($config);
-
-
-	}
 
 	function update($id){
 		
@@ -498,8 +501,7 @@ class Documento extends CI_Controller {
 		}
 	
 		$this->form_validation->set_error_delimiters('<span class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</span>');
-
-	
+		
 		//--- CONSTRUCAO DOS CAMPOS ---//
 		$this->load->model('Campo_model','',TRUE);
 		$data['campoData']            	= $this->Campo_model->documento('campoData');
@@ -615,20 +617,54 @@ class Documento extends CI_Controller {
 		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
 		//--- fim --///
 		
-		if($data['tipoSelecionado'] != null){
-			$obj_tipo = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
-			
-			$data['flag_redacao'] = $obj_tipo->redacao;
-			$data['flag_objetivo'] = $obj_tipo->objetivo;
-			$data['flag_documentacao']= $obj_tipo->documentacao;
-			$data['flag_analise'] = $obj_tipo->analise;
-			$data['flag_conclusao'] = $obj_tipo->conclusao;
-			
-			$this->valida_campos_especiais($obj_tipo);	
-			
-		}	
+		//--- Validacao dos campos dinamicos ---//
+		$validacao = $this->set_validacao();
 		
-		if ($this->form_validation->run($tipo_validacao) == FALSE) {
+		$campos_dinamicos = '';
+		
+		if($data['tipoSelecionado'] != null){
+				
+			$obj_tipo = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
+				
+			$this->load->model('Coluna_model','',TRUE);
+			$campos_especiais = $this->Coluna_model->list_all();
+		
+			foreach ($campos_especiais as $key => $nome_campo){
+		
+				if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
+					$campo = explode(';' , $obj_tipo->$nome_campo);
+				}else{
+					$campo[0] = $obj_tipo->$nome_campo;
+					$campo[1] = 'Sem rótulo';
+				}
+		
+				if($campo[0] == 'S'){
+		
+					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : $obj->$nome_campo;
+					
+					array_push($validacao, array(
+							'field' => 'campo_'.$nome_campo,
+							'label' => '<strong>'.$campo[1].'</strong>',
+							'rules' => 'trim|required'
+							));
+					
+					$data['input_campo'][$nome_campo] = form_textarea(array(
+							'name' 	=> 'campo_'.$nome_campo,
+							'id'	=> 'campo_'.$nome_campo,
+							'value'	=> $valor,
+							'rows'  => '10',
+					));
+		
+				}
+		
+			}
+		
+		}
+		
+		$this->form_validation->set_rules($validacao);
+		//-- Fim da calidacao dos campos dinamicos ---//
+		
+		if ($this->form_validation->run() == FALSE) {
 			
 			if($data['tipoSelecionado'] == 4){ // 4 = parecer tecnico
 			
@@ -652,7 +688,7 @@ class Documento extends CI_Controller {
 					'assunto' => $this->input->post('campoAssunto'),
 					'referencia' => $this->input->post('campoReferencia'),
 					'para' => $this->input->post('campoPara'),
-					'redacao' => $this->input->post('campoRedacao'),
+					//'redacao' => $this->input->post('campoRedacao'),
 					'carimbo' => $this->input->post('campoCarimbo'),
 					
 					//'objetivo' => $this->input->post('campoObjetivo'),
@@ -661,20 +697,10 @@ class Documento extends CI_Controller {
 					//'conclusao' => $this->input->post('campoConclusao'),
 			);
 			
-			if($this->input->post('campoObjetivo')){
-				$obj_do_form['objetivo'] = $this->input->post('campoObjetivo');
-			}
-				
-			if($this->input->post('campoDocumentacao')){
-				$obj_do_form['documentacao'] = $this->input->post('campoDocumentacao');
-			}
-				
-			if($this->input->post('campoAnalise')){
-				$obj_do_form['analise'] = $this->input->post('campoAnalise');
-			}
-				
-			if($this->input->post('campoConclusao')){
-				$obj_do_form['conclusao'] = $this->input->post('campoConclusao');
+			foreach ($campos_especiais as $key => $nome_campo){
+				if($this->input->post('campo_'.$nome_campo)){
+					$obj_do_form[$nome_campo] = $this->input->post('campo_'.$nome_campo);
+				}
 			}
 			
 			
