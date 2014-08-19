@@ -207,7 +207,7 @@ class Documento extends CI_Controller {
 		
 		$this->_checa_tabelas();
 
-		$this->form_validation->set_error_delimiters('<span class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</span>');
+		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</div>');
 		
 		//--- VARIAVEIS COMUNS ---//
 		$data['titulo']         = $this->tituloAdd.$this->area;
@@ -269,6 +269,7 @@ class Documento extends CI_Controller {
 		$data['remetenteSelecionado'] = $this->input->post('campoRemetente') ? $this->input->post('campoRemetente') : $_SESSION['remetenteSelecionado'];
 		//--- FIM ---//
 		
+		
 		//--- MOSTRA A SIGLA DO SETOR E COLOCA O SETORID EM UM CAMPO HIDDEN ---//
 		if($data['remetenteSelecionado'])
 			$setor = $this->Documento_model->get_setor($data['remetenteSelecionado'])->row();
@@ -287,6 +288,7 @@ class Documento extends CI_Controller {
 			$data['setorId'] = ' ';
 		}
 		//--- FIM ---//
+		
 		
 		//--- POPULA O DROPDOWN DE TIPOS ---//
 		$this->load->model('Tipo_model','',TRUE);
@@ -327,10 +329,12 @@ class Documento extends CI_Controller {
 					$campo = explode(';' , $obj_tipo->$nome_campo);
 				}else{
 					$campo[0] = $obj_tipo->$nome_campo;
-					$campo[1] = 'Sem rótulo';
+					$campo[1] = $nome_campo;
 				}
 				
-				if($campo[0] == 'S'){
+				$coluna = $this->Coluna_model->get_by_nome($nome_campo);
+
+				if($campo[0] == 'S'){//caso o campo esteja disponivel para o usuario
 
 					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : '';
 					
@@ -340,12 +344,26 @@ class Documento extends CI_Controller {
 						'rules' => 'trim|required'
 					));
 					
-					$data['input_campo'][$nome_campo] = form_textarea(array(
-							'name' 	=> 'campo_'.$nome_campo,
-							'id'	=> 'campo_'.$nome_campo,
-							'value'	=> $valor,
-							'rows'  => '10',
-					));
+					
+					if($coluna['tipo'] == 'blob'){
+						$data['input_campo'][$nome_campo] = form_textarea(array(
+								'name' 	=> 'campo_'.$nome_campo,
+								'id'	=> 'campo_'.$nome_campo,
+								'value'	=> $valor,
+								'rows'  => '10',
+						));
+							
+					}else{
+						
+						$data['input_campo'][$nome_campo] = form_input(array(
+								'name' 	=> 'campo_'.$nome_campo,
+								'id'	=> 'campo_'.$nome_campo,
+								'value'	=> $valor,
+								'maxlength' => '90',
+				                'size' => '71',
+						));
+						
+					}
 
 				}	
 	
@@ -358,13 +376,7 @@ class Documento extends CI_Controller {
 
 		if ($this->form_validation->run() == FALSE) {
 
-			//if($data['tipoSelecionado'] == 4){ // 4 = parecer tecnico
-				
-				//$this->load->view($this->area . "/" . $this->area.'_edit_parecer_tecnico', $data);
-				
-			//}else{
 				$this->load->view($this->area . "/" . $this->area.'_edit', $data);
-			//}
 
 		}else{
 			
@@ -471,6 +483,7 @@ class Documento extends CI_Controller {
 		}
 	
 		$this->form_validation->set_error_delimiters('<span class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</span>');
+		
 		
 		//--- CONSTRUCAO DOS CAMPOS ---//
 		$this->load->model('Campo_model','',TRUE);
@@ -583,7 +596,7 @@ class Documento extends CI_Controller {
 		}
 			
 		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
-		$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
+		//$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
 		//--- fim --///
 		
 		//--- Validacao dos campos dinamicos ---//
@@ -604,7 +617,7 @@ class Documento extends CI_Controller {
 					$campo = explode(';' , $obj_tipo->$nome_campo);
 				}else{
 					$campo[0] = $obj_tipo->$nome_campo;
-					$campo[1] = 'Sem rótulo';
+					$campo[1] = $nome_campo;
 				}
 		
 				if($campo[0] == 'S'){
@@ -631,7 +644,7 @@ class Documento extends CI_Controller {
 		}
 		
 		$this->form_validation->set_rules($validacao);
-		//-- Fim da calidacao dos campos dinamicos ---//
+		//-- Fim da validacao dos campos dinamicos ---//
 		
 		if ($this->form_validation->run() == FALSE) {
 			
@@ -661,6 +674,7 @@ class Documento extends CI_Controller {
 				}
 			}
 			
+			
 			//--- ATENCAO! --//
 			//--- MAGICA DA CONTAGEM! Esse eh o miolo do sistema! Se quiser que tudo continue funcionando NAO BULA AQUI! VC FOI AVISADO!!! ---//
 			$inicio_contagem = $this->Documento_model->get_inicio_contagem($obj_do_form['tipo'], $this->datas->get_year_US($obj_do_form['data']));
@@ -670,6 +684,7 @@ class Documento extends CI_Controller {
 			$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'], $this->datas->get_year_US($obj_do_form['data']))->row();
 			//--- FIM ---//
 	
+			
 			// se a checagem retornar um valor diferente de nulo
 			if ($checa_existencia != null){
 	
@@ -679,7 +694,6 @@ class Documento extends CI_Controller {
 	
 			}else{
 	
-			
 				if ($this->Documento_model->update($id,$obj_do_form) === FALSE){
 						
 					echo  '<br> Erro na atualização. <br>';
@@ -708,7 +722,6 @@ class Documento extends CI_Controller {
 					$this->load->view('success', $data);
 
 				}
-				//fim
 	
 			}
 				
@@ -770,8 +783,7 @@ class Documento extends CI_Controller {
 			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
 		
 		}
-
-		//fim do tratamento
+		//--- FIM ---//
 
 		$this->load->view($this->area.'/documento_view', $data);
 		$this->audita();
@@ -970,9 +982,9 @@ class Documento extends CI_Controller {
 	
 		$inicio = ($this->uri->segment($uri_segment)) ? ($this->uri->segment($uri_segment, 0) - 1) * $maximo : 0;
 	
-		// Definindo o universo de documentos a serem pesquisados.
-		// Se o setor for restiro, ira listar apenas os domentos do setor mais os documentos criados pelo o usuário para outros setore.
 		
+		//--- Definindo o universo de documentos a serem pesquisados. ---//
+		//--- Se o setor for restiro, ira listar apenas os domentos do setor mais os documentos criados pelo o usuário para outros setore. ---//
 		$session_setor = $this->session->userdata('setor');
 		$this->load->model('Setor_model','',TRUE);
 		$restricao = $this->Setor_model->get_by_id($session_setor)->row()->restricao;
@@ -990,7 +1002,7 @@ class Documento extends CI_Controller {
 			$config['total_rows'] = $this->Documento_model->count_all_search($keyword, $this->session->userdata('cpf'));
 
 		}
-		// Fim da restricao
+		//--- Fim da restricao do universo de pesquisa ---//
 		
 	
 		$config['base_url'] = site_url($this->area.'/search');
@@ -1171,7 +1183,6 @@ class Documento extends CI_Controller {
 
 		return $number;
 		
-
 	}
 
 	function _monta_assunto($assunto, $maximo = 45){
@@ -1225,12 +1236,8 @@ class Documento extends CI_Controller {
 			
 			$setorRemetente = $this->getCaminho($obj->setor);
 			
-			//$setorRemetente = ($obj->orgaoSigla == "NENHUM") ? $obj->setorSigla : $obj->setorSigla . "/" . $obj->orgaoSigla;
 			
-			
-//------------------------------------------------------------------------------------------------------------------------------------//
-//----- ACOES
-
+		//--- ACOES ---//
 			$permissao = $this->get_permissao($obj->setor, $this->session->userdata('id_usuario'));
 			
 			$acoes 	= 	null;
@@ -1255,8 +1262,8 @@ class Documento extends CI_Controller {
 				$acoes .= anchor($_SESSION['homepage'].'#d'.$documento->id,'<div class="cancelado"><BR>CANCELADO</div>');
 				
 			}
-			
-//------------------------------------------------------------------------------------------------------------------------------------//
+		//--- FIM ---//
+
 				
 			$linha = $this->table->add_row(
 					'<a name="d'.$documento->id.'" id="d'.$documento->id.'"></a>' .
@@ -1354,6 +1361,7 @@ class Documento extends CI_Controller {
 
     }
     
+    /*
     function set_tipo_validacao($tipoSelecionado){
     	
     	$tipo_validacao = $this->area."/add"; // valor default
@@ -1397,20 +1405,11 @@ class Documento extends CI_Controller {
     		break;
     		
     	}
-    	
-    	/*
-    	if($tipoSelecionado == 4 or $tipoSelecionado == 6 or $tipoSelecionado == 7 or $tipoSelecionado == 8 or $tipoSelecionado == 9){ // 4 = PARECER TECNICO, 6 = ATO ADMINISTRATIVO, 7 = NOTA DE INSTRUCAO E 8 = NOTA DE ELOGIO
-    		$tipo_validacao = $this->area."/add_sem_para";
-    	}else{
-    		$tipo_validacao = $this->area."/add";
-    	}
-    	*/
-    	
-    	
+  
     	return $tipo_validacao;
     	
-    	
     }
+    */
 
     
     //--- METODO QUE CHECA SE AS TABELAS DO SISTEMA ESTAO POPULADAS ---//
