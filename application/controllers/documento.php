@@ -58,7 +58,8 @@ class Documento extends CI_Controller {
 		$data['link_back']  = anchor('documento/index/','Lista de Documentos',array('class'=>'back'));
 		$data['form_action'] = site_url($this->area.'/search');
 
-		// BUSCA
+		
+		//--- BUSCA ---//	
 		$data['keyword_'.$this->area] = '';
 		if(isset($_SESSION['keyword_'.$this->area]) == true and $_SESSION['keyword_'.$this->area] != null){
 			$data['keyword_'.$this->area] = $_SESSION['keyword_'.$this->area];
@@ -67,11 +68,10 @@ class Documento extends CI_Controller {
 			$data['keyword_'.$this->area] = 'pesquisa textual';
 			$data['link_search_cancel'] = '';
 		}
-		// FIM DA BUSCA
+		//--- FIM ---//	
 			
-		/***** SETORES *****/
 		
-		
+		//--- SETORES ---//		
 		$this->load->model('Setor_model','',TRUE);
 		
 		$session_setor = $this->session->userdata('setor');
@@ -100,8 +100,8 @@ class Documento extends CI_Controller {
 		$_SESSION['setorSelecionado'] = ($uri_setor) ? $uri_setor : $session_setor;
 			
 		$data['setorSelecionado'] = $_SESSION['setorSelecionado'];
-       
-		/***** SETORES FIM *****/
+		//--- FIM ---//	
+		
 		
 		$maximo = 10;
 
@@ -155,17 +155,14 @@ class Documento extends CI_Controller {
         // variaveis para a view
        	$data['table'] = $this->table->generate();
         $data["total_rows"] = $config['total_rows'];
-       
-       // echo $this->db->last_query();
-        
-		// load view
+
 		$this->load->view($this->area.'/'.$this->area.'_list', $data);
 		
 		$this->audita();
 		
 	}
 	
-	
+	//--- CAMPOS PADROES ---//
 	public function set_validacao(){
 	
 		$config =  array(
@@ -204,6 +201,7 @@ class Documento extends CI_Controller {
 	
 		return $config;
 	}
+	//--- FIM ---//
 
 	function add(){
 		
@@ -221,6 +219,7 @@ class Documento extends CI_Controller {
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
 		
+		
 		//--- CONSTRUCAO DOS CAMPOS ---//
 		$this->load->model('Campo_model','',TRUE);
 		$data['campoData']            	= $this->Campo_model->documento('campoData');
@@ -230,23 +229,17 @@ class Documento extends CI_Controller {
 		$data['campoAssunto']         	= $this->Campo_model->documento('campoAssunto');
 		$data['campoReferencia']      	= $this->Campo_model->documento('campoReferencia');
 		$data['campoRedacao']         	= $this->Campo_model->documento('campoRedacao');
-		
-		//$data['campoObjetivo']         	= $this->Campo_model->documento('campoObjetivo');
-		//$data['campoDocumentacao']      = $this->Campo_model->documento('campoDocumentacao');
-	//	$data['campoAnalise']         	= $this->Campo_model->documento('campoAnalise');
-		//$data['campoConclusao']         = $this->Campo_model->documento('campoConclusao');
-		
+
 		$data['campoCarimbo']           = $this->Campo_model->documento('campoCarimbo');
 		$data['carimbosDisponiveis'] 	= $this->Campo_model->documento('arrayCarimbos');
 		$data['carimboSelecionado']  	= $this->uri->segment(8) ? $this->uri->segment(8) : 'N';
 		
 		$data['desp_num_processo']      = $this->Campo_model->documento('desp_num_processo');
 		$data['desp_interessado']      	= $this->Campo_model->documento('desp_interessado');
-
 		//--- FIM ---//
 
-		//--- POPULA O DROPDOWN DE REMENTETES ---//
 		
+		//--- POPULA O DROPDOWN DE REMENTETES ---//
 		$this->load->model('Setor_model','',TRUE);
 		
 		$session_setor = $this->session->userdata('setor');
@@ -306,23 +299,7 @@ class Documento extends CI_Controller {
 		}else{
 			$arrayTipos[1] = "";
 		}
-		
-		//--------------------------------------------------------------------------------------------------------------------------//
-		//--- RETIRA DE $arrayTipos ATO ADMINISTRATIVO E NOTA DE INSTRUCAO CASO O SETOR DO USUARIO NÃO SEJA DIRECAO GERAL ---//
-		//echo $this->session->userdata('setor');
-		if($this->session->userdata('setor') != 11 and $this->session->userdata('setor') != 7){ // 11 = DIRETORIA GERAL DA AESP, 7 = CTIC
-		//if($this->session->userdata('setor') != 11){ // 11 = DIRETORIA GERAL DA AESP
-			unset($arrayTipos[6]);// 6 = ATO ADMINISTRATIVO
-			unset($arrayTipos[8]);// 8 = NOTA DE ELOGIO
-		}
-		//--------------------------------------------------------------------------------------------------------------------------//
-		//--- RETIRA DE $arrayTipos: ATO ADMINISTRATIVO E NOTA DE INSTRUCAO CASO O SETOR DO USUARIO NÃO SEJA DIRECAO GERAL ---//
-		if($this->session->userdata('setor') != 41 and $this->session->userdata('setor') != 7){ // 41 = ASSESSORIA JURÍDICA
-			unset($arrayTipos[5]);// PARECER JURIDICO
-		}
-		//--------------------------------------------------------------------------------------------------------------------------//
-		
-		
+
 		$data['tiposDisponiveis']  =  $arrayTipos;
 		
 		$_SESSION['tipoSelecionado'] = $this->uri->segment(6) ? $this->uri->segment(6) : 0;
@@ -332,7 +309,7 @@ class Documento extends CI_Controller {
 		//--- FIM ---//
 		
 		
-		//--- Validacao dos campos dinamicos ---//
+		//--- Cria a validacao dos campos dinamicos ---//
 		$validacao = $this->set_validacao();
 		
 		$campos_dinamicos = '';
@@ -377,17 +354,17 @@ class Documento extends CI_Controller {
 		}
 
 		$this->form_validation->set_rules($validacao);
-		//-- Fim da calidacao dos campos dinamicos ---//
+		//--- FIM ---//
 
 		if ($this->form_validation->run() == FALSE) {
 
-			if($data['tipoSelecionado'] == 4){ // 4 = parecer tecnico
+			//if($data['tipoSelecionado'] == 4){ // 4 = parecer tecnico
 				
-				$this->load->view($this->area . "/" . $this->area.'_edit_parecer_tecnico', $data);
+				//$this->load->view($this->area . "/" . $this->area.'_edit_parecer_tecnico', $data);
 				
-			}else{
+			//}else{
 				$this->load->view($this->area . "/" . $this->area.'_edit', $data);
-			}
+			//}
 
 		}else{
 			
@@ -408,7 +385,6 @@ class Documento extends CI_Controller {
 	
 			);
 			
-			
 			foreach ($campos_especiais as $key => $nome_campo){
 				
 				if($this->input->post('campo_'.$nome_campo)){
@@ -416,19 +392,14 @@ class Documento extends CI_Controller {
 				}
 			}
 
-			//--- MAGICA DA CONTAGEM, MIOLO DO SISTEMA! ---//
-			//$inicio_contagem = $this->Documento_model->get_tipo($obj_do_form['tipo'])->row()->inicio;
+			//--- ATENCAO! --//
+			//--- MAGICA DA CONTAGEM! Esse eh o miolo do sistema! Se quiser que tudo continue funcionando NAO BULA AQUI! VC FOI AVISADO!!! ---//
 			$inicio_contagem = $this->Documento_model->get_inicio_contagem($obj_do_form['tipo'], $this->datas->get_year_US($obj_do_form['data']));
 			
-			//echo "<br>inicio_contagem = ".$inicio_contagem;
-
 			$obj_do_form["numero"] =  $this->_set_number($obj_do_form['setor'], $obj_do_form['tipo'], $inicio_contagem, $this->datas->get_year_US($obj_do_form['data']));
-			
-			//echo "<br>obj_do_form['numero'] = ". $obj_do_form["numero"];
-			
-			//$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'])->row();
+
 			$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'], $this->datas->get_year_US($obj_do_form['data']))->row();
-			//--- FIM ---//
+			//--- FIM  DA MAGICA---//
 			
 			// se a checagem retornar um valor diferente de nulo
 			if ($checa_existencia != null){
@@ -492,7 +463,6 @@ class Documento extends CI_Controller {
 		$permissao = $this->get_permissao($obj->setor, $this->session->userdata('id_usuario'));
 
 		if($obj->dono_cpf != $this->session->userdata('cpf') and $permissao < 2){
-			//redirect($this->area.'/index/');
 			redirect($this->area . '/negado/'.$id);
 		}
 		
@@ -568,6 +538,7 @@ class Documento extends CI_Controller {
 		}
 		//--- FIM ---//
 	
+		
 		//--- POPULA O DROPDOWN DE TIPOS ---//
 		$this->load->model('Tipo_model','',TRUE);
 		$tipos = $this->Tipo_model->list_all()->result();
@@ -589,10 +560,8 @@ class Documento extends CI_Controller {
 		for($i=0 ; $i<=$num_of_tipos ; $i++)
 		if($i != $data['tipoSelecionado'])
 		unset($data['tiposDisponiveis'][$i]);
-		
-		//$data['obj_tipo'] = $this->Tipo_model->get_by_id($data['tipoSelecionado'])->row();
-		
 		//--- FIM ---//
+		
 		
 		$data['campoData']['value']          = $this->_trata_dataDoBancoParaForm($obj->data);
 		$data['campoAssunto']['value']       = $obj->assunto;
@@ -666,14 +635,8 @@ class Documento extends CI_Controller {
 		
 		if ($this->form_validation->run() == FALSE) {
 			
-			if($data['tipoSelecionado'] == 4){ // 4 = parecer tecnico
-			
-				$this->load->view($this->area . "/" . $this->area.'_edit_parecer_tecnico', $data);
-			
-			}else{
-				$this->load->view($this->area . "/" . $this->area.'_edit', $data);
-			}
-
+			$this->load->view($this->area . "/" . $this->area.'_edit', $data);
+		
 		}else{
 				
 			$obj_do_form = array(
@@ -688,13 +651,8 @@ class Documento extends CI_Controller {
 					'assunto' => $this->input->post('campoAssunto'),
 					'referencia' => $this->input->post('campoReferencia'),
 					'para' => $this->input->post('campoPara'),
-					//'redacao' => $this->input->post('campoRedacao'),
 					'carimbo' => $this->input->post('campoCarimbo'),
-					
-					//'objetivo' => $this->input->post('campoObjetivo'),
-					//'documentacao' => $this->input->post('campoDocumentacao'),
-					//'analise' => $this->input->post('campoAnalise'),
-					//'conclusao' => $this->input->post('campoConclusao'),
+			
 			);
 			
 			foreach ($campos_especiais as $key => $nome_campo){
@@ -703,15 +661,12 @@ class Documento extends CI_Controller {
 				}
 			}
 			
-			
-			//--- MAGICA DA CONTAGEM, MIOLO DO SISTEMA! ---//
-			//$inicio_contagem = $this->Documento_model->get_tipo($obj_do_form['tipo'])->row()->inicio;
+			//--- ATENCAO! --//
+			//--- MAGICA DA CONTAGEM! Esse eh o miolo do sistema! Se quiser que tudo continue funcionando NAO BULA AQUI! VC FOI AVISADO!!! ---//
 			$inicio_contagem = $this->Documento_model->get_inicio_contagem($obj_do_form['tipo'], $this->datas->get_year_US($obj_do_form['data']));
 				
-			//$obj_do_form["numero"] =  $this->_set_number($obj_do_form['setor'], $obj_do_form['tipo'], $inicio_contagem);
 			$obj_do_form["numero"] =  $this->_set_number($obj_do_form['setor'], $obj_do_form['tipo'], $inicio_contagem, $this->datas->get_year_US($obj_do_form['data']));
 				
-			//$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'])->row();
 			$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'], $this->datas->get_year_US($obj_do_form['data']))->row();
 			//--- FIM ---//
 	
@@ -724,20 +679,12 @@ class Documento extends CI_Controller {
 	
 			}else{
 	
-				/*
-				$this->Documento_model->update($id,$obj_do_form);
-				$this->audita();
-				redirect($this->area."/view/".$id);
-				*/
-				
-				//inicio
+			
 				if ($this->Documento_model->update($id,$obj_do_form) === FALSE){
 						
 					echo  '<br> Erro na atualização. <br>';
 				
 				}else{
-				
-					//redirect($this->area."/view/".$id);
 				
 					$this->js_custom = 'var sSecs = 3;
                                 function getSecs(){
@@ -774,8 +721,6 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		
 		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
-		
-		//echo "SESSION['homepage'] =". $_SESSION['homepage'];
 		
 		$data['link_update'] 	= anchor($this->area.'/update/'.$id,'alterar',array('class'=>'update'));
 		$data['link_export'] 	= anchor($this->area.'/export/'.$id,'exportar',array('class'=>'pdf', 'target'=>'_blank'));
@@ -834,6 +779,7 @@ class Documento extends CI_Controller {
 	}
 
 	function export($id){
+		
 		// carrega as variaveis padroes
 		$data['titulo']         = $this->tituloView.$this->area;
 		$data['message']        = '';
@@ -861,7 +807,6 @@ class Documento extends CI_Controller {
 		$data['objeto']->remetSetorArtigo    ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
 
 			
-
 		// Definindo o cabecalho e o rodape do documento
 		$this->load->model('Tipo_model','',TRUE);
 		$timbre = $this->Tipo_model->get_by_id($data['objeto']->tipoID)->row();
@@ -878,94 +823,38 @@ class Documento extends CI_Controller {
 			$data['rodape'] = $timbre->rodape;
 		}
 		
-		
-		if($data['objeto']->tipoID == 3){ // 3 = Despacho, legado da AESP, nao da pra tirar por causa dos registros da tabela despacho_head, criada pelo Bruno. 
-			
-			$this->load->view($this->area.'/despacho_pdf', $data);
-			
-		}else{
-			
-			$data['objeto']->layout = str_replace('[tipo_doc]', $data['objeto']->tipoNome, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[numero]', $data['objeto']->numero, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[ano_doc]', $data['objeto']->ano, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[setor_doc]', $data['caminho_remetente'], $data['objeto']->layout);
-			
-			$data['objeto']->layout = str_replace('[data]', $data['objeto']->data, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[destinatario]', $data['objeto']->para, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[assunto]', $data['objeto']->assunto, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[referencia]', $data['objeto']->referencia, $data['objeto']->layout);
-			
-			$data['objeto']->layout = str_replace('[redacao]', $data['objeto']->redacao, $data['objeto']->layout);
-			
-			if(!$data['objeto']->assinatura){
-				$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
-			}
-			$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[remetente_setor_artigo]', $data['objeto']->remetSetorArtigo, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
-			
-			// --- Parecer Tecnico ---//
-			$data['objeto']->layout = str_replace('[objetivo]', $data['objeto']->objetivo, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[documentacao]', $data['objeto']->documentacao, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[analise]', $data['objeto']->analise, $data['objeto']->layout);
-			$data['objeto']->layout = str_replace('[conclusao]', $data['objeto']->conclusao, $data['objeto']->layout);
-			
-			$this->load->view($this->area.'/pdf', $data);
-			
-		}
-		
 
-		//echo $data['objeto']->layout;
-		//exit;
-			
-		/*
-		switch ($data['objeto']->tipoID) {
+		$data['objeto']->layout = str_replace('[tipo_doc]', $data['objeto']->tipoNome, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[numero]', $data['objeto']->numero, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[ano_doc]', $data['objeto']->ano, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[setor_doc]', $data['caminho_remetente'], $data['objeto']->layout);
 		
-			case 1:
-				$this->load->view($this->area.'/documento_pdf', $data); // Comuicacao Interna
-				break;
+		$data['objeto']->layout = str_replace('[data]', $data['objeto']->data, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[destinatario]', $data['objeto']->para, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[assunto]', $data['objeto']->assunto, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[referencia]', $data['objeto']->referencia, $data['objeto']->layout);
 		
-			case 2:
-				$this->load->view($this->area.'/documento_pdf', $data); // Oficio
-				break;
+		$data['objeto']->layout = str_replace('[redacao]', $data['objeto']->redacao, $data['objeto']->layout);
 		
-			case 3:
-				$this->load->view($this->area.'/documento_pdf', $data); // Despacho
-				break;
-		
-			case 4:
-				$this->load->view($this->area.'/documento_pdf_parecer_tecnico', $data); // Parecer Tecnico
-				break;
-		
-			case 5:
-				$this->load->view($this->area.'/documento_pdf', $data); // Parecer Juridico
-				break;
-		
-			case 6:
-				$this->load->view($this->area.'/documento_pdf_ato_adm', $data); // Ato Administrativo
-				break;
-		
-			case 7:
-				$this->load->view($this->area.'/documento_pdf_ato_adm', $data); // Nota de Instrucao
-				break;
-		
-			case 8:
-				$this->load->view($this->area.'/documento_pdf_ato_adm', $data); // Nota de Elogio
-				break;
-		
-			case 9:
-				$this->load->view($this->area.'/documento_pdf_cepad', $data); // Despacho da CEPAD (Comissao Especial Permanente de Acompanhamento Disciplinar das Galaxias)
-				break;
-		
+		if(!$data['objeto']->assinatura){
+			$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
 		}
-		*/
+		$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_setor_artigo]', $data['objeto']->remetSetorArtigo, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
 		
+		// --- Parecer Tecnico ---//
+		$data['objeto']->layout = str_replace('[objetivo]', $data['objeto']->objetivo, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[documentacao]', $data['objeto']->documentacao, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[analise]', $data['objeto']->analise, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[conclusao]', $data['objeto']->conclusao, $data['objeto']->layout);
+			
+		$this->load->view($this->area.'/pdf', $data);
+
 		$this->audita();
-		
-		
-		
+			
 	}
 	
 	function export_rtf($id){
@@ -1185,14 +1074,10 @@ class Documento extends CI_Controller {
 				$this->form_validation->set_message('valid_date', 'O ano informado ('.$ano_postado.') era menor que o ano atual! Corrigimos para a data de hoje');
 				return false;
 			}
-			
-			
+					
 			return true;
 		}
-		
-		
-		
-		
+	
 	}
 
 	function _trata_data($str){
@@ -1528,6 +1413,7 @@ class Documento extends CI_Controller {
     }
 
     
+    //--- METODO QUE CHECA SE AS TABELAS DO SISTEMA ESTAO POPULADAS ---//
     function _checa_tabelas(){
     	
     		$data['message'] = '';
@@ -1567,6 +1453,8 @@ class Documento extends CI_Controller {
 				redirect('documento/erro_tabelas/');
 			}
     }
+    //--- FIM ---//
+    
     
     function erro_tabelas(){
     	 
