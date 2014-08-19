@@ -37,7 +37,10 @@ Configurando a aplicação:
 		$db['default']['username'] = "usuario";		// substituir pelo usuário do servidor
 		$db['default']['password'] = "senha";		// substituir pela senha do usuário do servidor
 	
-3. Dê permissões de leitura e escrita para o servidor web na pasta "userfiles" encontrada em geradoc/scripts/ckfinder/userfiles
+3. Dê permissões de leitura e escrita para o servidor web nas pasta abaixo:
+
+	geradoc/files
+	geradoc/temp
 
 
 Acesso ao sistema:
