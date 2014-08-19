@@ -45,7 +45,7 @@ Configuração da aplicação:
 Acesso ao sistema:
 ===================================
 
-Acesse http://localhost/geradoc e informe os dados abaixo:
+Acesse [http://localhost/geradoc](http://localhost/geradoc "http://localhost/geradoc") e informe os dados abaixo:
 
 * Login: 11111111111  
 * Senha: admin  
