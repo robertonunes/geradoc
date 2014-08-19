@@ -21,7 +21,7 @@ MySQL:
 Configuração da aplicação:
 ===================================
 
-1. Copie a pasta "geradoc" para a pasta "htdocs" do APACHE
+1. Copie a pasta <strong>geradoc</strong> para a pasta <strong>htdocs</strong> do Aapache
 
 2. Altere os dados dos seguintes arquivos:
 
