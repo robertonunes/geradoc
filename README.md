@@ -39,8 +39,9 @@ Configurando a aplicação:
 	
 3. Dê permissões de leitura e escrita para o servidor web nas pasta abaixo:
 
-	a. geradoc/files  
-	b. geradoc/temp  
+		geradoc/files
+
+		geradoc/temp
 
 
 Acesso ao sistema:
