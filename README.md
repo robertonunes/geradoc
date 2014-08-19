@@ -14,7 +14,7 @@ Requisitos:
 MySQL:
 ===================================
 
-1. Crie o banco de Dados "geradoc" e importe os dados do arquivo: geradoc/docs/geradoc.sql
+1. Crie o banco de Dados <strong>geradoc</strong> e importe os dados do arquivo: geradoc/docs/geradoc.sql
 2. Crie um usuário "geradoc" com permissões para criar e ler dados no banco criado.
 
 
