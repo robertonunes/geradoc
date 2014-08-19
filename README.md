@@ -20,7 +20,7 @@ MySQL:
 2. Crie um usuário "geradoc" com permissões para criar e ler dados no banco criado.
 
 
-Aplicação:
+Configurando a aplicação:
 ===================================
 
 1. Copie a pasta "geradoc" para a pasta "htdocs" do APACHE
