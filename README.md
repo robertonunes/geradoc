@@ -3,10 +3,8 @@ GeraDoc - Sistema Gerenciador de Documentos
 
 ![Alt text](/screenshots/login.png?raw=true "Login")
 
-Instalação:
-===================================
-
 Requisitos:
+===================================
 
 1. Apache 2.0.63
 2. PHP 5.3.2
@@ -20,7 +18,7 @@ MySQL:
 2. Crie um usuário "geradoc" com permissões para criar e ler dados no banco criado.
 
 
-Configurando a aplicação:
+Configuração da aplicação:
 ===================================
 
 1. Copie a pasta "geradoc" para a pasta "htdocs" do APACHE
@@ -37,7 +35,7 @@ Configurando a aplicação:
 		$db['default']['username'] = "usuario";		// substituir pelo usuário do servidor
 		$db['default']['password'] = "senha";		// substituir pela senha do usuário do servidor
 	
-3. Dê permissões de leitura e escrita para o servidor web nas pasta abaixo:
+3. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pasta abaixo:
 
 		geradoc/files
 
@@ -46,6 +44,8 @@ Configurando a aplicação:
 
 Acesso ao sistema:
 ===================================
+
+Acesse http://localhost/geradoc e informe os dados abaixo:
 
 * Login: 11111111111  
 * Senha: admin  
