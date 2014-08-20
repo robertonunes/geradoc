@@ -21,7 +21,7 @@ if($config['orgao'] == '172.17.156.114'){
 	$config['orgao'] = 'localhost';
 }
 
-$config['title_short']	= "GeraDoc <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.2</div>";
+$config['title_short']	= "GeraDoc <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.5</div>";
 
 switch ($config['orgao']){
 	

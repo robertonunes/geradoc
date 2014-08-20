@@ -47,7 +47,6 @@ class Login extends CI_Controller {
        
        if ($this->form_validation->run() == FALSE) {
        		$this->load->view('login', $data);
-       		//echo $this->db->last_query();
        } else {                
        		$this->autentica();
        }        

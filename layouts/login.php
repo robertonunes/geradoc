@@ -21,7 +21,10 @@
 
 	<title><?php echo $CI->config->item('title');?></title>
 	{TPL_css}
+	<link href="<?php echo base_url();?>bootstrap/css/bootstrap.min.css" rel="stylesheet"> 
+	<link href="<?php echo base_url();?>bootstrap/css/bootstrap-theme.min.css" rel="stylesheet"> 
     {TPL_js}
+    <script src="<?php echo base_url();?>bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body>
 	<div id="geral"> 

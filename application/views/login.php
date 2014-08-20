@@ -7,7 +7,7 @@
 			GeraDoc
 			<br>
 			<div style='font-size:17pt; text-align:center;'>Sistema Gerenciador de Documentos</div>
-			<div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.2</div>
+			<div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.5</div>
 		</div>
 		<div style="text-align: left; padding-top:67px; padding-left:25px; font-size: 10pt; color: #555; line-height:200%;">
 				<p>Melhor visualizado com:</p>
@@ -28,26 +28,29 @@
 				}else{
 				
 				?>
-				<form action="<?php echo $form_action; ?>" method="post"> 										
-					<div>
-						<label for="txtLogin">CPF:</label> 
-						<input class="txt_login" type="text" value="<?php echo set_value('cpf');?>" name="cpf" id="cpf" type="text" maxlength="14" size="14" /> 
-						<?php echo form_error('cpf'); ?>
-					</div> 
-					<div> 
-						<label for="txtSenha">Senha:</label> 
-						<input class="txt_login" type="password" name="txtSenha" id="txtSenha" type="password"  size="11" /> 
-						<?php 
+				<form action="<?php echo $form_action; ?>" method="post"> 
+				
+					<div class="form-group <?php echo (form_error('cpf') != '')? 'has-error':''; ?>">
+					    <label class="sr-only" for="cpf">CPF</label>
+					   	<input type="text" class="form-control" name="cpf"  id="cpf" placeholder="Informe o CPF" value="<?php echo set_value('cpf');?>">
+					   	<?php echo form_error('cpf'); ?>
+					</div>	
+					<div style="padding: 5px;"></div>
+					<div class="form-group <?php echo (form_error('txtSenha') != '')? 'has-error':''; ?>">
+					    <label class="sr-only" for="txtSenha">Senha</label>
+					   	<input type="password" class="form-control" name="txtSenha" id="txtSenha" placeholder="Informe a senha">
+					   	<?php 
 							echo form_error('txtSenha'); 
 							echo $mensagem;
 						?>
-					</div>			
+					</div>
+																			
 					<div style="text-align: center; padding: 10px;">
-						<input class="button" id="btnLogin" name="btnLogin" type="submit" value="Acessar" /> 
+						<input class="btn btn-success" id="btnLogin" name="btnLogin" type="submit" value="Entrar" /> 
 					</div>	
 					
-					<div style="text-align: center;  padding: 10px;">
-						<a href="<?php echo base_url() . "index.php/usuario/nova_senha"; ?>" class="link1">Esqueci a senha</a> 
+					<div style="text-align: center;  padding-top: 5px;">
+						<a href="<?php echo base_url() . "index.php/usuario/nova_senha"; ?>" class="btn btn-info">Esqueci a senha</a> 
 					</div>	
 					
 							
