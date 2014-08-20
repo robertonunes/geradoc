@@ -54,8 +54,8 @@ class Documento extends CI_Controller {
 		$session_nivel = $this->session->userdata('nivel');
 		
 		$data['titulo']     = mb_convert_case($this->area, MB_CASE_TITLE, "ISO-8859-1").$this->tituloIndex;
-		$data['link_add']   = anchor($this->area.'/add/','Novo documento',array('class'=>'add'));
-		$data['link_back']  = anchor('documento/index/','Lista de Documentos',array('class'=>'back'));
+		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-success'));
+		$data['link_back']  = anchor('documento/index/','Lista de Documentos',array('class'=>'btn btn-warning btn-sm'));
 		$data['form_action'] = site_url($this->area.'/search');
 
 		
@@ -957,8 +957,8 @@ class Documento extends CI_Controller {
 		$_SESSION['homepage'] = current_url();
 		$this->js[] = 'documento';
 	
-		$data['link_add']   = anchor($this->area.'/add/','Novo documento',array('class'=>'add'));
-		$data['link_search_cancel'] = anchor($this->area.'/search_cancel/','CANCELAR PESQUISA',array('class'=>'button_cancel'));
+		$data['link_add']   = anchor($this->area.'/add/','Novo documento',array('class'=>'btn btn-success'));
+		$data['link_search_cancel'] = anchor($this->area.'/search_cancel/','Cancelar pesquisa',array('class'=>'btn btn-warning'));
 		$data['form_action'] = site_url($this->area.'/search');
 	
 		$this->load->library(array('pagination', 'table'));
@@ -1227,11 +1227,11 @@ class Documento extends CI_Controller {
 			 
 			if($documento->oculto == "N" or $documento->cadeado == null){
 				//$link_hide = anchor('#doc_'.$documento->id,'');
-				$link_hide = anchor('documento/hide/'.$documento->id.'#d'.$documento->id,'<div class="hide">visível</div>').'&nbsp; ';
+				$link_hide = anchor('documento/hide/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-globe"></span> Público', array('class'=>'btn btn-default btn-sm'));
 				$ocultado = "";
 			}else{
 				$ocultado = "&nbsp;*";
-				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<div class="show">oculto</div>').'&nbsp;';
+				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-user"></span> Privado', array('class'=>'btn btn-default btn-sm'));
 			}
 			
 			$setorRemetente = $this->getCaminho($obj->setor);
@@ -1242,19 +1242,20 @@ class Documento extends CI_Controller {
 			
 			$acoes 	= 	null;
 			//$acoes .= 	$permissao;
-			$acoes .= 	anchor('documento/view/'.$documento->id,'<div class="view">visualizar</div>');
+			$acoes .= '<div class="btn-group">';
+			$acoes .= 	anchor('documento/view/'.$documento->id,'<span class="glyphicon glyphicon-search"></span> Visualizar', array('class'=>'btn btn-success btn-sm'));
 			
 			if($documento->cancelado == "N" or $documento->cancelado == null){
 				
-				$acoes .=	anchor('documento/export/'.$documento->id,'<div class="pdf">exportar</div>',array('target'=>'_blank'));
+				$acoes .=	anchor('documento/export/'.$documento->id,'<span class="glyphicon glyphicon-arrow-down"></span> Exportar',array('target'=>'_blank', 'class'=>'btn btn-primary btn-sm'));
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao >= 2){
-					$acoes .=	anchor('documento/update/'.$documento->id,'<div class="edit">alterar</div>');
+					$acoes .=	anchor('documento/update/'.$documento->id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-warning btn-sm'));
 				}
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao == 3){
-					$acoes .=	$link_hide .' ';
-					$acoes .=	anchor('documento/cancela/'.$documento->id,'<div class="delete">cancelar</div>',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')")).'&nbsp; ';
+					$acoes .=	$link_hide;
+					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-remove"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-danger btn-sm')).'&nbsp; ';
 				}
 				
 			}else{
@@ -1262,6 +1263,7 @@ class Documento extends CI_Controller {
 				$acoes .= anchor($_SESSION['homepage'].'#d'.$documento->id,'<div class="cancelado"><BR>CANCELADO</div>');
 				
 			}
+			$acoes .= '</div>';
 		//--- FIM ---//
 
 				

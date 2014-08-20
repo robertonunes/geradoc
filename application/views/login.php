@@ -30,20 +30,22 @@
 				?>
 				<form action="<?php echo $form_action; ?>" method="post"> 
 				
-					<div class="form-group <?php echo (form_error('cpf') != '')? 'has-error':''; ?>">
+					<div class="form-group <?php echo (form_error('cpf') != '')? 'has-error':''; ?>" style="max-width: 150px; margin:0 auto;">
 					    <label class="sr-only" for="cpf">CPF</label>
 					   	<input type="text" class="form-control" name="cpf"  id="cpf" placeholder="Informe o CPF" value="<?php echo set_value('cpf');?>">
-					   	<?php echo form_error('cpf'); ?>
 					</div>	
 					<div style="padding: 5px;"></div>
-					<div class="form-group <?php echo (form_error('txtSenha') != '')? 'has-error':''; ?>">
+					<div class="form-group <?php echo (form_error('txtSenha') != '')? 'has-error':''; ?>" style="max-width: 150px; margin:0 auto;">
 					    <label class="sr-only" for="txtSenha">Senha</label>
 					   	<input type="password" class="form-control" name="txtSenha" id="txtSenha" placeholder="Informe a senha">
-					   	<?php 
+					   	
+					</div>
+					
+					<?php 
+							echo form_error('cpf');
 							echo form_error('txtSenha'); 
 							echo $mensagem;
-						?>
-					</div>
+					?>
 																			
 					<div style="text-align: center; padding: 10px;">
 						<input class="btn btn-success" id="btnLogin" name="btnLogin" type="submit" value="Entrar" /> 
