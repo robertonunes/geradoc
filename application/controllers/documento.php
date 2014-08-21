@@ -729,50 +729,38 @@ class Documento extends CI_Controller {
 	
 	}
 	function view($id){
-
-		$data['titulo']         = $this->tituloView.$this->area;
-		$data['message']        = '';
-		
-		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
-		
-		$data['link_update'] 	= anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
-		$data['link_export'] 	= anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
-		$data['bt_ok']    		= $_SESSION['homepage'].'#d'.$id;
-		
+		$data['titulo'] = $this->tituloView.$this->area;
+		$data['message'] = '';
+		$data['link_back'] = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		$data['link_update'] = anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
+		$data['link_export'] = anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
+		$data['bt_ok'] = $_SESSION['homepage'].'#d'.$id;
 		// popula o array com os dados do objeto alimentado pela consulta
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
 		if(!$data['objeto']) die('Documento não encontrado!<br>É tudo o que sabemos.<br><br>CTIC/AESP<br><a href="'.site_url('documento').'">&lt;- &nbsp;Voltar para a lista de documentos</a>');
 		if($data['objeto']->tipoID == 3 or $data['objeto']->tipoID == 5){
 			$tmp = $this->Documento_model->get_despacho_head($id);
 			$data['despacho_head'] = $tmp[0];
-			$data['objeto']->num_processo  = $data['despacho_head']['num_processo'];
-			$data['objeto']->interessado   = $data['despacho_head']['interessado'];
+			$data['objeto']->num_processo = $data['despacho_head']['num_processo'];
+			$data['objeto']->interessado = $data['despacho_head']['interessado'];
 			$tmp = NULL;
 		}
-
 		// trata os dados vindos do banco
 		$data['objeto']->tipoNome = mb_convert_case($data['objeto']->tipoNome, MB_CASE_TITLE, "UTF-8");
 		$data['objeto']->data_despacho = $data['objeto']->data;
 		$date = new DateTime($data['objeto']->data);
 		$data['objeto']->ano = $date->format('Y');
 		$data['objeto']->data = $this->_trata_data($data['objeto']->data);
-		
 		$data['caminho'] = $this->getCaminho($data['objeto']->setor);
-
 		if($data['objeto']->destSexo = "M"){
 			$data['objeto']->destSexo = 'Ao Sr. ';
 		}else{
 			$data['objeto']->destSexo = 'À Sra. ';
 		}
-		 
-		$data['objeto']->remetNome          = $this->_trata_contato($data['objeto']->remetNome);
-		$data['objeto']->remetCargoNome      = mb_convert_case($data['objeto']->remetCargoNome, MB_CASE_TITLE, "UTF-8");
-		$data['objeto']->remetSetorArtigo    ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
-		
-
+		$data['objeto']->remetNome = $this->_trata_contato($data['objeto']->remetNome);
+		$data['objeto']->remetCargoNome = mb_convert_case($data['objeto']->remetCargoNome, MB_CASE_TITLE, "UTF-8");
+		$data['objeto']->remetSetorArtigo ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
 		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strstr($_SESSION['homepage'], 'search', true)){
-
-			
 			$data['objeto']->numero = $this->highlight($data['objeto']->numero, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->remetNome = $this->highlight($data['objeto']->remetNome, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->remetCargoNome = $this->highlight($data['objeto']->remetCargoNome, $_SESSION['keyword'.$this->area]);
@@ -781,13 +769,10 @@ class Documento extends CI_Controller {
 			$data['objeto']->assunto = $this->highlight($data['objeto']->assunto, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->referencia = $this->highlight($data['objeto']->referencia, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
-		
 		}
 		//--- FIM ---//
-
 		$this->load->view($this->area.'/documento_view', $data);
 		$this->audita();
-		
 	}
 
 	function export($id){
@@ -1255,12 +1240,12 @@ class Documento extends CI_Controller {
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao == 3){
 					$acoes .=	$link_hide;
-					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-remove"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-default btn-sm')).'&nbsp; ';
+					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-trash"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-default btn-sm')).'&nbsp; ';
 				}
 				
 			}else{
 				
-				$acoes .= anchor($_SESSION['homepage'].'#d'.$documento->id,'<div class="cancelado"><BR>CANCELADO</div>');
+				$acoes .= anchor($_SESSION['homepage'].'#d'.$documento->id,'<span class="glyphicon glyphicon-remove"></span> Cancelado', array('class'=>'btn btn-danger btn-sm', 'disabled'=>'disabled'));
 				
 			}
 			$acoes .= '</div>';

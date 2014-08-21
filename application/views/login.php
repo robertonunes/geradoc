@@ -52,7 +52,7 @@
 					</div>	
 					
 					<div style="text-align: center;  padding-top: 5px;">
-						<a href="<?php echo base_url() . "index.php/usuario/nova_senha"; ?>" class="btn btn-info">Esqueci a senha</a> 
+						<a href="<?php echo base_url() . "index.php/usuario/nova_senha"; ?>" class="btn btn-info btn-sm">Esqueci a senha</a> 
 					</div>	
 					
 							

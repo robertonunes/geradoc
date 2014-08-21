@@ -1,55 +1,63 @@
-<div class="titulo1">	 			
-	<?php echo $titulo; ?>
-</div>
-
 <div class="areaimage">
 	<center>
 		<img src="{TPL_images}secrecy-icon.png" height="72px"/>
 	</center>
 </div>
 			
-<div class="formulario">		
-	<form id="frm1" name="frm1" action="<?php echo $form_action; ?>" method="post">
-	
-	<fieldset class="conteiner2"> 
-	    
-	        <legend class="subTitulo6">Senha</legend> 
-	        
-	        <table class="table_form">
-	        	<tbody>
-		        	<tr>
-			        	<td class=gray><span class="text-red">*</span> Senha atual: </td>
-			        	<td class="green">
-			        	<input class="textbox" value="<?php echo set_value('txtSenhaAtual')?>"  name="txtSenhaAtual"  id="txtSenhaAtual" type="password" size="15" />
-			        	<i>(Digite a senha atual)</i>
-			        	<?php echo form_error('txtSenhaAtual'); ?>
-			        	</td>
-		        	</tr>
-		        	<tr>
-			        	<td class="gray"><span class="text-red">*</span> Nova Senha: </td>
-			        	<td class="green">
-			        	<input class="textbox" value="<?php echo set_value('txtSenhaNova')?>" name="txtSenhaNova"  id="txtSenhaNova" type="password"  size="15" />
-			        	<?php echo form_error('txtSenhaNova'); ?>
-			        	</td>
-		        	</tr>
-		        	<tr>
-			        	<td class="gray"><span class="text-red">*</span> Confirmação: </td>
-			        	<td class="green">
-			        	<input class="textbox" value="<?php echo set_value('txtSenhaNovaConf')?>" name="txtSenhaNovaConf"  id="txtSenhaNovaConf" type="password"  size="15" />
-			        	<i>(Digite a nova senha novamente)</i>	
-						<?php echo form_error('txtSenhaNovaConf'); ?>
-			        	</td>
-		        	</tr>
-	        	</tbody>
-	        </table>
-	    </fieldset>
-	    
-	    
+<div class="formulario">	
+
+	<div class="panel panel-success">
+
+		  <div class="panel-heading">
+		    <h3 class="panel-title"><?php echo $titulo; ?></h3>
+		  </div>
+		  
+		  
+		  <div class="panel-body">
+		  
+		  	<form class="form-horizontal" role="form" id="frm1" name="frm1" action="<?php echo $form_action; ?>" method="post">
 		
-		<br>
-		
-		<input type="button" class="button" value="Voltar" title="Voltar" onclick="javascript:window.history.back();"/> &nbsp; &nbsp;					
-		<input type="submit" class="button" value="Salvar" title="Salvar"/>&nbsp;&nbsp;		
-			
-	</form>
+				  <div class="form-group <?php echo (form_error('txtSenhaAtual') != '')? 'has-error':''; ?>"">
+				    <label for="txtSenhaAtual" class="col-sm-4 control-label">Senha atual</label>
+				    <div class="col-sm-4">
+				      <input type="password" class="form-control" name="txtSenhaAtual" id="txtSenhaAtual" placeholder="Senha atual" value="<?php echo set_value('txtSenhaAtual')?>" >
+				    </div>
+				  </div>
+				  
+				  <div class="form-group <?php echo (form_error('txtSenhaNova') != '')? 'has-error':''; ?>">
+				    <label for="txtSenhaNova" class="col-sm-4 control-label">Nova Senha</label>
+				    <div class="col-sm-4">
+				      <input type="password" class="form-control" name="txtSenhaNova" id="txtSenhaNova" placeholder="Nova Senha" value="<?php echo set_value('txtSenhaNova')?>">
+				    </div>
+				  </div>
+				  
+				  <div class="form-group <?php echo (form_error('txtSenhaNovaConf') != '')? 'has-error':''; ?>">
+				    <label for="txtSenhaNovaConf" class="col-sm-4 control-label">Confirmação</label>
+				    <div class="col-sm-4">
+				      <input type="password" class="form-control" name="txtSenhaNovaConf" id="txtSenhaNovaConf" placeholder="Confirmação" value="<?php echo set_value('txtSenhaNovaConf')?>">
+				    </div>
+				  </div>
+				  
+				  <div class="form-group <?php echo (form_error('txtSenhaNovaConf') != '')? 'has-error':''; ?>">
+				    <?php 
+							echo form_error('txtSenhaAtual');
+							echo form_error('txtSenhaNova'); 
+							echo form_error('txtSenhaNovaConf'); 
+					?>
+				  </div>
+				  
+				  
+				
+				  <div class="form-group">
+				    <div class="col-sm-offset-4 col-sm-4">
+				    	<button type="button" class="btn btn-default" onclick="javascript:window.history.back();">Voltar</button>
+				      	<button type="submit" class="btn btn-success">Salvar</button>
+				    </div>
+				  </div>
+			  
+			</form>
+		    
+		  </div>
+	</div>
+
 </div>
