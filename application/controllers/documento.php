@@ -54,7 +54,7 @@ class Documento extends CI_Controller {
 		$session_nivel = $this->session->userdata('nivel');
 		
 		$data['titulo']     = mb_convert_case($this->area, MB_CASE_TITLE, "ISO-8859-1").$this->tituloIndex;
-		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-success'));
+		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-primary'));
 		$data['link_back']  = anchor('documento/index/','Lista de Documentos',array('class'=>'btn btn-warning btn-sm'));
 		$data['form_action'] = site_url($this->area.'/search');
 
@@ -144,7 +144,7 @@ class Documento extends CI_Controller {
 
 		// carregando os dados na tabela
 		$this->table->set_empty("&nbsp;");
-		$this->table->set_heading('Identificação', 'Assunto', 'Autor', 'Criado em','Ação');
+		$this->table->set_heading('Identificação', 'Assunto', 'Autor', 'Data','Ação');
 
 		//Monta a DataTable
         $tmpl = $this->Grid_model->monta_tabela_list();
@@ -214,7 +214,7 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/add/');
 		$data['acao']          	= "add";
-		$data['link_back'] 		= anchor($_SESSION['homepage'],'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back'] 		= anchor($_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
@@ -465,7 +465,7 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/update/'.$id);
 		$data['acao']          	= "update";
-		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
@@ -733,10 +733,10 @@ class Documento extends CI_Controller {
 		$data['titulo']         = $this->tituloView.$this->area;
 		$data['message']        = '';
 		
-		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		
-		$data['link_update'] 	= anchor($this->area.'/update/'.$id,'alterar',array('class'=>'update'));
-		$data['link_export'] 	= anchor($this->area.'/export/'.$id,'exportar',array('class'=>'pdf', 'target'=>'_blank'));
+		$data['link_update'] 	= anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
+		$data['link_export'] 	= anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
 		$data['bt_ok']    		= $_SESSION['homepage'].'#d'.$id;
 		
 		// popula o array com os dados do objeto alimentado pela consulta
@@ -795,7 +795,7 @@ class Documento extends CI_Controller {
 		// carrega as variaveis padroes
 		$data['titulo']         = $this->tituloView.$this->area;
 		$data['message']        = '';
-		$data['link_back']      = anchor('documento/index/'.$_SESSION['homepage'],'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back']      = anchor('documento/index/'.$_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 
 		// popula o array com os dados do objeto alimentado pela consulta
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
@@ -873,7 +873,7 @@ class Documento extends CI_Controller {
 		// carrega as variaveis padroes
 		$data['titulo']         = $this->tituloView.$this->area;
 		$data['message']        = '';
-		$data['link_back']      = anchor('documento/index/'.$_SESSION['homepage'],'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back']      = anchor('documento/index/'.$_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 	
 		// popula o array com os dados do objeto alimentado pela consulta
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
@@ -945,7 +945,7 @@ class Documento extends CI_Controller {
 		//--- VARIAVEIS COMUNS ---//
 		$data['titulo']         = "Documento cancelado";
 		$data['message']        = '';
-		$data['link_back'] 		= anchor($_SESSION['homepage'].'#d'.$id,'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back'] 		= anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['bt_ok']    		= $_SESSION['homepage'].'#d'.$id;
 		//--- FIM ---//
 		
@@ -1014,7 +1014,7 @@ class Documento extends CI_Controller {
 	
 		// carregando os dados na tabela
 		$this->table->set_empty("&nbsp;");
-		$this->table->set_heading('Identificação', 'Assunto', 'Autor', 'Criado em','Ação');
+		$this->table->set_heading('Identificação', 'Assunto', 'Autor', 'Data','Ação');
 	
 		//Monta a DataTable
 		$tmpl = $this->Grid_model->monta_tabela_list();
@@ -1037,7 +1037,7 @@ class Documento extends CI_Controller {
 		//--- VARIAVEIS COMUNS ---//
 		$data['titulo']         = "Permissão negada";
 		$data['message']        = 'Você não tem permissão para editar este arquivo';
-		$data['link_back'] 		= anchor($_SESSION['homepage'].'#d'.$id,'Voltar para a lista de '.$this->area.'s',array('class'=>'back'));
+		$data['link_back'] 		= anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['bt_ok']    		= $_SESSION['homepage'].'#d'.$id;
 		//--- FIM ---//
 	
@@ -1243,19 +1243,19 @@ class Documento extends CI_Controller {
 			$acoes 	= 	null;
 			//$acoes .= 	$permissao;
 			$acoes .= '<div class="btn-group">';
-			$acoes .= 	anchor('documento/view/'.$documento->id,'<span class="glyphicon glyphicon-search"></span> Visualizar', array('class'=>'btn btn-success btn-sm'));
+			$acoes .= 	anchor('documento/view/'.$documento->id,'<span class="glyphicon glyphicon-search"></span> Visualizar', array('class'=>'btn btn-default btn-sm'));
 			
 			if($documento->cancelado == "N" or $documento->cancelado == null){
 				
-				$acoes .=	anchor('documento/export/'.$documento->id,'<span class="glyphicon glyphicon-arrow-down"></span> Exportar',array('target'=>'_blank', 'class'=>'btn btn-primary btn-sm'));
+				$acoes .=	anchor('documento/export/'.$documento->id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('target'=>'_blank', 'class'=>'btn btn-default btn-sm'));
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao >= 2){
-					$acoes .=	anchor('documento/update/'.$documento->id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-warning btn-sm'));
+					$acoes .=	anchor('documento/update/'.$documento->id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
 				}
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao == 3){
 					$acoes .=	$link_hide;
-					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-remove"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-danger btn-sm')).'&nbsp; ';
+					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-remove"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-default btn-sm')).'&nbsp; ';
 				}
 				
 			}else{

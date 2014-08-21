@@ -4,9 +4,10 @@
 	</center>
 </div>
 
-<div id="titulo" class="titulo1"> 
-    <?php echo $titulo; ?>
-</div>		
+<ol class="breadcrumb">
+	<li><a href="<?php echo site_url('/documento/index'); ?>">Documentos</a></li>
+  	<li class="active"><?php echo $titulo;?></li>
+</ol>		
 
 <div id="msg" style="display:none;"><img src="{TPL_images}loader.gif" alt="Enviando" />Aguarde carregando...</div> 
 
@@ -27,7 +28,10 @@
 	        <table class="table_form">
 	        	<tbody>
 	        		<tr>
-			        	<td class=gray colspan="2">  <?php echo $link_update ." ". $link_export;?>
+			        	<td class=gray colspan="2">  
+			        		<div class="btn-group">
+			        		<?php echo $link_update ." ". $link_export;?>
+			        		</div>
 			        	</td>
 		        	</tr>
 	        		<tr>
@@ -148,7 +152,10 @@
 					?> 
 
 		        	<tr>
-			        	<td class=gray colspan="2">  <?php echo $link_update ." ". $link_export;?>
+			        	<td class=gray colspan="2">
+			        		<div class="btn-group">
+			        			<?php echo $link_update ." ". $link_export;?>
+			        		</div>
 			        	</td>
 		        	</tr>
 		        	
@@ -156,7 +163,7 @@
 	        </table>
 	    </fieldset>
 	    
-	    <input type="button" class="button" value="&nbsp; OK &nbsp;" title=" OK " onclick="javascript:window.location ='<?php echo $bt_ok; ?>'" /><br><br>
+	    <input type="button" class="btn btn-success" value="&nbsp; OK &nbsp;" title=" OK " onclick="javascript:window.location ='<?php echo $bt_ok; ?>'" /><br><br>
 				
     </div>
 
