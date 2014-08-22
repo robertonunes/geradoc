@@ -10,10 +10,12 @@
 			<div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.5</div>
 		</div>
 		<div style="text-align: left; padding-top:67px; padding-left:25px; font-size: 10pt; color: #555; line-height:200%;">
-				<p>Melhor visualizado com:</p>
-				<p>
+				<p>Melhor visualizado com:
+				<br>
 					&nbsp; &nbsp; &nbsp; <a href="http://www.mozilla.org/pt-BR/firefox/fx/" target="_blank"><img src="{TPL_images}firefox_mini.png" width="95px"/></a>
+			
 				</p>
+				
 			</div>
 	</div>
 	<div id="caixa_login">		

@@ -6,7 +6,7 @@
 			
 <div class="formulario">	
 
-	<div class="panel panel-success">
+	<div class="panel panel-default">
 
 		  <div class="panel-heading">
 		    <h3 class="panel-title"><?php echo $titulo; ?></h3>
