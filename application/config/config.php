@@ -31,7 +31,7 @@ switch ($config['orgao']){
 		
 		$config['base_url']	= '';
 		
-		$config['rodape_sistema'] = '<p>CTIC - Célula de Tecnologia da Informação e Comunicação. Telefone: (85) 3296-0015 <br />
+		$config['rodape_sistema'] = '<p class="text-muted">CTIC - Célula de Tecnologia da Informação e Comunicação. Telefone: (85) 3296-0015 <br />
        								 <a href="http://www.aesp.ce.gov.br" style="color:#037E45; text-decoration: none; font-weight:bold;">Academia Estadual de Segurança Pública do Ceará</a> </p>';
 		
 		$config['rodape_documento'] = '<strong>ACADEMIA ESTADUAL DE SEGURANÇA PÚBLICA DO CEARÁ - AESP/CE</strong><br>

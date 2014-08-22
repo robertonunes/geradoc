@@ -119,6 +119,8 @@ class Login extends CI_Controller {
 				$this->session->set_userdata($dados);
 				
 				$this->load->model('Auditoria_model','',TRUE);
+				
+				//--- Executa a limpeza na tabela auditoria para esse usuário --//
 				$this->Auditoria_model->delete($user_cadastrado->id);
 				 
 				 
