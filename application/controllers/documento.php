@@ -12,8 +12,8 @@ class Documento extends CI_Controller {
 	*/
 	
 	public $layout = 'default';
-	public $css = array('style','demo_page','demo_table_jui','jquery-ui-1.8.11.custom');
-	public $js = array('jquery-1.7.1.min','jquery.dataTables.min','jquery.blockUI','about');
+	public $css = array('style','jquery-ui-1.8.11.custom');
+	public $js = array('jquery-1.11.1.min','jquery.dataTables.min','jquery.blockUI','about');
 	public $js_custom;
 	
 	private $area            = "documento";
