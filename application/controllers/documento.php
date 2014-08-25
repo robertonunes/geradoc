@@ -27,6 +27,7 @@ class Documento extends CI_Controller {
 		$this->load->library(array('restrict_page','table','form_validation','session', 'datas'));
 		$this->load->helper('url');
 		$this->load->model('Documento_model','',TRUE);
+		$this->load->model('Campo_model','',TRUE);
 		$this->load->model('Grid_model','',TRUE);
 		
 		$this->modal = $this->load->view('about_modal', '', TRUE);
@@ -55,7 +56,6 @@ class Documento extends CI_Controller {
 		
 		$data['titulo']     = mb_convert_case($this->area, MB_CASE_TITLE, "ISO-8859-1").$this->tituloIndex;
 		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-primary'));
-		$data['link_back']  = anchor('documento/index/','Lista de Documentos',array('class'=>'btn btn-warning btn-sm'));
 		$data['form_action'] = site_url($this->area.'/search');
 
 		
@@ -214,7 +214,8 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/add/');
 		$data['acao']          	= "add";
-		$data['link_back'] 		= anchor($_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		
+		$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
@@ -731,9 +732,19 @@ class Documento extends CI_Controller {
 	function view($id){
 		$data['titulo'] = $this->tituloView.$this->area;
 		$data['message'] = '';
-		$data['link_back'] = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
-		$data['link_update'] = anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
-		$data['link_export'] = anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
+		
+		
+		$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
+		$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
+		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
+		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
+		
+		
+		//$data['link_back'] = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		//$data['link_update'] = anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
+		//$data['link_export'] = anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
+		
+		
 		$data['bt_ok'] = $_SESSION['homepage'].'#d'.$id;
 		// popula o array com os dados do objeto alimentado pela consulta
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
