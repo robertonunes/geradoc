@@ -214,6 +214,7 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/add/');
 		$data['acao']          	= "add";
+		$data['disabled'] = '';
 		
 		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
 		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
@@ -915,10 +916,30 @@ class Documento extends CI_Controller {
 		$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
 		
 		// --- Parecer Tecnico ---//
+		/*
 		$data['objeto']->layout = str_replace('[objetivo]', $data['objeto']->objetivo, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[documentacao]', $data['objeto']->documentacao, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[analise]', $data['objeto']->analise, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[conclusao]', $data['objeto']->conclusao, $data['objeto']->layout);
+		*/
+		
+		//--- CAMPOS DINAMICOS ---//
+		
+		$this->load->model('Coluna_model','',TRUE);
+		$campos_especiais = $this->Coluna_model->list_all();
+		
+		foreach ($campos_especiais as $key => $nome_campo){
+		
+			
+
+			$data['objeto']->layout = str_replace('['.$nome_campo.']', $data['objeto']->$nome_campo, $data['objeto']->layout);
+		
+		
+		
+		}
+		
+		//--- FIM DOS CAMPOS DINAMICOS ---//
+		
 			
 		$this->load->view($this->area.'/pdf', $data);
 
