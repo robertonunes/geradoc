@@ -216,6 +216,9 @@ class Documento extends CI_Controller {
 		$data['acao']          	= "add";
 		
 		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
+		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
+		
 		//$data['link_back'] = anchor($_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
@@ -363,6 +366,7 @@ class Documento extends CI_Controller {
 								'value'	=> $valor,
 								'maxlength' => '90',
 				                'size' => '71',
+								'class' => 'form-control',
 						));
 						
 					}
@@ -460,26 +464,43 @@ class Documento extends CI_Controller {
 
 	}
 
-	function update($id){
+	function update($id, $disabled = null){
 		
+		
+		$data['disabled'] = ($disabled != null) ? 'disabled' : '';
+				
 		//--- VARIAVEIS COMUNS ---//
+		
+		
 		$data['titulo']         = $this->tituloAdd.$this->area;
+		if($disabled != null){
+			$data['titulo']         = "Detalhes do documento";
+		}
+		
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/update/'.$id);
 		$data['acao']          	= "update";
 		
+		
+		//$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
+		//$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
+		//$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
 		
 		
 		//$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		
 		
 		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
-		$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
-		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
-		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
+		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
+		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
 		
+		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
+		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
 		
+		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
 		
+
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
@@ -508,19 +529,21 @@ class Documento extends CI_Controller {
 		$data['campoReferencia']      	= $this->Campo_model->documento('campoReferencia');
 		$data['campoRedacao']         	= $this->Campo_model->documento('campoRedacao');
 		
-		$data['campoObjetivo']         	= $this->Campo_model->documento('campoObjetivo');
-		$data['campoDocumentacao']      = $this->Campo_model->documento('campoDocumentacao');
-		$data['campoAnalise']         	= $this->Campo_model->documento('campoAnalise');
-		$data['campoConclusao']         = $this->Campo_model->documento('campoConclusao');
+		//$data['campoObjetivo']         	= $this->Campo_model->documento('campoObjetivo');
+		//$data['campoDocumentacao']      = $this->Campo_model->documento('campoDocumentacao');
+		//$data['campoAnalise']         	= $this->Campo_model->documento('campoAnalise');
+		//$data['campoConclusao']         = $this->Campo_model->documento('campoConclusao');
 
 		$data['campoCarimbo']           = $this->Campo_model->documento('campoCarimbo');
 		$data['carimbosDisponiveis'] 	= $this->Campo_model->documento('arrayCarimbos');
 		$data['carimboSelecionado']  	= $this->input->post('campoCarimbo') ? $this->input->post('campoCarimbo') : $obj->carimbo;
 		
-		$data['desp_num_processo']      = $this->Campo_model->documento('desp_num_processo');
-		$data['desp_interessado']      	= $this->Campo_model->documento('desp_interessado');
+		//$data['desp_num_processo']      = $this->Campo_model->documento('desp_num_processo');
+		//$data['desp_interessado']      	= $this->Campo_model->documento('desp_interessado');
 		//--- FIM ---//
-	
+		
+		
+
 	
 		//--- POPULA O DROPDOWN DE REMENTETES ---//
 		$this->load->model('Contato_model','',TRUE);
@@ -596,11 +619,12 @@ class Documento extends CI_Controller {
 		$data['campoPara']['value']       	 = $obj->para;
 		$data['campoRedacao']['value']       = $obj->redacao;
 		
-		$data['campoObjetivo']['value']      = $obj->objetivo;
-		$data['campoDocumentacao']['value']  = $obj->documentacao;
-		$data['campoAnalise']['value']       = $obj->analise;
-		$data['campoConclusao']['value']     = $obj->conclusao;
+		//$data['campoObjetivo']['value']      = $obj->objetivo;
+		//$data['campoDocumentacao']['value']  = $obj->documentacao;
+		//$data['campoAnalise']['value']       = $obj->analise;
+		//$data['campoConclusao']['value']     = $obj->conclusao;
 		
+		/*
 		if($obj->tipo == 3 or $obj->tipo == 5){
 			$tmp = $this->Documento_model->get_despacho_head($id);
 			$data['despacho_head'] = $tmp[0];
@@ -608,6 +632,7 @@ class Documento extends CI_Controller {
 			$data['desp_interessado']['value']   = $data['despacho_head']['interessado'];
 			$tmp = NULL;
 		}
+		*/
 			
 		//--- o tipo de validacao ($tipo_validacao) varia de acordo com o tipo de documento selecionado ($data['tipoSelecionado']) ---//
 		//$tipo_validacao = $this->set_tipo_validacao($data['tipoSelecionado']);
@@ -634,6 +659,8 @@ class Documento extends CI_Controller {
 					$campo[1] = $nome_campo;
 				}
 		
+				$coluna = $this->Coluna_model->get_by_nome($nome_campo);
+				
 				if($campo[0] == 'S'){
 		
 					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : $obj->$nome_campo;
@@ -643,13 +670,27 @@ class Documento extends CI_Controller {
 							'label' => '<strong>'.$campo[1].'</strong>',
 							'rules' => 'trim|required'
 							));
+
+					if($coluna['tipo'] == 'blob'){
+						$data['input_campo'][$nome_campo] = form_textarea(array(
+								'name' 	=> 'campo_'.$nome_campo,
+								'id'	=> 'campo_'.$nome_campo,
+								'value'	=> $valor,
+								'rows'  => '10',
+						));
+							
+					}else{
 					
-					$data['input_campo'][$nome_campo] = form_textarea(array(
-							'name' 	=> 'campo_'.$nome_campo,
-							'id'	=> 'campo_'.$nome_campo,
-							'value'	=> $valor,
-							'rows'  => '10',
-					));
+						$data['input_campo'][$nome_campo] = form_input(array(
+								'name' 	=> 'campo_'.$nome_campo,
+								'id'	=> 'campo_'.$nome_campo,
+								'value'	=> $valor,
+								'maxlength' => '90',
+								'size' => '71',
+								'class' => 'form-control',
+						));
+					
+					}	
 		
 				}
 		
@@ -743,24 +784,25 @@ class Documento extends CI_Controller {
 	
 	}
 	function view($id){
+		
+		
+		self::update($id, 'disabled');
+
+		/*
 		$data['titulo'] = $this->tituloView.$this->area;
 		$data['message'] = '';
 		
-		
-		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
-		$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
-		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
-		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
-		
-		
-		//$data['link_back'] = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
-		//$data['link_update'] = anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
-		//$data['link_export'] = anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
+		$data['link_back'] = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-default btn-sm'));
+		$data['link_update'] = anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
+		$data['link_export'] = anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
 		
 		
 		$data['bt_ok'] = $_SESSION['homepage'].'#d'.$id;
 		// popula o array com os dados do objeto alimentado pela consulta
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
+		
+		
+		
 		if(!$data['objeto']) die('Documento não encontrado!<br>É tudo o que sabemos.<br><br>CTIC/AESP<br><a href="'.site_url('documento').'">&lt;- &nbsp;Voltar para a lista de documentos</a>');
 		if($data['objeto']->tipoID == 3 or $data['objeto']->tipoID == 5){
 			$tmp = $this->Documento_model->get_despacho_head($id);
@@ -795,8 +837,14 @@ class Documento extends CI_Controller {
 			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
 		}
 		//--- FIM ---//
+		
+		
+		
 		$this->load->view($this->area.'/documento_view', $data);
+		*/
+		
 		$this->audita();
+		
 	}
 
 	function export($id){
@@ -966,7 +1014,7 @@ class Documento extends CI_Controller {
 		$_SESSION['homepage'] = current_url();
 		$this->js[] = 'documento';
 	
-		$data['link_add']   = anchor($this->area.'/add/','Novo documento',array('class'=>'btn btn-success'));
+		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-primary'));
 		$data['link_search_cancel'] = anchor($this->area.'/search_cancel/','Cancelar pesquisa',array('class'=>'btn btn-warning'));
 		$data['form_action'] = site_url($this->area.'/search');
 	

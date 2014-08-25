@@ -3,141 +3,250 @@
 		<img src="{TPL_images}Actions-document-edit-icon.png" height="72px" />
 	</center>
 </div>
-<ol class="breadcrumb">
-	<li><a href="<?php echo site_url('/documento/index'); ?>">Documentos</a>
-	</li>
-	<li class="active"><?php echo $titulo;?></li>
-</ol>
+
+<p class="bg-success lead text-center">Documento</p>
+
 <div id="msg" style="display: none;">
 	<img src="{TPL_images}loader.gif" alt="Enviando" />Aguarde
 	carregando...
 </div>
+
 <div id="view_content">
-	<?php
-	echo $link_back;
-	echo $message;
-	?>
+
+ <?php
+    echo $link_back;
+    echo $message;
+    ?>
+
 	<div class="formulario">
-		<fieldset class="conteiner2" style="width: 800px;">
-			<legend class="subTitulo6">Documento</legend>
-			<table class="table_form">
-				<tbody>
-					<tr>
-						<td class=gray colspan="2">
-							<div class="btn-group">
-								<?php echo $link_update ." ". $link_export;?>
+	
+	
+	<form class="form-horizontal" role="form" id="form" name="form" disabled="disabled">
+
+	
+			<div class="panel panel-default">
+			
+				<div class="panel-heading">
+					<h3 class="panel-title"><?php echo $titulo; ?></h3>
+				</div>
+			
+
+				<div class="panel-body">
+
+						
+					<div class="form-group">
+						<label for="campoRemetente" class="col-sm-3 control-label"><span style="color: red;">*</span> Remetente</label>
+						<div class="col-md-7">
+							<?php
+								echo form_dropdown('campoRemetente', $remetentesDisponiveis, $remetenteSelecionado);
+							?> 
+						</div>
+					</div>
+					
+					
+					<div class="form-group">
+						<label for="campoSetor" class="col-sm-3 control-label">Setor</label>
+						<div class="col-md-7">
+							<input type="hidden" name="setorId" id="setorId" value="<?php echo $setorId; ?>" />
+							<?php echo form_input($campoSetor); ?>
+						</div>
+					</div>
+					  
+					<div class="form-group">
+						<label for="campoData" class="col-sm-3 control-label"><span style="color: red;">*</span> Data</label>
+						<div class="col-md-2">
+							<?php echo form_input($campoData); ?>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="campoCarimbo" class="col-sm-3 control-label">Carimbo de folha</label>
+						<div class="col-md-3">
+							<?php
+								echo form_dropdown('campoCarimbo', $carimbosDisponiveis, $carimboSelecionado);
+							?>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="campoTipo" class="col-sm-3 control-label"><span style="color: red;">*</span> Tipo</label>
+						<div class="col-md-3">
+							<?php
+								echo form_dropdown('campoTipo', $tiposDisponiveis, $tipoSelecionado);
+							?>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<label for="campoAssunto" class="col-sm-3 control-label"><span style="color: red;">*</span> Assunto</label>
+						<div class="col-md-7">
+							<?php echo form_input($campoAssunto);?> 
+						</div>
+					</div>
+
+								<?php 
+						
+								$campos_dinamicos_pequenos = '';
+								
+								if($tipoSelecionado != null){
+										
+										$obj_tipo = $this->Tipo_model->get_by_id($tipoSelecionado)->row();
+										
+										$this->load->model('Coluna_model','',TRUE);
+										$campos_especiais = $this->Coluna_model->list_all();
+							
+										foreach ($campos_especiais as $key => $nome_campo){
+							
+											if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
+												$campo = explode(';' , $obj_tipo->$nome_campo);
+											}else{
+												$campo[0] = $obj_tipo->$nome_campo;
+												$campo[1] = $nome_campo;
+											}
+											
+											$coluna = $this->Coluna_model->get_by_nome($nome_campo);
+											
+											if($campo[0] == 'S' and $coluna['tipo'] == 'string'){
+
+												$campos_dinamicos_pequenos .= '	
+					
+													<!--  Campo '.$nome_campo.' -->
+		
+													<div class="form-group">
+														<label for="'.'campo_'.$nome_campo.'" class="col-sm-3 control-label"><span style="color: red;">*</span> '.$campo[1].'</label>
+															<div class="col-md-7">
+															'.$input_campo[$nome_campo].'
+															</div>
+													</div>
+				
+													<!--  Fim do campo '.$nome_campo.' -->
+												';	
+		
+											}	
+								
+										}	
+							
+									}
+									
+									echo $campos_dinamicos_pequenos;
+								
+								?>
+					
+						<div class="form-group">
+							<label for="campoPara" class="col-sm-3 control-label"><span style="color: red;">*</span> Destinatário</label>
+							<div class="col-md-7">
+								<input type="text" name="campoBusca" value="pesquisa textual" id="campoBusca" size="30" class="form-control" />
+								
+								<?php echo form_textarea($campoPara); ?>
+								<span class="error_field" id="para_error" style="display: none;"></span> 
 							</div>
-						</td>
-					</tr>
-					<tr>
-						<td class=gray>Tipo:</td>
-						<td class="green"><?php echo $objeto->tipoNome; ?>
-						</td>
-					</tr>
-					<tr>
-						<td class=gray>Setor:</td>
-						<td class="green"><?php echo $caminho; ?>
-						</td>
-					</tr>
-					<tr>
-						<td class=gray>Número:</td>
-						<td class="green"><?php echo $objeto->numero; ?>
-						</td>
-					</tr>
-					<?php if($objeto->tipo == 3 or $objeto->tipoID == 5){ ?>
-					<tr>
-						<td class=gray>Número do Processo:</td>
-						<td class="green"><?php echo $objeto->num_processo; ?>
-						</td>
-					</tr>
-					<tr>
-						<td class=gray>Interessado:</td>
-						<td class="green"><?php echo $objeto->interessado; ?>
-						</td>
-					</tr>
-					<?php } ?>
-					<tr>
-						<td class=gray>Data:</td>
-						<td class="green"><?php echo $objeto->data; ?>
-						</td>
-					</tr>
-					<tr>
-						<td class=gray>Assunto:</td>
-						<td class="green"><?php echo $objeto->assunto; ?>
-						</td>
-					</tr>
-					<tr>
-						<td class=gray>Remetente:</td>
-						<td class="green"><?php echo $objeto->remetNome . ", " . $objeto->remetCargoNome . " " . $objeto->remetSetorArtigo . " " . $objeto->setorSigla . "/" . $objeto->orgaoSigla; ?>
-						</td>
-					</tr>
-					<?php
-					//if($objeto->tipoID != 4 and $objeto->tipoID != 6 and $objeto->tipoID != 7 and $objeto->tipoID != 8){
-					if($objeto->tipoID == 1 or $objeto->tipoID == 2 or $objeto->tipoID == 3 and $objeto->tipoID == 5){ // 1 = COMUNICAO INTERNA, 2 = OFICIO, 3 = DESPACHO E 5 = PARECER JURIDICO
-?>
-					<tr>
-						<td class=gray>Destinatário:</td>
-						<td class="green"><?php echo $objeto->para; ?>
-						</td>
-					</tr>
-					<?php } ?>
-					<?php if($objeto->tipoID == 1 or $objeto->tipoID == 2){ // 1 = COMUNICACAO INTERNA, 2 = OFÍCIO?>
-					<tr>
-						<td class=gray>Referência:</td>
-						<td class="green"><?php echo $objeto->referencia; ?>
-						</td>
-					</tr>
-					<?php } ?>
-					<?php
-					if($objeto->objetivo and !$objeto->redacao) { // se for parecer tecnico
-echo '<tr>
-				<td class="gray"> Objetivo:
-				</td>
-				<td class="green">' . $objeto->objetivo .'
-			</td>
-			</tr>';
-echo '<tr>
-			<td class="gray"> Documentação:
-			</td>
-			<td class="green">' . $objeto->documentacao .'
-		</td>
-		</tr>';
-echo '<tr>
-			<td class="gray"> Análise:
-			</td>
-			<td class="green">' . $objeto->analise .'
-		</td>
-		</tr>';
-echo '<tr>
-			<td class="gray"> Conclusão e Parecer:
-			</td>
-			<td class="green">' . $objeto->conclusao .'
-				</td>
-				</tr>';
-}else{
-echo '<tr>
-					<td class="gray"> Redação:
-					</td>
-					<td class="green">'. $objeto->redacao .'
-								</td>
-								</tr>';
-}
-?>
-					<tr>
-						<td class=gray colspan="2">
-							<div class="btn-group">
-								<?php echo $link_update ." ". $link_export;?>
+						</div>
+					
+
+						<div class="form-group">
+							<div class="col-md-12">
+								<div style="width: 330px; margin-top: 3px; margin-left: auto; margin-right: auto; display:block; display: table; background-color: #eee;">
+									<div style="float: left; color: #333; height:37px; border: 1px solid #ccc; line-height: 200%;"> &nbsp;Esta sessão expira em:&nbsp;</div>
+									<div id="defaultCountdown" style="width: 170px; height:37px; float: right; color: #C00000;"></div>
+								</div>
+								<div class="error_field" id="monitor" style="background-color: #fff; position:relative; float: right; top: -23px; padding-right: 20px;"></div>
 							</div>
-						</td>
-					</tr>
-				</tbody>
-			</table>
-		</fieldset>
-		<input type="button" class="btn btn-success" value="&nbsp; OK &nbsp;"
-			title=" OK "
-			onclick="javascript:window.location ='<?php echo $bt_ok; ?>'" /><br>
-		<br>
+						</div>
+
+						
+						<?php 
+						
+						$campos_dinamicos_grandes = '';
+						
+						if($tipoSelecionado != null){
+								
+								$obj_tipo = $this->Tipo_model->get_by_id($tipoSelecionado)->row();
+								
+								$this->load->model('Coluna_model','',TRUE);
+								$campos_especiais = $this->Coluna_model->list_all();
+					
+								foreach ($campos_especiais as $key => $nome_campo){
+					
+									if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
+										$campo = explode(';' , $obj_tipo->$nome_campo);
+									}else{
+										$campo[0] = $obj_tipo->$nome_campo;
+										$campo[1] = $nome_campo;
+									}
+									
+									$coluna = $this->Coluna_model->get_by_nome($nome_campo);
+									
+									if($campo[0] == 'S' and $coluna['tipo'] == 'blob'){
+
+										$campos_dinamicos_grandes .= '	
+					
+											<!--  Campo '.$nome_campo.' -->
+		
+												<div class="col-lg-11">
+		
+												<div class="text-left form-group">
+													<label class="control-label text-left"><span style="color: red;">*</span> '.$campo[1].'</label>
+													
+													<script type="text/javascript">
+														$().ready(function() {				
+															 $("textarea#campo_'.$nome_campo.'").tinymce({
+															      script_url : "'. base_url() .'js/tinymce/tinymce.min.js",
+															      language : "pt_BR",
+															  	  menubar : false,
+															  	  browser_spellcheck : true,
+															  	  content_css : "'. base_url() .'css/style_editor.css" ,
+															  	  width : 800,
+															  	  relative_urls: false,
+															  	  setup : function(ed){
+															  		ed.on("init", function() {
+															  			   this.getDoc().body.style.fontSize = "10.5pt";
+															  			});
+															  	},
+												
+															  	plugins: "preview image jbimages spellchecker textcolor table lists code",
+												
+															  	toolbar: "undo redo | bold italic underline strikethrough | subscript superscript removeformat | alignleft aligncenter alignright alignjustify | forecolor backcolor | bullist numlist outdent indent | preview code | fontsizeselect table | jbimages ",
+															  	statusbar : false,
+															  	relative_urls: false
+												
+															   });
+														});
+												   </script>
+													'.$input_campo[$nome_campo].'
+
+												</div>
+										
+											</div>
+		
+											<!--  Fim do campo '.$nome_campo.' -->
+										';	
+
+									}	
+						
+								}	
+					
+							}
+							
+							echo $campos_dinamicos_grandes;
+						?>
+
+					</div>
+					<!-- fim da div panel-body -->
+					
+			</div>
+			<!-- fim da div panel -->	
+			
+			<div class="btn-group">
+		   		<?php
+			    	echo $link_cancelar;
+			    	echo $link_salvar;
+			    ?>
+		</div>	
+			
+		</form>
+
 	</div>
-	</form>
+	<!-- fim da div formulario -->
+	
 </div>
-<!-- fim: div view_content -->
+<!-- fim da div  view_content -->
