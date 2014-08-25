@@ -215,7 +215,8 @@ class Documento extends CI_Controller {
 		$data['form_action']	= site_url($this->area.'/add/');
 		$data['acao']          	= "add";
 		
-		$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
+		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
+		//$data['link_back'] = anchor($_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
@@ -466,7 +467,19 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/update/'.$id);
 		$data['acao']          	= "update";
-		$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		
+		
+		
+		//$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		
+		
+		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
+		$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
+		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
+		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
+		
+		
+		
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
@@ -734,7 +747,7 @@ class Documento extends CI_Controller {
 		$data['message'] = '';
 		
 		
-		$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
+		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
 		$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
 		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
 		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
