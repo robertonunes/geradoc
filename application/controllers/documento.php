@@ -1305,11 +1305,11 @@ class Documento extends CI_Controller {
 			 
 			if($documento->oculto == "N" or $documento->cadeado == null){
 				//$link_hide = anchor('#doc_'.$documento->id,'');
-				$link_hide = anchor('documento/hide/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-globe"></span> Público', array('class'=>'btn btn-default btn-sm'));
+				$link_hide = anchor('documento/hide/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-globe"></span> Público', array('class'=>'btn btn-info btn-sm'));
 				$ocultado = "";
 			}else{
 				$ocultado = "&nbsp;*";
-				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-user"></span> Privado', array('class'=>'btn btn-default btn-sm'));
+				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-user"></span> Privado', array('class'=>'btn btn-info btn-sm'));
 			}
 			
 			$setorRemetente = $this->getCaminho($obj->setor);
@@ -1321,19 +1321,19 @@ class Documento extends CI_Controller {
 			$acoes 	= 	null;
 			//$acoes .= 	$permissao;
 			$acoes .= '<div class="btn-group">';
-			$acoes .= 	anchor('documento/view/'.$documento->id,'<span class="glyphicon glyphicon-search"></span> Visualizar', array('class'=>'btn btn-default btn-sm'));
+			$acoes .= 	anchor('documento/view/'.$documento->id,'<span class="glyphicon glyphicon-search"></span> Visualizar', array('class'=>'btn btn-success btn-sm'));
 			
 			if($documento->cancelado == "N" or $documento->cancelado == null){
 				
-				$acoes .=	anchor('documento/export/'.$documento->id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('target'=>'_blank', 'class'=>'btn btn-default btn-sm'));
+				$acoes .=	anchor('documento/export/'.$documento->id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('target'=>'_blank', 'class'=>'btn btn-primary btn-sm'));
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao >= 2){
-					$acoes .=	anchor('documento/update/'.$documento->id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
+					$acoes .=	anchor('documento/update/'.$documento->id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-warning btn-sm'));
 				}
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao == 3){
 					$acoes .=	$link_hide;
-					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-trash"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-default btn-sm')).'&nbsp; ';
+					$acoes .=	anchor('documento/cancela/'.$documento->id,'<span class="glyphicon glyphicon-trash"></span> Cancelar',array('onclick' => "return confirm('Deseja REALMENTE cancelar esse registro?')", 'class'=>'btn btn-danger btn-sm')).'&nbsp; ';
 				}
 				
 			}else{
