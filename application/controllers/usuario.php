@@ -24,7 +24,9 @@ class Usuario extends CI_Controller {
 		$this->load->helper('url');			
 		$this->load->model('Usuario_model','',TRUE);
 		$this->load->model('Grid_model','',TRUE);
+		$this->load->model('Campo_model','',TRUE);
 		$this->load->library('session');
+		$this->load->library('convert');
 		//$this->load->library('restrict_page');
 		$this->modal = $this->load->view('about_modal', '', TRUE);
 		session_start();
@@ -57,7 +59,9 @@ class Usuario extends CI_Controller {
 		$maximo = 10;
 		$uri_segment = 3;
 		$inicio = (!$this->uri->segment($uri_segment, 0)) ? 0 : ($this->uri->segment($uri_segment, 0) - 1) * $maximo;
-		$_SESSION['novoinicio'] = $this->uri->segment($uri_segment, 0);  //cria uma variavel de sessao para retornar a pagina correta apos visualizacao, delecao ou alteracao
+		//$_SESSION['novoinicio'] = $this->uri->segment($uri_segment, 0);  //cria uma variavel de sessao para retornar a pagina correta apos visualizacao, delecao ou alteracao
+		$_SESSION['novoinicio'] = current_url();
+		
 		$config['base_url'] = site_url($this->area.'/index/');
 		$config['total_rows'] = $this->Usuario_model->count_all();
 		$config['per_page'] = $maximo;
@@ -98,8 +102,14 @@ class Usuario extends CI_Controller {
 			}
 			
 			$this->table->add_row($objeto->id, $objeto->nome, $nome_setor,
-					anchor($this->area.'/view/'.$objeto->id,'visualizar',array('class'=>'view')).' '.
-					anchor($this->area.'/update/'.$objeto->id,'alterar',array('class'=>'update'))
+					
+					'<div class="btn-group">'.
+						$this->Campo_model->make_link($this->area, 'visualizar', $objeto->id).
+						$this->Campo_model->make_link($this->area, 'alterar_sm', $objeto->id).
+					'</div>'
+					
+					//anchor($this->area.'/view/'.$objeto->id,'visualizar',array('class'=>'view')).' '.
+					//anchor($this->area.'/update/'.$objeto->id,'alterar',array('class'=>'update'))
 					//  anchor($this->area.'/delete/'.$objeto->id,'deletar',array('class'=>'delete','onclick'=>"return confirm('Deseja REALMENTE deletar esse usuario?')"))
 			);
 		}
@@ -131,8 +141,15 @@ class Usuario extends CI_Controller {
 		$this->load->library(array('form_validation'));
 		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
 	
-		$data['titulo'] = 'Novo Usuário';
-		$data['link_back']  = anchor($this->area.'/index/','<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		$data['titulo'] = 'Novo';
+		
+		//$data['link_back']  = anchor($this->area.'/index/','<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		
+		$data['disabled'] = '';
+		$data['link_back']  = $this->Campo_model->make_link($this->area, 'voltar');
+		$data['link_cancelar'] = $this->Campo_model->make_link($this->area,'cancelar');
+		$data['link_salvar'] = $this->Campo_model->make_link($this->area,'salvar');
+		
 		$data['form_action'] = site_url($this->area.'/add/');
 		$data['mensagem'] = '';
 	
@@ -170,7 +187,7 @@ class Usuario extends CI_Controller {
 			//cria o objeto com os dados passados via post
 	
 			$objeto_do_form = array(
-					'cpf' => $this->input->post('campoCPF'),
+					'cpf' => $this->convert->cpfToNum($this->input->post('campoCPF')),
 					'nome' => mb_convert_case($this->input->post('campoNome'), MB_CASE_UPPER, "UTF-8"),
 					'email' => mb_convert_case($this->input->post('campoMail1'), MB_CASE_LOWER, "UTF-8"),
 					'senha' => $this->input->post('campoSenha'),
@@ -232,7 +249,7 @@ class Usuario extends CI_Controller {
 	
 	}
 	
-	public function update($id) {
+	public function update($id, $disabled = null) {
 		$this->load->library('restrict_page');
 		
 		$this->js[] = 'usuario';
@@ -241,8 +258,15 @@ class Usuario extends CI_Controller {
 		
 		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
 	
-		$data['titulo'] = 'Edição de Usuário';
-		$data['link_back']  = anchor($this->area.'/index/','<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		$data['titulo'] = 'Alteração';
+		
+		$data['disabled'] = ($disabled != null) ? 'disabled' : '';
+		$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
+		$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
+		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
+		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
+		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_sm', $id);
+		
 		$data['form_action'] = site_url($this->area.'/update/'.$id);
 		$data['mensagem'] = '';
 		
@@ -311,7 +335,7 @@ class Usuario extends CI_Controller {
 			//cria o objeto com os dados passados via post
 	
 			$objeto_do_form = array(
-					'cpf' => $this->input->post('campoCPF'),
+					'cpf' => $this->convert->cpfToNum($this->input->post('campoCPF')),
 					'nome' => mb_convert_case($this->input->post('campoNome'), MB_CASE_UPPER, "UTF-8"),
 					'email' => mb_convert_case($this->input->post('campoMail1'), MB_CASE_LOWER, "UTF-8"),
 					'senha' => $this->input->post('campoSenha'),
@@ -383,9 +407,10 @@ class Usuario extends CI_Controller {
 		$this->js[] = 'cadastro';
 	
 		$this->load->library(array('form_validation','datas'));
-		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
+		$this->form_validation->set_error_delimiters('<div class="glyphicon glyphicon-warning-sign">', '</div>');
 		 
 		$data['titulo'] = 'Meu cadastro';
+		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
 		$data['form_action'] = site_url("/usuario/cadastro");
 		$data['mensagem'] = '';
 			
@@ -417,8 +442,6 @@ class Usuario extends CI_Controller {
 			$this->load->view('usuario/cadastro',$data);
 			 
 		} else {
-			
-			$this->load->library('convert');
 			
 			$objeto_do_form = array(
 				'cpf' => $this->convert->cpfToNum($this->input->post('campoCPF')),
@@ -470,7 +493,7 @@ class Usuario extends CI_Controller {
 		$this->load->library('restrict_page');
 
 	    $this->load->library(array('form_validation','datas'));    		
-    	$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
+    	$this->form_validation->set_error_delimiters('<div>', '</div>');
       					
 	  	$data['titulo'] = 'Alterar minha senha de acesso';
 	  	$data['form_action'] = site_url("/usuario/altsenha");	  	
@@ -727,8 +750,15 @@ public function search($page = 1) {
 			}
         	
             $this->table->add_row($o->id,  $o->nome, $nome_setor,
-                anchor($this->area.'/view/'.$o->id,'visualizar',array('class'=>'view')).' '.
-                anchor($this->area.'/update/'.$o->id,'alterar',array('class'=>'update'))
+
+            		'<div class="btn-group">'.
+	            		$this->Campo_model->make_link($this->area, 'visualizar', $objeto->id).
+	            		$this->Campo_model->make_link($this->area, 'alterar_sm', $objeto->id).
+            		'</div>'
+            		
+               // anchor($this->area.'/view/'.$o->id,'visualizar',array('class'=>'view')).' '.
+               // anchor($this->area.'/update/'.$o->id,'alterar',array('class'=>'update'))
+            		
               //  anchor($this->area.'/delete/'.$objeto->id,'deletar',array('class'=>'delete','onclick'=>"return confirm('Deseja REALMENTE deletar esse usuario?')"))
             );
         }
@@ -756,6 +786,10 @@ public function search($page = 1) {
     }
 	
     function view($id){
+    	
+    	self::update($id, 'disabled');
+    	
+    	/*
     	$this->load->library('restrict_page');
     
     	$data['titulo'] = 'Detalhes do setor';
@@ -803,6 +837,7 @@ public function search($page = 1) {
     	}
     
     	$this->load->view($this->area.'/'.$this->area.'_view', $data);
+    	*/
     
     }
     

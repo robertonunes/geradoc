@@ -4,9 +4,34 @@
 	</center>
 </div>
 			
+
+<div id="view_content">	
+
+	<div class="row">
+		<div class="col-md-12">
+			<p class="bg-success lead text-center">Senha</p>
+		</div>
+	</div>
+		
 <div class="formulario">	
 
-	<div class="panel panel-default">
+			<!-- Mensagens e alertas -->
+			<div class="row">
+		   		<div class="col-md-12">
+				    	<?php 
+					    	if(validation_errors() != ''){
+					    		echo '<div class="alert alert-danger" role="alert">';
+					    		echo form_error('txtSenhaAtual');
+					    		echo form_error('txtSenhaNova');
+					    		echo form_error('txtSenhaNovaConf');
+					    		echo '</div>';
+					    	}
+				    	?>
+		    	</div>	
+		   	</div>
+		   	<!-- Fim das mensagens e alertas -->
+
+	<div class="panel panel-primary">
 
 		  <div class="panel-heading">
 		    <h3 class="panel-title"><?php echo $titulo; ?></h3>
@@ -37,17 +62,7 @@
 				      <input type="password" class="form-control" name="txtSenhaNovaConf" id="txtSenhaNovaConf" placeholder="Confirmação" value="<?php echo set_value('txtSenhaNovaConf')?>">
 				    </div>
 				  </div>
-				  
-				  <div class="form-group <?php echo (form_error('txtSenhaNovaConf') != '')? 'has-error':''; ?>">
-				    <?php 
-							echo form_error('txtSenhaAtual');
-							echo form_error('txtSenhaNova'); 
-							echo form_error('txtSenhaNovaConf'); 
-					?>
-				  </div>
-				  
-				  
-				
+
 				  <div class="form-group">
 				    <div class="col-sm-offset-4 col-sm-4">
 				    	<button type="button" class="btn btn-default" onclick="javascript:window.history.back();">Voltar</button>
@@ -59,5 +74,7 @@
 		    
 		  </div>
 	</div>
+
+</div>
 
 </div>
