@@ -76,9 +76,9 @@ class Documento extends CI_Controller {
 		
 		$session_setor = $this->session->userdata('setor');
 		
-		$restricao = $this->Setor_model->get_by_id($session_setor)->row()->restricao;
+		$restricao = $this->Setor_model->get_by_id($session_setor)->row();
 		
-		if($restricao == 'S'){
+		if(isset($restricao->restricao) and $restricao->restricao == 'S'){
 			
 			$data['setores'] = $this->Setor_model->get_by_id($session_setor)->result();
 			
@@ -210,7 +210,7 @@ class Documento extends CI_Controller {
 		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</div>');
 		
 		//--- VARIAVEIS COMUNS ---//
-		$data['titulo']         = $this->tituloAdd.$this->area;
+		$data['titulo']         = 'Novo';
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/add/');
 		$data['acao']          	= "add";
@@ -250,9 +250,9 @@ class Documento extends CI_Controller {
 		
 		$session_setor = $this->session->userdata('setor');
 		
-		$restricao = $this->Setor_model->get_by_id($session_setor)->row()->restricao;
+		$restricao = $this->Setor_model->get_by_id($session_setor)->row();
 		
-		if($restricao == 'S'){
+		if(isset($restricao->restricao) and $restricao->restricao == 'S'){
 			$remetentes = $this->Contato_model->list_all_actives($session_setor)->result();		
 		}else{
 			$remetentes = $this->Contato_model->list_all_actives()->result();
@@ -506,17 +506,22 @@ class Documento extends CI_Controller {
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
 		//--- FIM ---//
 		
+		
+		//--- PERMISSAO DE ACESSO AO REGISTRO ---//
 		$obj = $this->Documento_model->get_by_id($id)->row();
 		
 		$permissao = $this->get_permissao($obj->setor, $this->session->userdata('id_usuario'));
 
-		if($obj->dono_cpf != $this->session->userdata('cpf') and $permissao < 2){
+		if($obj->dono_cpf != $this->session->userdata('cpf') and $permissao < 2 and $obj->setor != $this->session->userdata('setor')){
+			
 			redirect($this->area . '/negado/'.$id);
+			
 		}
 		
 		if($obj->cancelado == 'S'){
 			redirect($this->area . '/cancelado/'.$id);
 		}
+		//--- FIM DA PERMISSAO DE ACESSO AO REGISTRO ---//
 	
 		$this->form_validation->set_error_delimiters('<span class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</span>');
 		
