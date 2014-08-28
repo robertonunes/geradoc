@@ -511,12 +511,32 @@ class Documento extends CI_Controller {
 		$obj = $this->Documento_model->get_by_id($id)->row();
 		
 		$permissao = $this->get_permissao($obj->setor, $this->session->userdata('id_usuario'));
+		
+		//echo  $this->uri->segment(2);
 
-		if($obj->dono_cpf != $this->session->userdata('cpf') and $permissao < 2 and $obj->setor != $this->session->userdata('setor')){
+		if($obj->dono_cpf != $this->session->userdata('cpf') and $permissao < 2){
 			
-			redirect($this->area . '/negado/'.$id);
 			
+			//if($obj->setor != $this->session->userdata('setor')){
+			
+			//	echo "aqui"; 
+				//redirect($this->area . '/negado/'.$id);
+			
+			//}
+			
+			if($this->uri->segment(2) == 'update'){
+					
+				//echo "aqui2";
+				redirect($this->area . '/negado/'.$id);
+					
+			}
+			
+			$data['link_update'] = '';
+			$data['link_update_sm'] = '';
+				
 		}
+		
+		
 		
 		if($obj->cancelado == 'S'){
 			redirect($this->area . '/cancelado/'.$id);
@@ -1120,7 +1140,9 @@ class Documento extends CI_Controller {
 		//--- VARIAVEIS COMUNS ---//
 		$data['titulo']         = "Permissão negada";
 		$data['message']        = 'Você não tem permissão para editar este arquivo';
-		$data['link_back'] 		= anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
+		
+		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
+		
 		$data['bt_ok']    		= $_SESSION['homepage'].'#d'.$id;
 		//--- FIM ---//
 	
