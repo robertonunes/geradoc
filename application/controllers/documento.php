@@ -190,12 +190,13 @@ class Documento extends CI_Controller {
 						'label' => '<strong>Assunto</strong>',
 						'rules' => 'required|trim'
 				),
-					
+					/*
 				array(
 						'field' => 'campoPara',
 						'label' => '<strong>Para</strong>',
 						'rules' => 'required|trim'
 				),
+				*/
 	
 		);
 	
@@ -344,11 +345,13 @@ class Documento extends CI_Controller {
 
 					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : '';
 					
-					array_push($validacao, array(
-						'field' => 'campo_'.$nome_campo,
-						'label' => '<strong>'.$campo[1].'</strong>',
-						'rules' => 'trim|required'
-					));
+					if($nome_campo != 'para'){ //pq tem validacao propria via javascript, tem um autocomplete e tals...
+						array_push($validacao, array(
+							'field' => 'campo_'.$nome_campo,
+							'label' => '<strong>'.$campo[1].'</strong>',
+							'rules' => 'trim|required'
+						));
+					}
 					
 					
 					if($coluna['tipo'] == 'blob'){
@@ -356,7 +359,7 @@ class Documento extends CI_Controller {
 								'name' 	=> 'campo_'.$nome_campo,
 								'id'	=> 'campo_'.$nome_campo,
 								'value'	=> $valor,
-								'rows'  => '10',
+								'rows'  => '15',
 						));
 							
 					}else{
@@ -465,42 +468,25 @@ class Documento extends CI_Controller {
 
 	}
 
-	function update($id, $disabled = null){
-		
-		
-		$data['disabled'] = ($disabled != null) ? 'disabled' : '';
-				
+	function update($id, $disabled = null){		
 		//--- VARIAVEIS COMUNS ---//
-		
-		
+
 		$data['titulo']         = "Alteração";
 		if($disabled != null){
 			$data['titulo']         = "Detalhes do documento";
 		}
-		
+		$data['disabled'] = ($disabled != null) ? 'disabled' : '';
 		$data['message']        = '';
 		$data['form_action']	= site_url($this->area.'/update/'.$id);
 		$data['acao']          	= "update";
-		
-		
-		//$data['link_back'] = $this->Campo_model->make_link($this->area, 'voltar');
-		//$data['link_cancelar'] = $this->Campo_model->make_link($this->area, 'cancelar');
-		//$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
-		
-		
-		//$data['link_back']      = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
-		
-		
+
 		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
 		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
 		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
 		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_sm', $id);
-		
-		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
 		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
-		
+		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
 		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
-		
 
 		$data['id'] = '';
 		$data['sess_expiration'] = $this->config->item('sess_expiration');
@@ -511,22 +497,11 @@ class Documento extends CI_Controller {
 		$obj = $this->Documento_model->get_by_id($id)->row();
 		
 		$permissao = $this->get_permissao($obj->setor, $this->session->userdata('id_usuario'));
-		
-		//echo  $this->uri->segment(2);
 
 		if($obj->dono_cpf != $this->session->userdata('cpf') and $permissao < 2){
-			
-			
-			//if($obj->setor != $this->session->userdata('setor')){
-			
-			//	echo "aqui"; 
-				//redirect($this->area . '/negado/'.$id);
-			
-			//}
-			
+
 			if($this->uri->segment(2) == 'update'){
-					
-				//echo "aqui2";
+
 				redirect($this->area . '/negado/'.$id);
 					
 			}
@@ -535,16 +510,14 @@ class Documento extends CI_Controller {
 			$data['link_update_sm'] = '';
 				
 		}
-		
-		
-		
+
 		if($obj->cancelado == 'S'){
 			redirect($this->area . '/cancelado/'.$id);
 		}
 		//--- FIM DA PERMISSAO DE ACESSO AO REGISTRO ---//
 	
-		$this->form_validation->set_error_delimiters('<span class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="!" /> ', '</span>');
-		
+		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
+	
 		
 		//--- CONSTRUCAO DOS CAMPOS ---//
 		$this->load->model('Campo_model','',TRUE);
@@ -568,9 +541,7 @@ class Documento extends CI_Controller {
 		//$data['desp_interessado']      	= $this->Campo_model->documento('desp_interessado');
 		//--- FIM ---//
 		
-		
 
-	
 		//--- POPULA O DROPDOWN DE REMENTETES ---//
 		$this->load->model('Contato_model','',TRUE);
 		$remetentes = $this->Contato_model->list_all()->result();
@@ -691,18 +662,20 @@ class Documento extends CI_Controller {
 		
 					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : $obj->$nome_campo;
 					
+					if($nome_campo != 'para'){ //pq tem validacao propria via javascript, tem um autocomplete e tals...
 					array_push($validacao, array(
 							'field' => 'campo_'.$nome_campo,
 							'label' => '<strong>'.$campo[1].'</strong>',
 							'rules' => 'trim|required'
 							));
+					}
 
 					if($coluna['tipo'] == 'blob'){
 						$data['input_campo'][$nome_campo] = form_textarea(array(
 								'name' 	=> 'campo_'.$nome_campo,
 								'id'	=> 'campo_'.$nome_campo,
 								'value'	=> $valor,
-								'rows'  => '10',
+								'rows'  => '15',
 						));
 							
 					}else{
@@ -809,8 +782,8 @@ class Documento extends CI_Controller {
 		}
 	
 	}
+	
 	function view($id){
-		
 		
 		self::update($id, 'disabled');
 
@@ -955,11 +928,7 @@ class Documento extends CI_Controller {
 		
 		foreach ($campos_especiais as $key => $nome_campo){
 		
-			
-
 			$data['objeto']->layout = str_replace('['.$nome_campo.']', $data['objeto']->$nome_campo, $data['objeto']->layout);
-		
-		
 		
 		}
 		
