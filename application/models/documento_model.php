@@ -180,7 +180,7 @@ class Documento_model extends CI_Model {
 		$this->db->where('oculto =', 'N');
 		$this->db->where('setor =', $setor);
 		//$this->db->or_where('dono_cpf =', $cpf);
-		$this->db->or_where("(oculto = 'N' AND setor = $setor AND dono_cpf = $cpf)", null, false);
+		$this->db->or_where("(oculto = 'S' AND setor = $setor AND dono_cpf = $cpf)", null, false);
 		//$this->db->or_where("(oculto = 'N' AND setor = $setor)", null, false);
 		
 		return $this->db->get('documento')->num_rows();
