@@ -1,6 +1,9 @@
 <?php 
 	$CI =& get_instance();
 ?>
+<script>
+    	if (window.innerWidth <= 1024) window.location.replace("<?php echo base_url();?>index.php/login_mobile")
+</script>
 <div id="corpo">	
 	<div id="area_livre" style="background-image: url(<?php echo $CI->config->item('base_url');?>images/bg_login_<?php echo $CI->config->item('orgao');?>.gif);">
 		<div class="titulo_aplicacao">
