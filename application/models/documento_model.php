@@ -164,12 +164,14 @@ class Documento_model extends CI_Model {
 
 	function lista_documentos_por_setor($inicio = 0, $maximo = 10, $setor, $cpf){
 		
-		$this->db->order_by('id','desc');
+		
 		$this->db->where('oculto =', 'N');
 		$this->db->where('setor =', $setor);
 		//$this->db->or_where('dono_cpf =', $cpf);
 		$this->db->or_where("(oculto = 'S' AND setor = $setor AND dono_cpf = $cpf)", null, false);
 		//$this->db->or_where("(oculto = 'N' AND setor = $setor)", null, false);
+		
+		$this->db->order_by('id','desc');
 		
 		return $this->db->get($this->tabela, $maximo, $inicio)->result();
 

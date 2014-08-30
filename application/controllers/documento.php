@@ -1305,7 +1305,7 @@ class Documento extends CI_Controller {
 				$ocultado = "";
 			}else{
 				$ocultado = "&nbsp;*";
-				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-user"></span> Privado', array('class'=>'btn btn-info btn-sm'));
+				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<span class="glyphicon glyphicon-user"></span> Privado', array('class'=>'btn btn-default btn-sm'));
 			}
 			
 			$setorRemetente = $this->getCaminho($obj->setor);

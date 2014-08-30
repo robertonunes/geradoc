@@ -3,6 +3,10 @@
 $CI = & get_instance();
 ?>
 
+<script>
+    	if (window.innerWidth >= 1024) window.location.replace("<?php echo base_url();?>")
+</script>
+
 <div class="container">
 
       <form class="form-signin" role="form" action="<?php echo $form_action; ?>" method="post">
