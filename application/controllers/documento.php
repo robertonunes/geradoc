@@ -483,7 +483,7 @@ class Documento extends CI_Controller {
 		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
 		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
 		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
-		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_sm', $id);
+		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
 		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
 		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
 		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
@@ -1317,7 +1317,7 @@ class Documento extends CI_Controller {
 			$acoes 	= 	null;
 			//$acoes .= 	$permissao;
 			//$acoes .= '<div class="btn-group">';
-			$acoes .= 	anchor('documento/view/'.$documento->id,'<i class="cus-magnifier"></i> Visualizar', array('class'=>'btn btn-default btn-sm')).' ';
+			$acoes .= 	anchor('documento/view/'.$documento->id,'<i class="cus-zoom"></i> Visualizar', array('class'=>'btn btn-default btn-sm')).' ';
 			
 			if($documento->cancelado == "N" or $documento->cancelado == null){
 				
