@@ -334,22 +334,35 @@ class Documento extends CI_Controller {
 
 				if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
 					$campo = explode(';' , $obj_tipo->$nome_campo);
+					
+					if(count($campo) == 2){ // se campo tiver apenas 2 partes...
+						$campo[2] = ''; // rotulo = ''
+					}
+					
 				}else{
 					$campo[0] = $obj_tipo->$nome_campo;
-					$campo[1] = $nome_campo;
+					$campo[1] = '';
+					$campo[2] = $nome_campo;
 				}
 				
 				$coluna = $this->Coluna_model->get_by_nome($nome_campo);
 
 				if($campo[0] == 'S'){//caso o campo esteja disponivel para o usuario
 
+					
+					if($campo[1] == 'S'){
+						$requerido = '|required';
+					}else{
+						$requerido = '';
+					}
+						
 					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : '';
 					
 					if($nome_campo != 'para'){ //pq tem validacao propria via javascript, tem um autocomplete e tals...
 						array_push($validacao, array(
 							'field' => 'campo_'.$nome_campo,
-							'label' => '<strong>'.$campo[1].'</strong>',
-							'rules' => 'trim|required'
+							'label' => '<strong>'.$campo[2].'</strong>',
+							'rules' => 'trim'.$requerido
 						));
 					}
 					
@@ -651,22 +664,33 @@ class Documento extends CI_Controller {
 		
 				if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
 					$campo = explode(';' , $obj_tipo->$nome_campo);
+					
+					if(count($campo) == 2){ // se campo tiver apenas 2 partes...
+						$campo[2] = ''; // rotulo = ''
+					}
+					
 				}else{
 					$campo[0] = $obj_tipo->$nome_campo;
-					$campo[1] = $nome_campo;
+					$campo[2] = $nome_campo;
 				}
 		
 				$coluna = $this->Coluna_model->get_by_nome($nome_campo);
 				
-				if($campo[0] == 'S'){
+				if($campo[0] == 'S'){ // caso disponivel for igual a sim
+					
+					if($campo[1] == 'S'){
+						$requerido = '|required';
+					}else{
+						$requerido = '';
+					}
 		
 					$valor = $this->input->post('campo_'.$nome_campo) ? $this->input->post('campo_'.$nome_campo) : $obj->$nome_campo;
 					
 					if($nome_campo != 'para'){ //pq tem validacao propria via javascript, tem um autocomplete e tals...
 					array_push($validacao, array(
 							'field' => 'campo_'.$nome_campo,
-							'label' => '<strong>'.$campo[1].'</strong>',
-							'rules' => 'trim|required'
+							'label' => '<strong>'.$campo[2].'</strong>',
+							'rules' => 'trim' . $requerido
 							));
 					}
 
@@ -1316,7 +1340,7 @@ class Documento extends CI_Controller {
 			
 			$acoes 	= 	null;
 			//$acoes .= 	$permissao;
-			//$acoes .= '<div class="btn-group">';
+			$acoes .= '<div class="btn-group">';
 			$acoes .= 	anchor('documento/view/'.$documento->id,'<i class="cus-zoom"></i> Visualizar', array('class'=>'btn btn-default btn-sm')).' ';
 			
 			if($documento->cancelado == "N" or $documento->cancelado == null){
@@ -1337,7 +1361,7 @@ class Documento extends CI_Controller {
 				$acoes .= anchor($_SESSION['homepage'].'#d'.$documento->id,'<i class="cus-cancel"></i> Cancelado', array('class'=>'btn btn-default btn-sm', 'disabled'=>'disabled'));
 				
 			}
-			//$acoes .= '</div>';
+			$acoes .= '</div>';
 		//--- FIM ---//
 
 				
