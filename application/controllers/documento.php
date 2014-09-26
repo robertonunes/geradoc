@@ -413,12 +413,14 @@ class Documento extends CI_Controller {
 					'setor' => $this->input->post('setorId'),
 					'tipo' => $this->input->post('campoTipo'),
 					'assunto' => $this->input->post('campoAssunto'),
-					'referencia' => $this->input->post('campoReferencia'),
+					//'referencia' => $this->input->post('campoReferencia'),
 					'para' => $this->input->post('campoPara'),
 					//'redacao' => $this->input->post('campoRedacao'),
 					'carimbo' => $this->input->post('campoCarimbo'),
 	
 			);
+			
+			
 			
 			foreach ($campos_especiais as $key => $nome_campo){
 				
@@ -426,6 +428,9 @@ class Documento extends CI_Controller {
 					$obj_do_form[$nome_campo] = $this->input->post('campo_'.$nome_campo);
 				}
 			}
+			
+			
+			
 
 			//--- ATENCAO! --//
 			//--- MAGICA DA CONTAGEM! Esse eh o miolo do sistema! Se quiser que tudo continue funcionando NAO BULA AQUI! VC FOI AVISADO!!! ---//
@@ -442,7 +447,14 @@ class Documento extends CI_Controller {
 				echo  '<br> Já existe um documento com essa numeração. <br>';
 
 			}else{
-
+				
+				/*
+				echo "<pre>";
+				print_r($obj_do_form);
+				echo "</pre>";
+				exit;
+				*/
+				
 				$id = $this->Documento_model->save($obj_do_form);
 				
 				if ($id < 1 or $id == null){
@@ -730,7 +742,19 @@ class Documento extends CI_Controller {
 		
 		}else{
 				
-			$obj_do_form = array(
+			$obj_do_form = array();
+			
+			foreach ($campos_especiais as $key => $nome_campo){
+				/*
+				if($this->input->post('campo_'.$nome_campo)){
+					$obj_do_form[$nome_campo] = $this->input->post('campo_'.$nome_campo);
+				}
+				*/
+				
+				$obj_do_form[$nome_campo] = $this->input->post('campo_'.$nome_campo);
+			}
+			
+			$obj_do_form_complemento = array(
 					'dono' =>  $this->session->userdata('nome')." ".$this->session->userdata('sobrenome'),
 					'dono_cpf' =>  $this->session->userdata('cpf'),
 					'dono' =>  $this->session->userdata('nome')." ".$this->session->userdata('sobrenome'),
@@ -740,17 +764,12 @@ class Documento extends CI_Controller {
 					'setor' => $this->input->post('setorId'),
 					'tipo' => $this->input->post('campoTipo'),
 					'assunto' => $this->input->post('campoAssunto'),
-					'referencia' => $this->input->post('campoReferencia'),
+					//'referencia' => $this->input->post('campoReferencia'),
 					'para' => $this->input->post('campoPara'),
-					'carimbo' => $this->input->post('campoCarimbo'),
-			
+					'carimbo' => $this->input->post('campoCarimbo'),				
 			);
 			
-			foreach ($campos_especiais as $key => $nome_campo){
-				if($this->input->post('campo_'.$nome_campo)){
-					$obj_do_form[$nome_campo] = $this->input->post('campo_'.$nome_campo);
-				}
-			}
+			$obj_do_form = array_merge($obj_do_form, $obj_do_form_complemento);
 			
 			
 			//--- ATENCAO! --//
@@ -771,7 +790,15 @@ class Documento extends CI_Controller {
 				echo $this->db->last_query();
 	
 			}else{
-	
+				
+				/*
+				echo "<pre>";
+				print_r($obj_do_form);
+				echo "</pre>";
+				exit;
+				*/
+				
+				
 				if ($this->Documento_model->update($id,$obj_do_form) === FALSE){
 						
 					echo  '<br> Erro na atualização. <br>';
