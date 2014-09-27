@@ -836,7 +836,60 @@ class Documento extends CI_Controller {
 	
 	function view($id){
 		
-		self::update($id, 'disabled');
+		//--- VARIAVEIS COMUNS ---//	
+		$data['titulo']         = "Visualização";
+		$data['message']        = '';
+		$data['acao']          	= "update";
+		
+		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
+		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
+		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
+		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
+		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
+		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');		
+		//--- FIM ---//
+		
+		
+		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
+		
+		// Definindo o cabecalho e o rodape do documento
+		$this->load->model('Tipo_model','',TRUE);
+		$timbre = $this->Tipo_model->get_by_id($data['objeto']->tipoID)->row();
+		
+		if($timbre->cabecalho == null or $timbre->cabecalho == ''){
+			$data['cabecalho'] = '<img src="../../../images/header_'.$_SESSION['orgao_documento'].'.png" style="width:100%"/>';
+		}else{
+			$data['cabecalho'] = str_replace("../../../", "./", $timbre->cabecalho);
+		}
+		
+		if($timbre->rodape == null or $timbre->rodape == ''){
+			$data['rodape'] = $_SESSION['rodape_documento'];
+		}else{
+			$data['rodape'] = $timbre->rodape;
+		}
+		//--- FIM ---//
+		
+		
+		//--- Aplica o Highlight no texto pesquisado---//
+		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strstr($_SESSION['homepage'], 'search', true)){
+			$data['objeto']->numero = $this->highlight($data['objeto']->numero, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->remetNome = $this->highlight($data['objeto']->remetNome, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->remetCargoNome = $this->highlight($data['objeto']->remetCargoNome, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->remetSetorArtigo = $this->highlight($data['objeto']->remetSetorArtigo, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->para = $this->highlight($data['objeto']->para, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->assunto = $this->highlight($data['objeto']->assunto, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->referencia = $this->highlight($data['objeto']->referencia, $_SESSION['keyword'.$this->area]);
+			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
+		}
+		//--- FIM ---//
+		
+		$data['objeto'] = $this->get_layout($data['objeto']);
+		
+		
+		
+			
+		//self::update($id, 'disabled');
 
 		/*
 		$data['titulo'] = $this->tituloView.$this->area;
@@ -893,7 +946,79 @@ class Documento extends CI_Controller {
 		$this->load->view($this->area.'/documento_view', $data);
 		*/
 		
+		$this->load->view($this->area.'/documento_view', $data);
+		
 		$this->audita();
+		
+	}
+	
+	function get_layout($objeto){
+		
+		$data['objeto'] = $objeto;
+		
+		// trata os dados vindos do banco
+		$data['objeto']->tipoNome = mb_convert_case($data['objeto']->tipoNome, MB_CASE_TITLE, "UTF-8");
+		$date = new DateTime($data['objeto']->data);
+		$data['objeto']->ano = $date->format('Y');
+		$data['objeto']->data = $this->_trata_data($data['objeto']->data);
+		//$data['caminho_remetente'] = $this->getCaminho($data['objeto']->setor);
+		
+		$data['objeto']->remetNome          = $this->_trata_contato($data['objeto']->remetNome);
+		$data['objeto']->remetCargoNome      = mb_convert_case($data['objeto']->remetCargoNome, MB_CASE_TITLE, "UTF-8");
+		$data['objeto']->remetSetorArtigo    ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
+		//--- FIM --//
+		
+		// Efetua a substicuicao das tags personaizadas pelo conteudo dos respectivos campos
+		$data['objeto']->layout = str_replace('<p', '<div', $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('p>', 'div>', $data['objeto']->layout);
+		
+		$data['objeto']->layout = str_replace('[tipo_doc]', $data['objeto']->tipoNome, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[numero]', $data['objeto']->numero, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[ano_doc]', $data['objeto']->ano, $data['objeto']->layout);
+		
+		$data['caminho_remetente'] = $this->getCaminho($data['objeto']->setor);
+		$data['objeto']->layout = str_replace('[setor_doc]', $data['caminho_remetente'], $data['objeto']->layout);
+		
+		$data['objeto']->layout = str_replace('[data]', $data['objeto']->data, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[destinatario]', $data['objeto']->para, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[assunto]', $data['objeto']->assunto, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[referencia]', $data['objeto']->referencia, $data['objeto']->layout);
+		
+		$data['objeto']->layout = str_replace('[redacao]', $data['objeto']->redacao, $data['objeto']->layout);
+		
+		if(!$data['objeto']->assinatura){
+			$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
+		}
+		$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_setor_artigo]', $data['objeto']->remetSetorArtigo, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
+		//--- FIM ---//
+		
+		
+		// --- Parecer Tecnico ---//
+		/*
+		 $data['objeto']->layout = str_replace('[objetivo]', $data['objeto']->objetivo, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[documentacao]', $data['objeto']->documentacao, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[analise]', $data['objeto']->analise, $data['objeto']->layout);
+		$data['objeto']->layout = str_replace('[conclusao]', $data['objeto']->conclusao, $data['objeto']->layout);
+		*/
+		
+		//--- CAMPOS DINAMICOS ---//
+		
+		$this->load->model('Coluna_model','',TRUE);
+		$campos_especiais = $this->Coluna_model->list_all();
+		
+				foreach ($campos_especiais as $key => $nome_campo){
+		
+				$data['objeto']->layout = str_replace('['.$nome_campo.']', $data['objeto']->$nome_campo, $data['objeto']->layout);
+		
+		}
+		
+		//--- FIM DOS CAMPOS DINAMICOS ---//
+		
+		return $data['objeto'];
 		
 	}
 
@@ -914,17 +1039,6 @@ class Documento extends CI_Controller {
 		}
 		$data['objeto']->data_despacho = $data['objeto']->data;
 
-		// trata os dados vindos do banco
-		$data['objeto']->tipoNome = mb_convert_case($data['objeto']->tipoNome, MB_CASE_TITLE, "UTF-8");
-		$date = new DateTime($data['objeto']->data);
-		$data['objeto']->ano = $date->format('Y');
-		$data['objeto']->data = $this->_trata_data($data['objeto']->data);
-		$data['caminho_remetente'] = $this->getCaminho($data['objeto']->setor);
-				
-		$data['objeto']->remetNome          = $this->_trata_contato($data['objeto']->remetNome);
-		$data['objeto']->remetCargoNome      = mb_convert_case($data['objeto']->remetCargoNome, MB_CASE_TITLE, "UTF-8");
-		$data['objeto']->remetSetorArtigo    ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
-
 			
 		// Definindo o cabecalho e o rodape do documento
 		$this->load->model('Tipo_model','',TRUE);
@@ -941,49 +1055,9 @@ class Documento extends CI_Controller {
 		}else{
 			$data['rodape'] = $timbre->rodape;
 		}
+		//--- FIM ---//
 		
-
-		$data['objeto']->layout = str_replace('[tipo_doc]', $data['objeto']->tipoNome, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[numero]', $data['objeto']->numero, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[ano_doc]', $data['objeto']->ano, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[setor_doc]', $data['caminho_remetente'], $data['objeto']->layout);
-		
-		$data['objeto']->layout = str_replace('[data]', $data['objeto']->data, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[destinatario]', $data['objeto']->para, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[assunto]', $data['objeto']->assunto, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[referencia]', $data['objeto']->referencia, $data['objeto']->layout);
-		
-		$data['objeto']->layout = str_replace('[redacao]', $data['objeto']->redacao, $data['objeto']->layout);
-		
-		if(!$data['objeto']->assinatura){
-			$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
-		}
-		$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[remetente_setor_artigo]', $data['objeto']->remetSetorArtigo, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
-		
-		// --- Parecer Tecnico ---//
-		/*
-		$data['objeto']->layout = str_replace('[objetivo]', $data['objeto']->objetivo, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[documentacao]', $data['objeto']->documentacao, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[analise]', $data['objeto']->analise, $data['objeto']->layout);
-		$data['objeto']->layout = str_replace('[conclusao]', $data['objeto']->conclusao, $data['objeto']->layout);
-		*/
-		
-		//--- CAMPOS DINAMICOS ---//
-		
-		$this->load->model('Coluna_model','',TRUE);
-		$campos_especiais = $this->Coluna_model->list_all();
-		
-		foreach ($campos_especiais as $key => $nome_campo){
-		
-			$data['objeto']->layout = str_replace('['.$nome_campo.']', $data['objeto']->$nome_campo, $data['objeto']->layout);
-		
-		}
-		
-		//--- FIM DOS CAMPOS DINAMICOS ---//
+		$data['objeto'] = $this->get_layout($data['objeto']);
 		
 			
 		$this->load->view($this->area.'/pdf', $data);
@@ -1112,6 +1186,9 @@ class Documento extends CI_Controller {
 		$this->load->model('Setor_model','',TRUE);
 		$restricao = $this->Setor_model->get_by_id($session_setor)->row()->restricao;
 		
+		$keyword = htmlentities($keyword, ENT_COMPAT, "UTF-8");
+		
+		//echo $keyword;
 		if($restricao == 'S'){
 			
 			$rows = $this->Documento_model->listAllSearchPag($keyword, $maximo, $inicio, $this->session->userdata('cpf'), $session_setor);
@@ -1125,6 +1202,8 @@ class Documento extends CI_Controller {
 			$config['total_rows'] = $this->Documento_model->count_all_search($keyword, $this->session->userdata('cpf'));
 
 		}
+		
+		$keyword = html_entity_decode($keyword, ENT_COMPAT, "UTF-8");
 		//--- Fim da restricao do universo de pesquisa ---//
 		
 	
@@ -1416,6 +1495,8 @@ class Documento extends CI_Controller {
 		return preg_replace($re, "<span style='background-color:#FFFF00'>$0</span>", $text);
 		*/
 		
+		$words = htmlentities($words, ENT_COMPAT, "UTF-8");
+		
 		return str_replace($words, "<span style='background-color:#FFFF00'>$words</span>", $text);
 	}
 
@@ -1450,7 +1531,7 @@ class Documento extends CI_Controller {
     	$this->load->model('Setor_model', '', TRUE);
     	$setor =  $this->Setor_model->get_by_id($id_setor)->row();
     	
-    	if($setor->setorPaiSigla and $setor->setorPaiSigla != "NENHUM" and $setor->setorPaiSigla != "AESP"){
+    	if($setor->setorPaiSigla and $setor->setorPaiSigla != "NENHUM" and $setor->setorPaiSigla != "AESP" and $setor->sigla != $setor->setorPaiSigla){
     		$caminho =  $setor->sigla ."/" . $setor->setorPaiSigla ."/" . $setor->orgaoSigla;
     	}else{
     		$caminho =  $setor->sigla ."/" . $setor->orgaoSigla;
