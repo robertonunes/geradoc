@@ -24,7 +24,6 @@
 		    echo $link_back;
 		    echo $link_export_sm;
 		    echo $link_update_sm;
-		    
 		   
 		    ?>
 		  	</div>  

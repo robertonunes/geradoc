@@ -142,6 +142,7 @@ class Login extends CI_Controller {
     	
     	$obj = $this->Setor_model->get_by_id($id_setor)->row();
     	
+    	/*
     	if($obj){
 
     		$setor = "$obj->sigla/$obj->setorPaiSigla";
@@ -149,6 +150,21 @@ class Login extends CI_Controller {
     	}else{
     		$setor = "NENHUM";
     	}
+    	*/
+    	
+    	if($obj){
+    	
+    		if($obj->sigla != $obj->setorPaiSigla){
+    			$setor = "$obj->sigla/$obj->setorPaiSigla";
+    		}else{
+    			$setor = "$obj->sigla";
+    		}
+    	
+    	}else{
+    		$setor = "NENHUM";
+    	}
+    	
+    	
  
     	return anchor('login/set_setor/'.$id_setor, $setor,array('class'=>'link1'));
 

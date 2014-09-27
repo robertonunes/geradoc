@@ -860,7 +860,7 @@ class Documento extends CI_Controller {
 		if($timbre->cabecalho == null or $timbre->cabecalho == ''){
 			$data['cabecalho'] = '<img src="../../../images/header_'.$_SESSION['orgao_documento'].'.png" style="width:100%"/>';
 		}else{
-			$data['cabecalho'] = str_replace("../../../", "./", $timbre->cabecalho);
+			$data['cabecalho'] = str_replace("../../../", "../../../", $timbre->cabecalho);
 		}
 		
 		if($timbre->rodape == null or $timbre->rodape == ''){
