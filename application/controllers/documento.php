@@ -847,7 +847,9 @@ class Documento extends CI_Controller {
 		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
 		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
 		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
-		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');		
+		$data['link_stamp'] = $this->Campo_model->make_link($this->area, 'stamp', $id);
+		$data['link_history'] = $this->Campo_model->make_link($this->area, 'history', $id);
+		$data['link_workflow'] = $this->Campo_model->make_link($this->area, 'workflow', $id);		
 		//--- FIM ---//
 		
 		
@@ -862,6 +864,11 @@ class Documento extends CI_Controller {
 		}else{
 			$data['cabecalho'] = str_replace("../../../", "../../../", $timbre->cabecalho);
 		}
+		
+		if($data['objeto']->carimbo == 'S'){
+			$data['link_stamp'] = $this->Campo_model->make_link($this->area, 'stamp_out', $id);
+		}
+		
 		
 		if($timbre->rodape == null or $timbre->rodape == ''){
 			$data['rodape'] = $_SESSION['rodape_documento'];
@@ -1103,6 +1110,37 @@ class Documento extends CI_Controller {
 	
 	}
 
+	
+	function history($id){
+		$data['titulo']         = "Histórico do documento";
+		$data['message']        = '';
+		
+		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
+		
+		$this->load->view($this->area.'/documento_historico', $data);
+	}
+	
+	function workflow($id){
+		$data['titulo']         = "Tramitação do documento";
+		$data['message']        = '';
+		
+		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
+		
+		$this->load->view($this->area.'/documento_tramitacao', $data);
+	}
+	
+	function stamp($id){
+		$obj["carimbo"] = "S";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	function stamp_out($id){
+		$obj["carimbo"] = "N";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
 	function lock($id){
 		$obj["cadeado"] = "S";
 		$this->Documento_model->update($id,$obj);

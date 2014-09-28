@@ -5,6 +5,12 @@ $header = '<table width="100%" style="vertical-align: bottom;">
 			<td align="center">'.$cabecalho.'</td>
 			</tr>
 			</table>';
+
+if($objeto->carimbo == 'S'){
+	$header .= '<div style="text-align: right; margin-top:-105px; margin-right:-73px; font-size: 10pt; color: #555; line-height:200%;">
+						<img src="./images/carimbo_aesp.png" width="80px"/>
+				</div>';
+}
 /*
 $content = '<div class="conteudo">
 				'.$objeto->layout.'

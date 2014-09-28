@@ -24,6 +24,9 @@
 		    echo $link_back;
 		    echo $link_export_sm;
 		    echo $link_update_sm;
+		    echo $link_stamp;
+		    echo $link_history;
+		    echo $link_workflow;
 		   
 		    ?>
 		  	</div>  
@@ -49,8 +52,14 @@
 				</table>
 				</div>';
 	
+	if($objeto->carimbo == 'S'){
+		$header .= '<div style="position: absolute; float: right; text-align: right; margin-top:-119px; margin-left: 617px; font-size: 10pt; color: #555; line-height:200%;">
+						<img src="../../../images/carimbo_aesp.png" width="80px"/>
+					</div>';
+	}
 	
-	$content = '<div class="conteudo" style="min-height:900px;">
+	
+	$content = '<div class="conteudo" style="min-height:900px; font-size:12.5pt;">
 				'.htmlspecialchars_decode($objeto->layout).'
 			</div>';
 	
@@ -80,6 +89,25 @@
 
 	</div>
 	<!-- fim da div formulario -->
+	
+	<div class="row" style="padding-top: 15px">
+    
+	    <div class="col-md-12 text-center">
+	    	<div class="btn-group">
+		    <?php
+
+		    echo $link_back;
+		    echo $link_export_sm;
+		    echo $link_update_sm;
+		    echo $link_stamp;
+		    echo $link_history;
+		    echo $link_workflow;
+		   
+		    ?>
+		  	</div>  
+	    </div>
+
+    </div>
 	
 </div>
 <!-- fim da div  view_content -->
