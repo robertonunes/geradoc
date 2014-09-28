@@ -268,7 +268,73 @@ class Documento_model extends CI_Model {
 		}
 		}
 		$this->db->trans_complete();
+		
+		$this->history_save($id, $objeto);
 	}
+	
+	function history_save($id, $objeto){
+		
+		unset($objeto['data_criacao'], $objeto['remetente'], $objeto['setor'], $objeto['tipo'], $objeto['carimbo'], $objeto['numero']);
+		
+		$objeto['id_documento'] = $id;
+		
+		
+		foreach ($objeto as $key => $value){
+			
+			if($objeto[$key] == ''){
+				$objeto[$key] = null;
+			}
+		}
+		
+		/*
+		echo "<pre>";
+		print_r($objeto);
+		echo "</pre>"; 
+		//exit;
+		*/
+		
+		$this->db->trans_start();
+		
+			$qtd = $this->conta_historico($id);
+			
+			if($qtd > 2){
+					
+				$antigo = $this->get_historico_antigo($id);
+	
+				$this->delete_historico($antigo->id_historico);
+					
+			}
+			
+			$this->db->insert('historico', $objeto);
+			$id = $this->db->insert_id();
+		
+		$this->db->trans_complete();
+		
+		return $id;
+	}
+	
+	function conta_historico($id_documento){
+	
+		$this->db->where('id_documento =', $id_documento);
+	
+		return $this->db->get('historico')->num_rows;
+	}
+	
+	function get_historico_antigo($id_documento){
+	
+		$this->db->select('id_historico, id_documento');
+		$this->db->where('id_documento =', $id_documento);
+		
+		$this->db->order_by('id_historico','asc');
+	
+		return $this->db->get('historico')->row();
+	}
+	
+	function delete_historico($id_historico){
+		$this->db->where('id_historico', $id_historico);
+		$this->db->delete('historico');
+	}
+	
 
 	function delete($id){
 		$this->db->where('id', $id);

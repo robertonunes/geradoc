@@ -74,7 +74,7 @@ $stylesheet = file_get_contents(base_url().'css/pdf.css'); // external css
 $mpdf->mirrorMargins = 0; // Use different Odd/Even headers and footers and mirror margins
 
 $mpdf->SetHTMLHeader(utf8_encode($header));
-if($objeto->tipoID != 4)
+//if($objeto->tipoID != 4)
 	$mpdf->SetHTMLFooter($footer);
 
 $mpdf->debug = true;
