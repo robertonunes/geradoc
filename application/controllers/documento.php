@@ -1161,7 +1161,7 @@ class Documento extends CI_Controller {
 			
 			$data['dialogos'] .= '<div id="dialog_'.$objeto->id_historico.'" class="window">
 									<a href="#" class="close">Fechar [X]</a><br />
-									<div style="padding: 1px;">
+									<div class="modal_historico_texto">
 									'. htmlspecialchars_decode($objeto->texto).'
 									</div>
 								</div>';

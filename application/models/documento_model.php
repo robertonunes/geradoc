@@ -303,7 +303,7 @@ class Documento_model extends CI_Model {
 		
 			$qtd = $this->conta_historico($id);
 			
-			if($qtd > 2){
+			if($qtd > 3){ // mantem 4 versoes
 					
 				$antigo = $this->get_historico_antigo($id);
 	
