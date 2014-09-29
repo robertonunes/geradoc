@@ -59,7 +59,7 @@
 	}
 	
 	
-	$content = '<div class="conteudo" style="min-height:900px; font-size:12.5pt;">
+	$content = '<div class="conteudo" style="min-height:900px; font-size:17px;">
 				'.htmlspecialchars_decode($objeto->layout).'
 			</div>';
 	
@@ -67,7 +67,7 @@
 		<table width="100%" style="vertical-align: top;font-family:\'Times New Roman\',Times,serif; font-size: 11px;">
 			<tr>
 				<td align="center">
-				'.$rodape.'
+				<div style="padding-top: 20px;">'.$rodape.'</div>
 				</td>
 			</tr>
 		</table>

@@ -805,7 +805,17 @@ class Documento extends CI_Controller {
 				
 				}else{
 					
-					//$this->Documento_model->history_save($id,$obj_do_form);
+					//--- Salva o historico ---//
+					
+					$obj = $this->Documento_model->get_by_id($id)->row();
+					
+					$texto = $this->get_layout($obj);
+					
+					//$texto = $this->get_layout($obj);					
+					$this->Documento_model->history_save($id, $texto->layout);
+					
+					//exit;
+					//--- Fim ---//
 				
 					$this->js_custom = 'var sSecs = 3;
                                 function getSecs(){
@@ -1116,12 +1126,58 @@ class Documento extends CI_Controller {
 
 	
 	function history($id){
-		$data['titulo']         = "Histórico do documento";
-		$data['message']        = '';
 		
+		$this->js[] = 'historico';
+		
+		$data['titulo']     = 'Histórico do Documento';
 		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
+			
+		// load datas
+		$objetos = $this->Documento_model->get_historico($id)->result();
+		
+		/*
+		echo "<pre>";
+		print_r($objetos);
+		echo "</pre>";
+		*/
+		
+		// carregando os dados na tabela
+		$this->load->library('table');
+		$this->table->set_empty("&nbsp;");
+		$this->table->set_heading('Item', 'Data', 'Texto', 'Ações');
+		$data['dialogos'] = '';
+		foreach ($objetos as $objeto){
+			
+			//$pos = strpos(htmlspecialchars_decode($objeto->texto), ' ', 300);
+			//$texto = substr(htmlspecialchars_decode($objeto->texto),0,$pos);
+			
+			$texto = $this->_encurta_texto(htmlspecialchars_decode($objeto->texto), 400);
+			
+			$this->table->add_row($objeto->id_historico, $objeto->data, $texto ,
+					'<div class="btn-group">
+						<a href="#dialog_'.$objeto->id_historico.'" name="modal" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar texto completo</a>
+					</div>'
+			);
+			
+			$data['dialogos'] .= '<div id="dialog_'.$objeto->id_historico.'" class="window">
+									<a href="#" class="close">Fechar [X]</a><br />
+									<div style="padding: 1px;">
+									'. htmlspecialchars_decode($objeto->texto).'
+									</div>
+								</div>';
+			
+		}
+		
+		//Monta a DataTable
+		$tmpl = $this->Grid_model->monta_tabela_list();
+		$this->table->set_template($tmpl);
+		// Fim da DataTable
+		
+		$data['table'] = $this->table->generate();
 		
 		$this->load->view($this->area.'/documento_historico', $data);
+		
+	
 	}
 	
 	function workflow($id){
@@ -1444,6 +1500,21 @@ class Documento extends CI_Controller {
 		}
 
 		return mb_convert_case($texto, MB_CASE_UPPER, "UTF-8");
+	}
+	
+	function _encurta_texto($assunto, $maximo = 200){
+	
+		$texto = null;
+	
+		if(strlen($assunto)>$maximo){
+			$texto = substr($assunto, 0, $maximo) . "...";
+			$ultimo_espaco = strripos($texto, " ");
+			$texto = substr($assunto, 0, $ultimo_espaco) . "...";
+		}else{
+			$texto = $assunto;
+		}
+	
+		return $texto;
 	}
 	
 	

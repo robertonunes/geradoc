@@ -269,29 +269,35 @@ class Documento_model extends CI_Model {
 		}
 		$this->db->trans_complete();
 		
-		$this->history_save($id, $objeto);
+		//$this->history_save($id, $objeto);
 	}
 	
-	function history_save($id, $objeto){
+	function history_save($id, $texto){
 		
-		unset($objeto['data_criacao'], $objeto['remetente'], $objeto['setor'], $objeto['tipo'], $objeto['carimbo'], $objeto['numero']);
+		//unset($objeto['data_criacao'], $objeto['remetente'], $objeto['setor'], $objeto['tipo'], $objeto['carimbo'], $objeto['numero']);
+		
 		
 		$objeto['id_documento'] = $id;
+		$objeto['data'] = date("Y-m-d H:i:s");
+		$objeto['texto'] = $texto;
 		
-		
+		/*
 		foreach ($objeto as $key => $value){
 			
 			if($objeto[$key] == ''){
 				$objeto[$key] = null;
 			}
 		}
+		*/
 		
 		/*
 		echo "<pre>";
 		print_r($objeto);
 		echo "</pre>"; 
 		//exit;
-		*/
+		 
+		 */
+		
 		
 		$this->db->trans_start();
 		
@@ -318,6 +324,14 @@ class Documento_model extends CI_Model {
 		$this->db->where('id_documento =', $id_documento);
 	
 		return $this->db->get('historico')->num_rows;
+	}
+	
+	function get_historico($id_documento){
+		
+		$this->db->where('id_documento =', $id_documento);
+		$this->db->order_by('id_historico','desc');
+		return $this->db->get('historico');
+		
 	}
 	
 	function get_historico_antigo($id_documento){
