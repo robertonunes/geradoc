@@ -690,8 +690,8 @@ public function search($page = 1) {
 	
     	$this->js[] = 'usuario';
         $data['titulo'] = "Busca por usuários";
-        $data['link_add']   = anchor($this->area.'/add/','Adicionar',array('class'=>'add'));
-        $data['link_search_cancel'] = anchor($this->area.'/search_cancel/','CANCELAR PESQUISA',array('class'=>'button_cancel'));
+        $data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Adicionar',array('class'=>'btn btn-primary btn-sm'));
+		$data['link_search_cancel'] = anchor($this->area.'/search_cancel/','CANCELAR PESQUISA',array('class'=>'button_cancel'));
         $data['form_action'] = site_url($this->area.'/search');
 
         $this->load->library(array('pagination', 'table'));
@@ -752,8 +752,8 @@ public function search($page = 1) {
             $this->table->add_row($o->id,  $o->nome, $nome_setor,
 
             		'<div class="btn-group">'.
-	            		$this->Campo_model->make_link($this->area, 'visualizar', $objeto->id).
-	            		$this->Campo_model->make_link($this->area, 'alterar_sm', $objeto->id).
+	            		$this->Campo_model->make_link($this->area, 'visualizar', $o->id).
+	            		$this->Campo_model->make_link($this->area, 'alterar_sm', $o->id).
             		'</div>'
             		
                // anchor($this->area.'/view/'.$o->id,'visualizar',array('class'=>'view')).' '.

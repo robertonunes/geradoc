@@ -75,6 +75,13 @@ class Login extends CI_Controller {
             
         } else {
         	
+        	/*
+        	if(!isset($user_cadastrado->setores)){
+        		echo "O campo setores não existe na tabela usuarios";
+        		exit;
+        	}
+        	*/
+        	
         	if($user_cadastrado->setores != null){
         		
         		$_SESSION['usuario'] = $user_cadastrado;

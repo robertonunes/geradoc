@@ -677,16 +677,21 @@ class Documento extends CI_Controller {
 				if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
 					$campo = explode(';' , $obj_tipo->$nome_campo);
 					
-					if(count($campo) == 2){ // se campo tiver apenas 2 partes...
-						$campo[2] = ''; // rotulo = ''
+					if($campo[2] == ''){ // se o rotulo estiver em branco
+						$campo[2] = $nome_campo; // rotulo = ao nome do campo
 					}
 					
 				}else{
+					
 					$campo[0] = $obj_tipo->$nome_campo;
-					$campo[2] = $nome_campo;
+					//$campo[1] = 'N'; // disponibilidade
+					$campo[2] = $nome_campo; // rotulo
+					
 				}
 		
 				$coluna = $this->Coluna_model->get_by_nome($nome_campo);
+				
+				//print_r($campo);
 				
 				if($campo[0] == 'S'){ // caso disponivel for igual a sim
 					
@@ -1185,6 +1190,68 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		
 		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
+		
+		$obj = $this->Documento_model->get_by_id($id)->row();
+		
+		
+		//echo $this->session->userdata('setor');
+		
+		//echo $obj->setor;
+		
+		
+		if($obj->setor == $this->session->userdata('setor')){
+		
+		$linhas_cabecalho = '
+				<tr>
+				<!--
+				<th class="text-center"><a href="#" class="btn btn-default btn-sm"><i class="cus-printer"></i> Impresso</a></th>
+	   			<th class="text-center"><a href="#" class="btn btn-info btn-sm"><i class="cus-pen"></i> Assinado</a></th>
+				--!>
+	   			<th class="text-center"><a href="#" class="btn btn-primary btn-sm"><i class="cus-page_white_go"></i> Enviar</a></th>
+	   			<th class="text-center"><a href="#" class="btn btn-success btn-sm disabled"><i class="cus-tick"></i> Receber</a></th>
+	   			<th class="text-center"><a href="#" class="btn btn-warning btn-sm disabled"><i class="cus-paper_airplane"></i> Encaminhar</a></th>
+	   			</tr>';
+		}else{
+			
+			$linhas_cabecalho = '
+				<tr>
+		   			<th class="text-center"><a href="#" class="btn btn-primary btn-sm disabled"><i class="cus-page_white_go"></i> Enviar</a></th>
+		   			<th class="text-center"><a href="#" class="btn btn-success btn-sm"><i class="cus-tick"></i> Receber</a></th>
+		   			<th class="text-center"><a href="#" class="btn btn-warning btn-sm active"><i class="cus-paper_airplane"></i> Encaminhar</a></th>
+	   			</tr>';
+			
+		}
+		
+		$linhas_corpo = '
+						<td>
+							data envio
+						</td>
+						<td>
+							data recebimento
+						</td>
+						<td>
+							data encaminhamento
+							<br>
+							destino
+						</td>
+							
+			        </tr>';		
+		
+		
+		$linhas_tramitacao = '<tr>
+									<td>
+										data
+									</td>
+									<td>
+										setor
+									</td>			
+						        </tr>';
+		
+		$data['linhas_cabecalho'] = $linhas_cabecalho;
+		
+		$data['linhas_corpo'] = $linhas_corpo;
+		
+		$data['linhas_tramitacao'] = $linhas_tramitacao;
 		
 		$this->load->view($this->area.'/documento_tramitacao', $data);
 	}
