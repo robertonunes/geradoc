@@ -478,7 +478,5 @@ class Documento_model extends CI_Model {
 	/* -- FIM DA BUSCA -- */
 
 
-
-
 }
 ?>

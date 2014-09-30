@@ -1013,6 +1013,7 @@ class Documento extends CI_Controller {
 		if(!$data['objeto']->assinatura){
 			$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
 		}
+		$data['objeto']->assinatura = '<div style="line-height: 125%;">'.$data['objeto']->assinatura.'</div>';
 		$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
@@ -1191,13 +1192,32 @@ class Documento extends CI_Controller {
 		
 		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
 		
+		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
+		$data['form_action'] = site_url($this->area.'/workflow/'.$id);
+		
+		
 		$obj = $this->Documento_model->get_by_id($id)->row();
 		
+		$this->load->model('Setor_model','',TRUE);
+		$setores = $this->Setor_model->list_all()->result();
+		$arraySetores[0] = "SELECIONE O DESTINO";
+		if($setores){
+			foreach ($setores as $setor){
+				$arraySetores[$setor->id] = $setor->nome;
+			}
+		}else{
+			$arraySetores[1] = "";
+		}
+		$setoresDisponiveis  =  $arraySetores;
 		
-		//echo $this->session->userdata('setor');
 		
-		//echo $obj->setor;
+		$setor_origem = $this->Setor_model->get_by_id($obj->setor)->row();
 		
+		//print_r($setor_origem);
+		
+		$data['setor_origem'] = $setor_origem->nome;
+		
+		$data['setor_destino'] = $obj->para;
 		
 		if($obj->setor == $this->session->userdata('setor')){
 		
@@ -1207,10 +1227,22 @@ class Documento extends CI_Controller {
 				<th class="text-center"><a href="#" class="btn btn-default btn-sm"><i class="cus-printer"></i> Impresso</a></th>
 	   			<th class="text-center"><a href="#" class="btn btn-info btn-sm"><i class="cus-pen"></i> Assinado</a></th>
 				--!>
-	   			<th class="text-center"><a href="#" class="btn btn-primary btn-sm"><i class="cus-page_white_go"></i> Enviar</a></th>
+				
+				
+	   			<th class="text-center">
+				
+					<h3><span class="label label-primary"><i class="cus-page_white_go"></i> Enviar</span></h3>
+					
+				
+				</th>
+						
+						
+						
 	   			<th class="text-center"><a href="#" class="btn btn-success btn-sm disabled"><i class="cus-tick"></i> Receber</a></th>
-	   			<th class="text-center"><a href="#" class="btn btn-warning btn-sm disabled"><i class="cus-paper_airplane"></i> Encaminhar</a></th>
+	   			<th class="text-center"><a href="#" class="btn btn-warning btn-sm disabled"><i class="cus-paper_airplane"></i> Encaminhar para</a></th>
 	   			</tr>';
+		
+			
 		}else{
 			
 			$linhas_cabecalho = '
@@ -1224,8 +1256,10 @@ class Documento extends CI_Controller {
 		
 		$linhas_corpo = '
 						<td>
-							data envio
+							'.form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm"').'
+							<button type="submit" class="btn btn-success btn-sm" style="margin-top: 10px;"><span class="glyphicon glyphicon glyphicon-ok"></span> OK </button>
 						</td>
+									
 						<td>
 							data recebimento
 						</td>
@@ -1253,7 +1287,11 @@ class Documento extends CI_Controller {
 		
 		$data['linhas_tramitacao'] = $linhas_tramitacao;
 		
-		$this->load->view($this->area.'/documento_tramitacao', $data);
+		if ($this->form_validation->run($this->area."/edit") == FALSE) {
+			$this->load->view($this->area.'/documento_tramitacao', $data);
+		} else {
+			$this->load->view($this->area.'/documento_tramitacao', $data);
+		}
 	}
 	
 	function stamp($id){
@@ -1854,6 +1892,7 @@ class Documento extends CI_Controller {
 		$this->load->view('erro', $data);
     		
     }
+    
     
 }
 ?>

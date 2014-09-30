@@ -78,6 +78,8 @@ $mpdf->SetHTMLHeader(utf8_encode($header));
 	$mpdf->SetHTMLFooter($footer);
 
 $mpdf->debug = true;
+//$mpdf->keep_table_proportions = false;
+
 $mpdf->WriteHTML($stylesheet,1);
 $mpdf->WriteHTML($content);
 
