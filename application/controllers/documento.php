@@ -1231,15 +1231,15 @@ class Documento extends CI_Controller {
 				
 	   			<th class="text-center">
 				
-					<h3><span class="label label-primary"><i class="cus-page_white_go"></i> Enviar</span></h3>
+					<img src="'.base_url().'images/motorcycle.png">
 					
 				
 				</th>
 						
 						
 						
-	   			<th class="text-center"><a href="#" class="btn btn-success btn-sm disabled"><i class="cus-tick"></i> Receber</a></th>
-	   			<th class="text-center"><a href="#" class="btn btn-warning btn-sm disabled"><i class="cus-paper_airplane"></i> Encaminhar para</a></th>
+	   			<th class="text-center"><img src="'.base_url().'images/mailbox.png"></th>
+	   			<th class="text-center"><img src="'.base_url().'images/paper-plane.png"></th>
 	   			</tr>';
 		
 			
