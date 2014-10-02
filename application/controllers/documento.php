@@ -677,7 +677,7 @@ class Documento extends CI_Controller {
 				if(strpos($obj_tipo->$nome_campo, ';') != FALSE){
 					$campo = explode(';' , $obj_tipo->$nome_campo);
 					
-					if($campo[2] == ''){ // se o rotulo estiver em branco
+					if(isset($campo[2]) and $campo[2] == ''){ // se o rotulo estiver em branco
 						$campo[2] = $nome_campo; // rotulo = ao nome do campo
 					}
 					
