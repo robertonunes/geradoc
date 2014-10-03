@@ -8,7 +8,7 @@ class Login_mobile extends CI_Controller {
      * public $title; define o titulo default da view
      * public $css = array('css1','css2'); define os arquivos css default
      * public $js = array('js1','js2'); define os arquivos javascript default
-     * public $images = 'dir_images'; define a diret�rio default das imagens
+     * public $images = 'dir_images'; define a diretorio default das imagens
      *  
      */
 
@@ -37,7 +37,7 @@ class Login_mobile extends CI_Controller {
        if($qtd_usuarios == 0){
        	
        	
-       		echo "NENHUM USU�RIO CADASTRADO";
+       		echo "NENHUM USUÁRIO CADASTRADO";
        		
        		
        		redirect('usuario/add');
@@ -65,18 +65,23 @@ class Login_mobile extends CI_Controller {
         $this->load->model('Login_model', '', TRUE);
         $user_cadastrado = $this->Login_model->get_usuario($obj->login, $obj->senha);
         //echo $this->db->last_query();
-
-        if ($user_cadastrado == null) {
+       // echo "1";
+        $data['form_action'] = site_url('/login_mobile');
+        
+       //print_r($user_cadastrado);
+        
+        if ($user_cadastrado->cpf == null) {
         	
-        	$data['form_action'] = site_url('/login_mobile');
+        	//echo "2";
             $data['mensagem'] = '<div class="alert alert-danger"><center><img class="img_align" src="{TPL_images}/error.png" alt="! " /> CPF ou senha inválidos! </center></div>';
             $data['link1'] = '<a class="link1" href="javascript:window.history.back();" title="Tentar novamente"> &raquo; tentar novamente</a>';
             $this->load->view('login/login_mobile', $data);
             
         } else {
+        	//echo "3";
         	
         	if($user_cadastrado->setores != null){
-        		
+        		//echo "4";
         		$_SESSION['usuario'] = $user_cadastrado;
 					
 				$setores_usuario = $user_cadastrado->setores;
