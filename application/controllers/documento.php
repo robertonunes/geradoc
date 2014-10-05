@@ -1256,8 +1256,8 @@ class Documento extends CI_Controller {
 		
 		$linhas_corpo = '
 						<td>
-							'.form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm"').'
-							<button type="submit" class="btn btn-success btn-sm" style="margin-top: 10px;"><span class="glyphicon glyphicon glyphicon-ok"></span> OK </button>
+							'.form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-primary" data-live-search="true"').'
+							<button type="submit" class="btn btn-success" style="margin-top: 10px;"><span class="glyphicon glyphicon glyphicon-ok"></span> Enviar </button>
 						</td>
 									
 						<td>
