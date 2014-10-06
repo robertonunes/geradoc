@@ -261,7 +261,7 @@ class Documento extends CI_Controller {
 		
 		$this->load->model('Contato_model','',TRUE);
 		//$remetentes = $this->Contato_model->list_all_actives()->result();
-		$arrayRemetentes[0] = "SELECIONE";
+		$arrayRemetentes[0] = "SELECIONE UM REMETENTE";
 		if($remetentes){
 			foreach ($remetentes as $remetente){
 				$arrayRemetentes[$remetente->id] = $remetente->nome;
