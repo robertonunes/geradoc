@@ -300,7 +300,7 @@ class Documento extends CI_Controller {
 		//--- POPULA O DROPDOWN DE TIPOS ---//
 		$this->load->model('Tipo_model','',TRUE);
 		$tipos = $this->Tipo_model->list_all_actives()->result();
-		$arrayTipos[0] = "SELECIONE";
+		$arrayTipos[0] = "SELECIONE UM TIPO";
 		if($tipos){
 			foreach ($tipos as $tipo){
 				$arrayTipos[$tipo->id] = $tipo->nome;	
