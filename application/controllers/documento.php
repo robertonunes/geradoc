@@ -1203,7 +1203,7 @@ class Documento extends CI_Controller {
 		$arraySetores[0] = "SELECIONE O DESTINO";
 		if($setores){
 			foreach ($setores as $setor){
-				$arraySetores[$setor->id] = $setor->nome;
+				$arraySetores[$setor->id] = $setor->nome . '-' . $setor->sigla;
 			}
 		}else{
 			$arraySetores[1] = "";
