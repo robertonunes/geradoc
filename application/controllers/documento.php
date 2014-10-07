@@ -161,6 +161,10 @@ class Documento extends CI_Controller {
         // variaveis para a view
        	$data['table'] = $this->table->generate();
         $data["total_rows"] = $config['total_rows'];
+        
+        //checa documentos pendentes de recebimento
+        $data['workflow'] = $this->Documento_model->check_workflow($this->session->userdata('setor'))->num_rows();
+        //fim
 
 		$this->load->view($this->area.'/'.$this->area.'_list', $data);
 		
@@ -1254,15 +1258,17 @@ class Documento extends CI_Controller {
 		$tramitacoes = $this->Documento_model->list_workflow($id)->result();
 		
 		$linhas_tramitacao = '';
-
+		$recebimento_prendente = false;
+		
 		foreach ($tramitacoes as $tramitacao){
 			
-			if($tramitacao->id_setor_destino == $this->session->userdata('setor')){
+			if($tramitacao->id_setor_destino == $this->session->userdata('setor') and $tramitacao->data_recebimento != null){
 				$campoSetor = form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-default" data-live-search="true"');
 			}
 			
 			if($tramitacao->data_recebimento == null){
 				$tramitacao->data_recebimento = '-';
+				$recebimento_prendente = true;
 			}
 			
 			$remetente = $this->getUsuario($tramitacao->id_remetente);
@@ -1274,9 +1280,20 @@ class Documento extends CI_Controller {
 			
 			if(isset($recebedor) and $recebedor != null){
 				$recebedorNome = $recebedor->nome;
-			}else{
+			}
+			
+			
+			if(isset($recebedor) and $recebedor == null and $tramitacao->id_remetente == $this->session->userdata('id_usuario')){
 				$recebedorNome = '<a href="'.site_url().'/documento/workflow_delete/'.$tramitacao->id_workflow.'/'.$tramitacao->id_documento.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Cancelar</a>';
 			}
+			
+			if(isset($recebedor) and $recebedor == null and $tramitacao->id_remetente != $this->session->userdata('id_usuario')){
+				$recebedorNome = '';
+			}
+			
+		
+				//$recebedorNome = '<a href="'.site_url().'/documento/workflow_delete/'.$tramitacao->id_workflow.'/'.$tramitacao->id_documento.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Cancelar</a>';
+			
 			
 			$linhas_tramitacao .= '<tr>
 									<td width="100px">
@@ -1296,6 +1313,11 @@ class Documento extends CI_Controller {
 									</td>
 						        </tr>';
 			
+		}
+		
+		
+		if($recebimento_prendente == true){
+			$campoSetor = '';
 		}
 
 		$data['campoSetor'] = $campoSetor;
@@ -1448,7 +1470,7 @@ class Documento extends CI_Controller {
 	
 	function workflow_delete($id, $id_doc){
 		$this->Documento_model->workflow_delete($id);
-		redirect('documento/workflows/'. $id_doc);
+		redirect('documento/workflow/'. $id_doc);
 	}
 	
 	function stamp($id){

@@ -392,6 +392,15 @@ class Documento_model extends CI_Model {
 		$this->db->where('id_workflow', $id);
 		$this->db->delete('workflow');
 	}
+	
+	function check_workflow($id_setor_destino){
+	
+		$this->db->where('id_setor_destino', $id_setor_destino);
+		$this->db->where('data_recebimento', null);
+		$this->db->order_by('id_workflow','desc');
+		return $this->db->get('workflow');
+	
+	}
 
 	
 	/*
