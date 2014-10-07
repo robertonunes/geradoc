@@ -1473,6 +1473,11 @@ class Documento extends CI_Controller {
 		redirect('documento/workflow/'. $id_doc);
 	}
 	
+	function workflow_wait(){
+		$_SESSION['workflow_wait'] = "wait";
+		redirect('documento/index/');
+	}
+	
 	function stamp($id){
 		$obj["carimbo"] = "S";
 		$this->Documento_model->update($id,$obj);
