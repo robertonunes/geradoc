@@ -91,7 +91,7 @@ class Documento extends CI_Controller {
 		}
 		
 		foreach ($data['setores']as $setor){
-			$arraySetores[$setor->id] = "$setor->nome";
+			$arraySetores[$setor->id] = "$setor->sigla" . " - " . $setor->nome;
 		}
 		$data['setoresDisponiveis']  =  $arraySetores;
 			
@@ -101,7 +101,6 @@ class Documento extends CI_Controller {
 			
 		$data['setorSelecionado'] = $_SESSION['setorSelecionado'];
 		//--- FIM ---//	
-		
 		
 		if($data['setorSelecionado'] == 'all'){
 			$data['setorCaminho'] = "TODOS";
@@ -268,7 +267,7 @@ class Documento extends CI_Controller {
 		
 		$this->load->model('Contato_model','',TRUE);
 		//$remetentes = $this->Contato_model->list_all_actives()->result();
-		$arrayRemetentes[0] = "SELECIONE";
+		$arrayRemetentes[0] = "SELECIONE UM REMETENTE";
 		if($remetentes){
 			foreach ($remetentes as $remetente){
 				$arrayRemetentes[$remetente->id] = $remetente->nome;
@@ -307,7 +306,7 @@ class Documento extends CI_Controller {
 		//--- POPULA O DROPDOWN DE TIPOS ---//
 		$this->load->model('Tipo_model','',TRUE);
 		$tipos = $this->Tipo_model->list_all_actives()->result();
-		$arrayTipos[0] = "SELECIONE";
+		$arrayTipos[0] = "SELECIONE UM TIPO";
 		if($tipos){
 			foreach ($tipos as $tipo){
 				$arrayTipos[$tipo->id] = $tipo->nome;	
@@ -469,6 +468,12 @@ class Documento extends CI_Controller {
 					echo  '<br> Erro na conexão com o banco. <br>';
 				
 				}else{
+					
+					//--- Salva o historico ---//	
+					$obj = $this->Documento_model->get_by_id($id)->row();	
+					$texto = $this->get_layout($obj);	
+					$this->Documento_model->history_save($id, $texto->layout);
+					//--- Fim ---//
 				
 					$this->js_custom = 'var sSecs = 3;
                                 function getSecs(){
@@ -1200,6 +1205,7 @@ class Documento extends CI_Controller {
 		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
 		
 		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
+		
 		$data['form_action'] = site_url($this->area.'/workflow/'.$id);
 		
 		
@@ -1210,7 +1216,7 @@ class Documento extends CI_Controller {
 		$arraySetores[0] = "SELECIONE O DESTINO";
 		if($setores){
 			foreach ($setores as $setor){
-				$arraySetores[$setor->id] = $setor->nome . '-' . $setor->sigla;
+				$arraySetores[$setor->id] = $setor->nome . ' - ' . $setor->sigla;
 			}
 		}else{
 			$arraySetores[1] = "";
@@ -1226,79 +1232,214 @@ class Documento extends CI_Controller {
 		
 		$data['setor_destino'] = $obj->para;
 		
+		$doc = $this->Documento_model->get_by_id($id)->row();
+		$tipoNome = $this->Documento_model->get_tipo($doc->tipo)->row();	
+		$setorRemetente = $this->getCaminho($doc->setor);
+		
+		$data['assunto'] = $doc->assunto;
+		$data['identificacao'] = "$tipoNome->abreviacao Nº $doc->numero - $setorRemetente" . ' <a href="'.site_url().'/documento/view/'.$id.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>';
+		
+		
+		$campoSetor = '';
+		
 		if($obj->setor == $this->session->userdata('setor')){
-		
-		$linhas_cabecalho = '
-				<tr>
-				<!--
-				<th class="text-center"><a href="#" class="btn btn-default btn-sm"><i class="cus-printer"></i> Impresso</a></th>
-	   			<th class="text-center"><a href="#" class="btn btn-info btn-sm"><i class="cus-pen"></i> Assinado</a></th>
-				--!>
-				
-				
-	   			<th class="text-center">
-				
-					<img src="'.base_url().'images/motorcycle.png">
-					
-				
-				</th>
-						
-						
-						
-	   			<th class="text-center"><img src="'.base_url().'images/mailbox.png"></th>
-	   			<th class="text-center"><img src="'.base_url().'images/paper-plane.png"></th>
-	   			</tr>';
-		
-			
-		}else{
-			
-			$linhas_cabecalho = '
-				<tr>
-		   			<th class="text-center"><a href="#" class="btn btn-primary btn-sm disabled"><i class="cus-page_white_go"></i> Enviar</a></th>
-		   			<th class="text-center"><a href="#" class="btn btn-success btn-sm"><i class="cus-tick"></i> Receber</a></th>
-		   			<th class="text-center"><a href="#" class="btn btn-warning btn-sm active"><i class="cus-paper_airplane"></i> Encaminhar</a></th>
-	   			</tr>';
-			
+
+			$campoSetor = form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-default" data-live-search="true"');
+	
 		}
+
+		$tramitacoes = $this->Documento_model->list_workflow($id)->result();
 		
-		$linhas_corpo = '
-						<td>
-							'.form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-primary" data-live-search="true"').'
-							<button type="submit" class="btn btn-success" style="margin-top: 10px;"><span class="glyphicon glyphicon glyphicon-ok"></span> Enviar </button>
-						</td>
-									
-						<td>
-							data recebimento
-						</td>
-						<td>
-							data encaminhamento
-							<br>
-							destino
-						</td>
-							
-			        </tr>';		
-		
-		
-		$linhas_tramitacao = '<tr>
-									<td>
-										data
+		$linhas_tramitacao = '';
+
+		foreach ($tramitacoes as $tramitacao){
+			
+			if($tramitacao->id_setor_destino == $this->session->userdata('setor')){
+				$campoSetor = form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-default" data-live-search="true"');
+			}
+			
+			if($tramitacao->data_recebimento == null){
+				$tramitacao->data_recebimento = '-';
+			}
+			
+			$remetente = $this->getUsuario($tramitacao->id_remetente);
+			
+			$setor = $this->getSetor($tramitacao->id_setor_destino);
+			
+			
+			$recebedor = $this->getUsuario($tramitacao->id_recebedor);
+			
+			if(isset($recebedor) and $recebedor != null){
+				$recebedorNome = $recebedor->nome;
+			}else{
+				$recebedorNome = '<a href="'.site_url().'/documento/workflow_delete/'.$tramitacao->id_workflow.'/'.$tramitacao->id_documento.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Cancelar</a>';
+			}
+			
+			$linhas_tramitacao .= '<tr>
+									<td width="100px">
+										'.$this->datas->datetimeToBR($tramitacao->data_envio).'
 									</td>
 									<td>
-										setor
-									</td>			
+										'.$remetente->nome.'
+									</td>
+									<td>
+										'.$setor->nome.'
+									</td>
+									<td width="100px">
+										'.$this->datas->datetimeToBR($tramitacao->data_recebimento).'
+									</td>
+									<td>
+										'.$recebedorNome.'
+									</td>
 						        </tr>';
-		
-		$data['linhas_cabecalho'] = $linhas_cabecalho;
-		
-		$data['linhas_corpo'] = $linhas_corpo;
+			
+		}
+
+		$data['campoSetor'] = $campoSetor;
 		
 		$data['linhas_tramitacao'] = $linhas_tramitacao;
 		
-		if ($this->form_validation->run($this->area."/edit") == FALSE) {
+		if ($this->form_validation->run($this->area."/workflow") == FALSE) {
+			
 			$this->load->view($this->area.'/documento_tramitacao', $data);
+			
 		} else {
-			$this->load->view($this->area.'/documento_tramitacao', $data);
+			
+			//echo "passou";
+			
+			
+			//cria o objeto com os dados passados via post
+			$objeto_do_form = array(
+					'id_documento' => $id,
+					'id_setor_destino' => $this->input->post('campoSetor'),
+					'id_remetente' => $this->session->userdata('id_usuario'),
+					'data_envio' => date("Y-m-d H:i:s"),
+			);
+			
+			/*
+			echo "<pre>";
+			print_r($objeto_do_form);
+			echo "</pre>";
+			*/
+			
+			//exit;
+			
+			// Salva o registro
+				$this->Documento_model->workflow($objeto_do_form);
+	
+				$redirecionamento = site_url() . '/documento/workflow/' . $id;
+				
+				$this->js_custom = 'var sSecs = 4;
+                                function getSecs(){
+                                    sSecs--;
+                                    if(sSecs<0){ sSecs=59; sMins--; }
+                                    $("#clock1").html(sSecs+" segundos...");
+                                    setTimeout("getSecs()",1000);
+                                    var s =  $("#clock1").html();
+                                    if (s == "1 segundos..."){
+                                        window.location.href = "' .  $redirecionamento . '";
+                                    }
+                                }
+                                ';
+	
+				$data['mensagem'] = "<br /> Redirecionando em ";
+				$data['mensagem'] .= '<span id="clock1"> ' . "<script>setTimeout('getSecs()',1000);</script> </span>";
+				$data['link1'] = '';
+				$data['link2'] = '';
+	
+				$this->load->view('success', $data);
+			
+			
+			
 		}
+	}
+	
+	
+	function workflows(){
+	
+		$this->js[] = 'tramitacao';
+	
+		$data['titulo']     = 'Recebimento de Documentos';
+		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
+			
+		$id_setor = $this->session->userdata('setor'); 
+		
+		// load datas
+		$objetos = $this->Documento_model->get_workflows($id_setor)->result();
+	
+		/*
+			echo "<pre>";
+		print_r($objetos);
+		echo "</pre>";
+		*/
+	
+		// carregando os dados na tabela
+		$this->load->library('table');
+		$this->table->set_empty("&nbsp;");
+		$this->table->set_heading('Item', 'Data do envio', 'Documento', 'Assunto', 'Ações');
+	
+		
+		foreach ($objetos as $objeto){
+			
+			$doc = $this->Documento_model->get_by_id($objeto->id_documento)->row();
+	
+			$tipoNome = $this->Documento_model->get_tipo($doc->tipo)->row();
+			
+			$setorRemetente = $this->getCaminho($doc->setor);
+			
+			if($objeto->data_recebimento == null){
+				$botoes = '<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm"><i class="cus-tick"></i> Acusar recebimento</a>';
+			}else{
+				$botoes = '<a href="'.site_url().'/documento/desfazer_recebimento/'.$objeto->id_workflow.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Desfazer recebimento</a>
+							<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
+			}
+			
+			//$botao_tramitacao = '<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
+									
+			
+			$this->table->add_row($objeto->id_workflow, $this->datas->datetimeToBR($objeto->data_envio), 
+					
+				
+					"$tipoNome->abreviacao Nº $doc->numero <br> $setorRemetente",
+					
+					"assunto",
+					
+					'<div class="btn-group">'.$botoes.'</div>'
+			);
+				
+			
+				
+		}
+	
+		//Monta a DataTable
+		$tmpl = $this->Grid_model->monta_tabela_list();
+		$this->table->set_template($tmpl);
+		// Fim da DataTable
+	
+		$data['table'] = $this->table->generate();
+	
+		$this->load->view($this->area.'/documento_tramitacoes', $data);
+	
+	
+	}
+	
+	function acusar_recebimento($id){
+		$obj["id_recebedor"] = $this->session->userdata('id_usuario');
+		$obj["data_recebimento"] = date("Y-m-d H:i:s");
+		$this->Documento_model->workflow_update($id,$obj);
+		redirect('documento/workflows');
+	}
+	
+	function desfazer_recebimento($id){
+		$obj["data_recebimento"] = null;
+		$obj["id_recebedor"] = null;
+		$this->Documento_model->workflow_update($id,$obj);
+		redirect('documento/workflows');
+	}
+	
+	function workflow_delete($id, $id_doc){
+		$this->Documento_model->workflow_delete($id);
+		redirect('documento/workflows/'. $id_doc);
 	}
 	
 	function stamp($id){
@@ -1749,6 +1890,14 @@ class Documento extends CI_Controller {
 		$setor =  $this->Setor_model->get_by_id($id_setor)->row();
     
     	return $setor;
+    }
+    
+    public function getUsuario ($id_usuario){
+    
+    	$this->load->model('Usuario_model', '', TRUE);
+    	$usuario =  $this->Usuario_model->get_by_id($id_usuario)->row();
+    
+    	return $usuario;
     }
     
     public function getCaminho ($id_setor){
