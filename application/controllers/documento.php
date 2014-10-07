@@ -918,6 +918,8 @@ class Documento extends CI_Controller {
 			$data['objeto']->assunto = $this->highlight($data['objeto']->assunto, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->referencia = $this->highlight($data['objeto']->referencia, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
+			
+			$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
 		}
 		//--- FIM ---//
 		
@@ -1528,7 +1530,7 @@ class Documento extends CI_Controller {
 		}
 		$data['keyword_'.$this->area] = $keyword;
 	
-		$data['titulo'] = 'Resultado da busca por <font color="black">"'. $keyword .'"</font> nos conteúdos dos documentos.';
+		$data['titulo'] = 'Resultado da busca por <mark>'. $keyword .'</mark> nos conteúdos dos documentos.';
 		$this->audita($keyword);
 	
 		$maximo = 10;
@@ -1870,7 +1872,7 @@ class Documento extends CI_Controller {
 		
 		$words = htmlentities($words, ENT_COMPAT, "UTF-8");
 		
-		return str_replace($words, "<span style='background-color:#FFFF00'>$words</span>", $text);
+		return str_ireplace($words, "<span style='background-color:#FFFF00'>$words</span>", $text);
 	}
 
 
