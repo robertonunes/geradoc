@@ -616,8 +616,7 @@ class Usuario extends CI_Controller {
 		$this->js[] = 'nova_senha';
 	
 		$this->load->library(array('form_validation','datas'));
-		$this->form_validation->set_error_delimiters('<div class="error_field" style="float: right; padding: 8px; padding-right: 150px;"><img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
-		 
+		$this->form_validation->set_error_delimiters('<div>', '</div>');
 		$data['titulo'] = 'Nova senha';
 		$data['form_action'] = site_url("/usuario/nova_senha");
 		
