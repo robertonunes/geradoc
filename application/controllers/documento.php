@@ -870,7 +870,8 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['acao']          	= "update";
 		
-		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
+		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'history_back');
+		
 		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
 		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
 		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
@@ -1162,7 +1163,7 @@ class Documento extends CI_Controller {
 		// carregando os dados na tabela
 		$this->load->library('table');
 		$this->table->set_empty("&nbsp;");
-		$this->table->set_heading('Item', 'Data', 'Texto', 'Ações');
+		$this->table->set_heading('Item', 'Data', 'Ações');
 		$data['dialogos'] = '';
 		foreach ($objetos as $objeto){
 			
@@ -1171,7 +1172,7 @@ class Documento extends CI_Controller {
 			
 			$texto = $this->_encurta_texto(htmlspecialchars_decode($objeto->texto), 400);
 			
-			$this->table->add_row($objeto->id_historico, $objeto->data, $texto ,
+			$this->table->add_row($objeto->id_historico, $this->datas->datetimeToBR($objeto->data), 
 					'<div class="btn-group">
 						<a href="#dialog_'.$objeto->id_historico.'" name="modal" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar texto completo</a>
 					</div>'
@@ -1297,6 +1298,10 @@ class Documento extends CI_Controller {
 
 		$data['campoSetor'] = $campoSetor;
 		
+		$data['privado'] = $doc->oculto;
+		
+	
+		
 		$data['linhas_tramitacao'] = $linhas_tramitacao;
 		
 		if ($this->form_validation->run($this->area."/workflow") == FALSE) {
@@ -1388,9 +1393,11 @@ class Documento extends CI_Controller {
 			$setorRemetente = $this->getCaminho($doc->setor);
 			
 			if($objeto->data_recebimento == null){
-				$botoes = '<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm"><i class="cus-tick"></i> Acusar recebimento</a>';
+				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
+							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm"><i class="cus-tick"></i> Acusar recebimento</a>';
 			}else{
-				$botoes = '<a href="'.site_url().'/documento/desfazer_recebimento/'.$objeto->id_workflow.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Desfazer recebimento</a>
+				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
+							<a href="'.site_url().'/documento/desfazer_recebimento/'.$objeto->id_workflow.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Desfazer recebimento</a>
 							<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
 			}
 			
