@@ -1451,7 +1451,7 @@ class Documento extends CI_Controller {
 			
 			if($objeto->data_recebimento == null){
 				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
-							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm"><i class="cus-tick"></i> Acusar recebimento</a>';
+							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-ok"></span> Acusar recebimento</a>';
 			}else{
 				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
 							<a href="'.site_url().'/documento/desfazer_recebimento/'.$objeto->id_workflow.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Desfazer recebimento</a>
@@ -1646,6 +1646,10 @@ class Documento extends CI_Controller {
 		$data["total_rows"] = $config['total_rows'];
 		$data['pagination'] = $this->pagination->create_links();
 	
+		//checa documentos pendentes de recebimento
+		$data['workflow'] = $this->Documento_model->check_workflow($this->session->userdata('setor'))->num_rows();
+		//fim
+		
 		// load view
 		$this->audita();
 		$this->load->view($this->area.'/'.$this->area.'_list', $data);
