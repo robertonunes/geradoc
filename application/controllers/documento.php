@@ -1400,22 +1400,40 @@ class Documento extends CI_Controller {
 	
 	
 	function workflows(){
-	
+		
 		$this->js[] = 'tramitacao';
 	
 		$data['titulo']     = 'Recebimento de Documentos';
 		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
-			
-		$id_setor = $this->session->userdata('setor'); 
+		$data['form_action'] = site_url($this->area.'/workflows/search');
 		
-		// load datas
-		$objetos = $this->Documento_model->get_workflows($id_setor)->result();
-	
-		/*
-			echo "<pre>";
-		print_r($objetos);
-		echo "</pre>";
-		*/
+		$id_setor = $this->session->userdata('setor');
+		
+		// BUSCA
+		$data['keyword_workflow'] = '';
+		if(isset($_SESSION['keyword_workflow']) == true and $_SESSION['keyword_workflow'] != null){
+			$data['keyword_workflow'] = $_SESSION['keyword_workflow'];
+			redirect($this->area.'workflows/search/');
+		}else{
+			$data['keyword_workflow'] = 'pesquisa textual';
+			$data['link_search_cancel'] = '';
+		}
+		// FIM DA BUSCA
+		
+		//Inicio da Paginacao
+		$this->load->library('pagination');
+		$maximo = 10;
+		$uri_segment = 3;
+		$inicio = (!$this->uri->segment($uri_segment, 0)) ? 0 : ($this->uri->segment($uri_segment, 0) - 1) * $maximo;
+		$_SESSION['novoinicio'] = current_url();
+		$config['base_url'] = site_url($this->area.'/workflows/');
+		$config['total_rows'] = $this->Documento_model->get_workflows($id_setor)->num_rows();
+		$config['per_page'] = $maximo;
+		
+		$this->pagination->initialize($config);
+		// fim da paginacao
+
+		$objetos = $this->Documento_model->get_workflows_paged_list($id_setor, $maximo, $inicio);
 	
 		// carregando os dados na tabela
 		$this->load->library('table');
@@ -1440,9 +1458,6 @@ class Documento extends CI_Controller {
 							<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
 			}
 			
-			//$botao_tramitacao = '<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
-									
-			
 			$this->table->add_row($objeto->id_workflow, $this->datas->datetimeToBR($objeto->data_envio), 
 					
 				
@@ -1452,21 +1467,21 @@ class Documento extends CI_Controller {
 					
 					'<div class="btn-group">'.$botoes.'</div>'
 			);
-				
-			
-				
+						
 		}
 	
+		
 		//Monta a DataTable
 		$tmpl = $this->Grid_model->monta_tabela_list();
 		$this->table->set_template($tmpl);
 		// Fim da DataTable
 	
 		$data['table'] = $this->table->generate();
+		$data["total_rows"] = $config['total_rows'];
+		$data['pagination'] = $this->pagination->create_links();
 	
 		$this->load->view($this->area.'/documento_tramitacoes', $data);
-	
-	
+
 	}
 	
 	function acusar_recebimento($id){

@@ -381,6 +381,14 @@ class Documento_model extends CI_Model {
 	
 	}
 	
+	function get_workflows_paged_list($id_setor_destino, $limit = 10, $offset = 0){
+	
+		$this->db->where('id_setor_destino =', $id_setor_destino);
+		$this->db->order_by('id_workflow','desc');
+		return $this->db->get('workflow', 10, $offset)->result();
+	
+	}
+	
 	function workflow_update($id, $objeto){
 
 		$this->db->where('id_workflow =', $id);
