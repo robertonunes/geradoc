@@ -889,6 +889,23 @@ class Documento extends CI_Controller {
 		
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
 		
+		if($data['objeto']->carimbo == 'S'){
+			$data['link_stamp'] = $this->Campo_model->make_link($this->area, 'stamp_out', $id);
+		}
+		
+		//verifica a permissao de acesso ao documento e retira alguns botoes
+		$permissao = $this->get_permissao($data['objeto']->setor, $this->session->userdata('id_usuario'));
+		
+		if($data['objeto']->dono_cpf != $this->session->userdata('cpf') and $permissao < 2){
+				
+			$data['link_update_sm'] = '';
+			$data['link_stamp'] = '';
+			$data['link_history'] = '';
+		}
+		// fim
+		
+		
+		
 		// Definindo o cabecalho e o rodape do documento
 		$this->load->model('Tipo_model','',TRUE);
 		$timbre = $this->Tipo_model->get_by_id($data['objeto']->tipoID)->row();
@@ -899,9 +916,7 @@ class Documento extends CI_Controller {
 			$data['cabecalho'] = str_replace("../../../", "../../../", $timbre->cabecalho);
 		}
 		
-		if($data['objeto']->carimbo == 'S'){
-			$data['link_stamp'] = $this->Campo_model->make_link($this->area, 'stamp_out', $id);
-		}
+		
 		
 		
 		if($timbre->rodape == null or $timbre->rodape == ''){

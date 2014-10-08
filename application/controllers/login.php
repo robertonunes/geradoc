@@ -136,8 +136,11 @@ class Login extends CI_Controller {
 				}else{
 					redirect('documento/');
 				}
-				
+						
 			}	
+			
+			// limpa a variavel de sessao 'workflow_wait'para obrigar a visualizacao do alerta caso exista documento aguardando recebimento.
+			$_SESSION['workflow_wait'] = null;
 			
         }
         
