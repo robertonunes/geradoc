@@ -21,13 +21,13 @@ if($config['orgao'] == '172.17.156.114'){
 	$config['orgao'] = 'localhost';
 }
 
-$config['title_short']	= "GeraDoc <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.5</div>";
+$config['title_short']	= "GeraDox <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.5</div>";
 
 switch ($config['orgao']){
 	
 		case 'localhost':
 			
-		$config['title']	= "AESP - GeraDoc";
+		$config['title']	= "GeraDox";
 		
 		$config['base_url']	= '';
 		
@@ -324,7 +324,7 @@ $config['sess_table_name']		= 'ci_sessions';
 $config['sess_match_ip']		= FALSE;
 $config['sess_match_useragent']	= TRUE;
 //$config['sess_time_to_update']	= $config['sess_expiration'] / 2; // default 300
-$config['sess_time_to_update']	= 300; // default 300
+$config['sess_time_to_update']	= $config['sess_expiration']; // default 300
 
 /*
 |--------------------------------------------------------------------------

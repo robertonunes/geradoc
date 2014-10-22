@@ -6,9 +6,9 @@ $CI =& get_instance();
 
       <form class="form-signin" role="form" action="<?php echo $form_action;?>" method="post">
       <div class="sm-12 text-center" >
-      <img src="<?php echo base_url().'images/'.$CI->config->item('orgao');?>.ico" width="100px">
+      	<i class="fa fa-file-text-o fa-5x mar-bot20"></i>
       </div>
-        <h3 class="form-signin-heading"><?php echo $CI->config->item('title_short');?></h3>
+        <h3 class="form-signin-heading">GeraDox</h3>
         
         <?php 
 			echo form_error('email');
@@ -22,7 +22,7 @@ $CI =& get_instance();
 					
 				}else{
 		?>
-        <input type="text" class="form-control" placeholder="E-mail" required autofocus  name="email"  id="email" value="<?php echo set_value('email');?>">
+        <input type="email" class="form-control" placeholder="E-mail" required autofocus  name="email"  id="email" value="<?php echo set_value('email');?>">
         
         <input type="password" class="form-control" placeholder="Senha" required name="txtSenha" id="txtSenha">
 

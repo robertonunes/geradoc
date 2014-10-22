@@ -193,7 +193,7 @@ class Login_mail extends CI_Controller {
 
     public function logoff() {
         $this->session->sess_destroy();
-        redirect('login/');
+        redirect('login_mail/');
     }
 
 }

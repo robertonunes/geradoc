@@ -233,7 +233,7 @@ class Documento extends CI_Controller {
 		
 		//$data['link_back'] = anchor($_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
 		$data['id'] = '';
-		$data['sess_expiration'] = $this->config->item('sess_expiration');
+		$data['sess_expiration'] = $this->get_SessTimeLeft();
 		//--- FIM ---//
 		
 		
@@ -530,7 +530,7 @@ class Documento extends CI_Controller {
 		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
 
 		$data['id'] = '';
-		$data['sess_expiration'] = $this->config->item('sess_expiration');
+		$data['sess_expiration'] = $this->get_SessTimeLeft();
 		//--- FIM ---//
 		
 		
@@ -2117,6 +2117,27 @@ class Documento extends CI_Controller {
 
 		$this->load->view('erro', $data);
     		
+    }
+    
+    function get_SessTimeLeft(){
+    	
+
+    	$SessTimeLeft    = 0;
+    	$SessExpTime     = $this->config->config["sess_expiration"];
+    	$CurrTime        = time();
+    	 
+    	$SQL = 'SELECT last_activity
+				FROM ci_sessions
+				WHERE session_id = '." '".$this->session->userdata('session_id')."' ";
+    	//print "$SQL";
+    	$query = $this->db->query($SQL);
+    	$arrLastActivity = $query->result_array();
+    	//print "LastActivity: ".$arrLastActivity[0]["last_activity"]."\r\n";
+    	//print "CurrentTime: ".$CurrTime."\r\n";
+    	//print "ExpTime: ".$SessExpTime."\r\n";
+    	$SessTimeLeft = ($SessExpTime - ($CurrTime - $arrLastActivity[0]["last_activity"]));
+    	
+    	return $SessTimeLeft;
     }
     
     
