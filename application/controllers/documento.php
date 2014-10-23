@@ -1867,11 +1867,27 @@ class Documento extends CI_Controller {
 			 
 			if($documento->oculto == "N" or $documento->cadeado == null){
 				//$link_hide = anchor('#doc_'.$documento->id,'');
-				$link_hide = anchor('documento/hide/'.$documento->id.'#d'.$documento->id,'<i class="cus-world"></i> Público', array('class'=>'btn btn-default btn-sm')).' ';
+				$link_hide = anchor('documento/hide/'.$documento->id.'#d'.$documento->id,'<i class="cus-world"></i> Público', array('class'=>'btn btn-default btn-sm', 
+																																	'data-container'=>'body',
+																																	'data-toggle'=>'popover', 
+																																	'data-trigger'=>'hover',
+																																	'data-placement'=>'top',
+																																	'data-html'=>'true',
+																																	'title'=>"Este documento é <strong>público</strong> <i class='cus-world'></i>",
+																																	'data-content'=>'Outras pessoas podem encontrá-lo e ver seu conteúdo. Clique para mudar.',
+																																	)).' ';
 				$ocultado = "";
 			}else{
 				$ocultado = "&nbsp;*";
-				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<i class="cus-lock"></i> Privado', array('class'=>'btn btn-default btn-sm')).' ';
+				$link_hide = anchor('documento/show/'.$documento->id.'#d'.$documento->id,'<i class="cus-lock"></i> Privado', array('class'=>'btn btn-default btn-sm', 
+																																	'data-container'=>'body',
+																																	'data-toggle'=>'popover', 
+																																	'data-trigger'=>'hover',
+																																	'data-placement'=>'top', 
+																																	'data-html'=>'true',
+																																	'title'=>"Documento <strong>privado</strong> <i class='cus-lock'></i>",
+																																	'data-content'=>'Pessoas de outros setores <strong>não</strong> podem encontrá-lo e apenas você pode ver seu conteúdo. Clique para mudar.',
+																																	)).' ';
 			}
 			
 			$setorRemetente = $this->getCaminho($obj->setor);
