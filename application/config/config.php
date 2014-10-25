@@ -31,12 +31,24 @@ switch ($config['orgao']){
 		
 		$config['base_url']	= '';
 		
-		$config['rodape_sistema'] = '<p class="text-muted">CTIC - Célula de Tecnologia da Informação e Comunicação. Telefone: (85) 3296-0015 <br />
-       								 <a href="http://www.aesp.ce.gov.br" style="color:#037E45; text-decoration: none; font-weight:bold;">Academia Estadual de Segurança Pública do Ceará</a> </p>';
+		$config['rodape_sistema'] = '<p class="text-muted">Copyright © 2014 GeraDox - by GeraDox<br />
+       								 <a href="http://www.geradox.com.br" style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a> </p>';
 		
-		$config['rodape_documento'] = '<strong>ACADEMIA ESTADUAL DE SEGURANÇA PÚBLICA DO CEARÁ - AESP/CE</strong><br>
-									Av. Presidente Costa e Silva, 1251, Mondubim, Cep: 60761-505<br>
-									Fone/Fax: (85) 3296-0469 - Fortaleza, Ceará';
+		$config['rodape_documento'] = '<strong>Copyright © 2014 GeraDox - by GeraDox</strong><br>
+										www.geradox.com.br';
+		break;
+		
+		case 'geradox':
+				
+			$config['title']	= "GeraDox";
+		
+			$config['base_url']	= '';
+		
+			$config['rodape_sistema'] = '<p class="text-muted">Copyright © 2014 GeraDox - by GeraDox<br />
+       								 	<a href="http://www.geradox.com.br" style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a> </p>';
+		
+			$config['rodape_documento'] = '<strong>Copyright © 2014 GeraDox - by GeraDox</strong><br>
+											www.geradox.com.br';
 		break;
 		
 		case 'aesp':
@@ -295,7 +307,7 @@ $config['cache_path'] = '';
 | MUST set an encryption key.  See the user guide for info.
 |
 */
-$config['encryption_key'] = 'aesp_geradoc2';
+$config['encryption_key'] = 'xl8Pf55Ov52q75n2BI21tGx3751m08X9';
 
 /*
 |--------------------------------------------------------------------------
@@ -316,7 +328,7 @@ $config['encryption_key'] = 'aesp_geradoc2';
 |
 */
 $config['sess_cookie_name']		= 'ci_session_geradoc2';
-$config['sess_expiration']		= 3600; // 3600 = 60 minutos, 1800 = 30 minutos,  600 = 10 min, 300 = 5 min, 120 = 2 min
+$config['sess_expiration']		= 7200; // 3600 = 60 minutos, 1800 = 30 minutos,  600 = 10 min, 300 = 5 min, 120 = 2 min
 $config['sess_expire_on_close']	= TRUE;
 $config['sess_encrypt_cookie']	= FALSE;
 $config['sess_use_database']	= TRUE;

@@ -16,8 +16,8 @@
 	<meta name="keywords" content="aluno on-line, fale conosco, aesp, geradoc, documento, oficio, comunicacao interna, memorando, despacho, portaria, php, software livre, corpo de bombeiros">
 	<meta name="ROBOT" content="Index,Follow">
 
-	<link rel="shortcut icon" href="{TPL_images}<?php echo $CI->config->item('orgao');?>.ico" type="image/x-icon" />
-	<link rel="icon" href="{TPL_images}<?php echo $CI->config->item('orgao');?>.ico" />	
+	<link rel="shortcut icon" href="{TPL_images}file-text-o_4e8079_128.ico" type="image/x-icon" />
+	<link rel="icon" href="{TPL_images}file-text-o_4e8079_128.ico" />
 
 	<title><?php echo $CI->config->item('title');?></title>
 	{TPL_css}

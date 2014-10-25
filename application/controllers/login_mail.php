@@ -14,7 +14,7 @@ class Login_mail extends CI_Controller {
 
     public $layout = 'login_mobile';
     public $css = array('');
-    public $js = array('jquery-1.7.1.min', 'jquery.maskedinput-1.1.4.pack', 'login');
+    public $js = array('jquery-1.11.1.min', 'jquery.maskedinput-1.1.4.pack', 'login');
 
     public function __construct() {
         parent::__construct();

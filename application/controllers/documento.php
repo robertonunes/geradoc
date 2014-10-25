@@ -1874,7 +1874,7 @@ class Documento extends CI_Controller {
 																																	'data-placement'=>'top',
 																																	'data-html'=>'true',
 																																	'title'=>"Este documento é <strong>público</strong> <i class='cus-world'></i>",
-																																	'data-content'=>'Outras pessoas podem encontrá-lo e ver seu conteúdo. Clique para mudar.',
+																																	'data-content'=>'Outras pessoas podem encontrar este documento e ver seu conteúdo. Clique para mudar.',
 																																	)).' ';
 				$ocultado = "";
 			}else{
@@ -1886,7 +1886,7 @@ class Documento extends CI_Controller {
 																																	'data-placement'=>'top', 
 																																	'data-html'=>'true',
 																																	'title'=>"Documento <strong>privado</strong> <i class='cus-lock'></i>",
-																																	'data-content'=>'Pessoas de outros setores <strong>não</strong> podem encontrá-lo e apenas você pode ver seu conteúdo. Clique para mudar.',
+																																	'data-content'=>'Pessoas de outros setores <strong>não</strong> podem encontrar este documento e apenas você pode ver seu conteúdo. Clique para mudar.',
 																																	)).' ';
 			}
 			
@@ -1903,7 +1903,7 @@ class Documento extends CI_Controller {
 			
 			if($documento->cancelado == "N" or $documento->cancelado == null){
 				
-				$acoes .=	anchor('documento/export/'.$documento->id,'<i class="cus-printer"></i> Exportar',array('target'=>'_blank', 'class'=>'btn btn-default btn-sm')).' ';
+				$acoes .=	anchor('documento/export/'.$documento->id,'<i class="fa fa-file-pdf-o fa-lg" style="color: #d9534f;"></i> Exportar',array('target'=>'_blank', 'class'=>'btn btn-default btn-sm')).' ';
 				
 				if($documento->dono_cpf == $this->session->userdata('cpf') or $permissao >= 2){
 					$acoes .=	anchor('documento/update/'.$documento->id,'<i class="cus-pencil"></i> Alterar', array('class'=>'btn btn-default btn-sm')).' ';

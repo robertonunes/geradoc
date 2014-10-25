@@ -6,9 +6,9 @@ $CI =& get_instance();
 
       <form class="form-signin" role="form" action="<?php echo $form_action;?>" method="post">
       <div class="sm-12 text-center" >
-      	<i class="fa fa-file-text-o fa-5x mar-bot20"></i>
+      	<i id="emblema" class="fa fa-file-text-o fa-5x" style="color: #777;"></i>
       </div>
-        <h3 class="form-signin-heading">GeraDox</h3>
+        <h3 class="form-signin-heading" style="color: #555;">GeraDox</h3>
         
         <?php 
 			echo form_error('email');
@@ -33,3 +33,11 @@ $CI =& get_instance();
       </form>
 
 </div> <!-- /container -->
+		
+<script type="text/javascript">
+
+$( "#emblema" ).hover(function() {
+	$( this ). toggleClass('animated rubberBand');
+});  
+
+</script>

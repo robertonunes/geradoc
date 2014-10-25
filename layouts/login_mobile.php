@@ -7,7 +7,8 @@
     <meta name="description" content="">
     <meta name="author" content="">
     
-    <link rel="icon" href="<?php echo base_url();?>images/aesp.ico">
+   	<link rel="shortcut icon" href="{TPL_images}file-text-o_4e8079_128.ico" type="image/x-icon" />
+	<link rel="icon" href="{TPL_images}file-text-o_4e8079_128.ico" />
 
     <title>GeraDox</title>
 
@@ -29,6 +30,10 @@
     
     <!-- Bootstrap core CSS -->
     <link href="<?php echo base_url();?>font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="<?php echo base_url();?>bootstrap/css/animate.css" rel="stylesheet" >
+    
+     <script src="<?php echo base_url();?>js/jquery-1.11.1.min.js"></script>
+     
   </head>
 
   <body>
