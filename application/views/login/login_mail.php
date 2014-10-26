@@ -6,7 +6,7 @@ $CI =& get_instance();
 
       <form class="form-signin" role="form" action="<?php echo $form_action;?>" method="post">
       <div class="sm-12 text-center" >
-      	<i id="emblema" class="fa fa-file-text-o fa-5x" style="color: #777;"></i>
+      	<i id="emblema" class="fa fa-file-text-o fa-5x" style="color: #555;"></i>
       </div>
         <h3 class="form-signin-heading" style="color: #555;">GeraDox</h3>
         
