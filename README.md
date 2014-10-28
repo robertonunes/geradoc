@@ -21,13 +21,13 @@ Configuração da aplicação:
 
 1. Copie a pasta <strong>geradoc</strong> para a pasta <strong>htdocs</strong> do Apache
 
-2. Altere os dados dos seguintes arquivos:
+2. Altere os dados do seguinte arquivo:
 
 	a. geradoc/application/config/config.php
 	
 		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
-3. Na pasta geradoc/application/config/ crie um arquivo com o nome database.php com seguinte conteúdo:
+3. Na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>database.php</strong> com seguinte conteúdo:
 
 		$active_group = 'default';
 		$active_record = TRUE;
