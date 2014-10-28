@@ -584,7 +584,7 @@ class Usuario extends CI_Controller {
 		$assunto = "GeraDoc - Recuperação de acesso ao sistema";
 	
 		$mensagem = '<div style="font-size: 11pt">';
-		$mensagem .= 'Conforme solicitação, sua nova <b>Senha de Acesso</b> é: '. $nova_senha .' <br/><br/>';
+		$mensagem .= 'Conforme solicitação, sua nova <b>Senha de Acesso</b> é: '.$nova_senha.'<br/><br/>';
 		$mensagem .= 'Não divulgue sua senha. Recomendamos trocá-la periodicamente.<br /><br/>';
 		$mensagem .= '<b>Não responda esta mensagem</a></b><br /><br />';
 		$mensagem .= '</div>';
