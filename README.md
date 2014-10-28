@@ -1,7 +1,7 @@
 GeraDoc - Sistema Gerenciador de Documentos
 ===========================================
 
-![Alt text](/screenshots/login.png?raw=true "Login")
+![Alt text](/screenshots/login_mail.png?raw=true "Login")
 
 Requisitos:
 ===================================
@@ -25,21 +25,39 @@ Configuração da aplicação:
 
 2. Altere os dados dos seguintes arquivos:
 
-	a. geradoc/system/application/config/config.php
+	a. geradoc/application/config/config.php
 	
 		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
-	b. geradoc/system/application/config/database.php
+3. Na pasta geradoc/application/config/ crie um arquivo com o nome database.php com seguinte conteúdo:
 
-		$db['default']['hostname'] = "host"; 		// substituir pelo seu servidor
-		$db['default']['username'] = "usuario";		// substituir pelo usuário do servidor
-		$db['default']['password'] = "senha";		// substituir pela senha do usuário do servidor
+		$active_group = 'default';
+		$active_record = TRUE;
+
+		$db['default']['hostname'] = 'localhost';
+		$db['default']['username'] = ''; //informe o usuário do banco
+		$db['default']['password'] = ''; //informe a senha do usuário do banco
+		$db['default']['database'] = 'geradoc';
+		$db['default']['dbdriver'] = 'mysql';
+		$db['default']['dbprefix'] = '';
+		$db['default']['pconnect'] = TRUE;
+		$db['default']['db_debug'] = TRUE;
+		$db['default']['cache_on'] = FALSE;
+		$db['default']['cachedir'] = '';
+		$db['default']['char_set'] = 'utf8';
+		$db['default']['dbcollat'] = 'utf8_unicode_ci';
+		$db['default']['swap_pre'] = '';
+		$db['default']['autoinit'] = TRUE;
+		$db['default']['stricton'] = FALSE;
+
 	
-3. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pasta abaixo:
+4. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pasta abaixo:
 
 		geradoc/files
 
 		geradoc/temp
+
+
 
 
 Acesso ao sistema:
@@ -47,7 +65,7 @@ Acesso ao sistema:
 
 Acesse [http://localhost/geradoc](http://localhost/geradoc "http://localhost/geradoc") e informe os dados abaixo:
 
-* Login: 11111111111  
+* E-mail: admin@geradox.com.br  
 * Senha: admin  
 
 
