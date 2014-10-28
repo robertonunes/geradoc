@@ -1,8 +1,6 @@
 GeraDoc - Sistema Gerenciador de Documentos
 ===========================================
 
-![Alt text](/screenshots/login_mail.png?raw=true "Login")
-
 Requisitos:
 ===================================
 
