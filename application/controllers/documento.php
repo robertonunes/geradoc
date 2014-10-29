@@ -1454,7 +1454,7 @@ class Documento extends CI_Controller {
 							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm" 
 									data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" 
 									title="<strong>Atenção</strong> <i class=\'fa fa-exclamation-triangle fa-lg\' style=\'color: #FF9933;\'></i>" 
-									data-content="Este documento foi tramitado para o seu setor. Clique neste botão <strong>apenas</strong> se estiver com ele em mãos. Caso não esteja, verifique com os demais membros do seu setor.">
+									data-content="Este documento foi tramitado para o seu setor. Clique neste botão <strong>apenas</strong> se estiver com o documento em mãos. Caso não esteja, verifique com os demais membros do seu setor.">
 									<span class="glyphicon glyphicon-ok"></span> Acusar recebimento
 							</a>';
 			}else{
