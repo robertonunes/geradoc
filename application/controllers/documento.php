@@ -1438,7 +1438,7 @@ class Documento extends CI_Controller {
 		// carregando os dados na tabela
 		$this->load->library('table');
 		$this->table->set_empty("&nbsp;");
-		$this->table->set_heading('Item', 'Data do envio', 'Documento', 'Assunto', 'Ações');
+		$this->table->set_heading('Item', 'Data do envio', 'Documento', 'Para', 'Assunto', 'Ações');
 	
 		
 		foreach ($objetos as $objeto){
@@ -1458,12 +1458,18 @@ class Documento extends CI_Controller {
 							<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
 			}
 			
+			if($doc->para == '0'){ // acontece com parecer tecnico 
+				$doc->para = ''; 
+			}
+			
 			$this->table->add_row($objeto->id_workflow, $this->datas->datetimeToBR($objeto->data_envio), 
 					
 				
 					"$tipoNome->abreviacao Nº $doc->numero <br> $setorRemetente",
+
+					$doc->para,
 					
-					"assunto",
+					$doc->assunto,
 					
 					'<div class="btn-group">'.$botoes.'</div>'
 			);
