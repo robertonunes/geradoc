@@ -2002,8 +2002,7 @@ class Documento extends CI_Controller {
     		}else{
     			$caminho =  $setor->sigla;
     		}
-    		
-    		
+    			
     	}
     	
     	return $caminho;
