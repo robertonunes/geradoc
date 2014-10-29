@@ -1451,7 +1451,12 @@ class Documento extends CI_Controller {
 			
 			if($objeto->data_recebimento == null){
 				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
-							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-ok"></span> Acusar recebimento</a>';
+							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm" 
+									data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" 
+									title="<strong>Atenção</strong> <i class=\'fa fa-exclamation-triangle fa-lg\' style=\'color: #FF9933;\'></i>" 
+									data-content="Este documento foi tramitado para o seu setor. Clique neste botão <strong>apenas</strong> se estiver com ele em mãos. Caso não esteja, verifique com os demais membros do seu setor.">
+									<span class="glyphicon glyphicon-ok"></span> Acusar recebimento
+							</a>';
 			}else{
 				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
 							<a href="'.site_url().'/documento/desfazer_recebimento/'.$objeto->id_workflow.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Desfazer recebimento</a>
