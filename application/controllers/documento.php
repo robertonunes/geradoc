@@ -292,7 +292,7 @@ class Documento extends CI_Controller {
 			$setor = $this->Documento_model->get_setor($data['remetenteSelecionado'])->row();
 		else $setor = null;
 		if(isset($setor)){
-			if($setor->setorPaiSigla == "NENHUM"){
+			if($setor->setorPaiSigla == "NENHUM" or $setor->setorPaiSigla == $setor->sigla){
 				$data['campoSetor']['value'] = "$setor->sigla";
 			}else{
 				$data['campoSetor']['value'] = "$setor->sigla/$setor->setorPaiSigla";
@@ -612,7 +612,7 @@ class Documento extends CI_Controller {
 			$setor = $this->Documento_model->get_setor($obj->remetente)->row();
 		}
 		if(isset($setor)){
-			if($setor->setorPaiSigla == "NENHUM"){
+			if($setor->setorPaiSigla == "NENHUM" or $setor->setorPaiSigla == $setor->sigla){
 				$data['campoSetor']['value'] = "$setor->sigla";
 			}else{
 				$data['campoSetor']['value'] = "$setor->sigla/$setor->setorPaiSigla";
@@ -1991,10 +1991,19 @@ class Documento extends CI_Controller {
     	$this->load->model('Setor_model', '', TRUE);
     	$setor =  $this->Setor_model->get_by_id($id_setor)->row();
     	
-    	if($setor->setorPaiSigla and $setor->setorPaiSigla != "NENHUM" and $setor->setorPaiSigla != "AESP" and $setor->sigla != $setor->setorPaiSigla){
+    	if($setor->setorPaiSigla and $setor->setorPaiSigla != "NENHUM" and $setor->setorPaiSigla != $setor->orgaoSigla and $setor->sigla != $setor->setorPaiSigla){
+    		
     		$caminho =  $setor->sigla ."/" . $setor->setorPaiSigla ."/" . $setor->orgaoSigla;
+    	
     	}else{
-    		$caminho =  $setor->sigla ."/" . $setor->orgaoSigla;
+    		
+    		if($setor->sigla != $setor->orgaoSigla){
+    			$caminho =  $setor->sigla ."/" . $setor->orgaoSigla;
+    		}else{
+    			$caminho =  $setor->sigla;
+    		}
+    		
+    		
     	}
     	
     	return $caminho;
