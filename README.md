@@ -74,3 +74,16 @@ Favor manter os créditos nos programas que compõem o sistema.
 
 Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
 
+
+Demonstração:
+===================================
+
+Acesse [http://www.geradox.com.br/demo](http://www.geradox.com.br/demo "http://www.geradox.com.br/demo") e informe os dados abaixo:
+
+* E-mail: demo@geradox.com.br  
+* Senha: demo123  
+
+
+
+
+
