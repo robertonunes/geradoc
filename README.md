@@ -49,7 +49,7 @@ Configuração da aplicação:
 		$db['default']['stricton'] = FALSE;
 
 	
-4. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pasta abaixo:
+4. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pastas abaixo:
 
 		geradoc/files
 
@@ -70,7 +70,7 @@ Acesse [http://localhost/geradoc](http://localhost/geradoc "http://localhost/ger
 Observação:
 ===================================
  
-Favor manter os créditos nos programas que compõem o sistema.
+Favor manter os créditos nos códigos que compõem o sistema.
 
 Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
 
@@ -78,7 +78,7 @@ Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
 Demonstração:
 ===================================
 
-Acesse [http://www.geradox.com.br/demo](http://www.geradox.com.br/demo "http://www.geradox.com.br/demo") e informe os dados abaixo:
+Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br/demo](http://www.geradox.com.br/demo "http://www.geradox.com.br/demo") e informe os dados abaixo:
 
 * E-mail: demo@geradox.com.br  
 * Senha: demo123  
