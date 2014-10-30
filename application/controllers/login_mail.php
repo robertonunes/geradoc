@@ -30,20 +30,14 @@ class Login_mail extends CI_Controller {
        $this->session->unset_userdata('logado');            
        $data['form_action'] = site_url('/login_mail');  
 
-       
        $this->load->model('Usuario_model','',TRUE);
        $qtd_usuarios = $this->Usuario_model->count_all();
        
        if($qtd_usuarios == 0){
        	
-       	
        		echo "NENHUM USUÁRIO CADASTRADO";
-       		
-       		
-       		redirect('usuario/add');
-       		
+       		redirect('usuario/add');	
        }
-       
        
        if ($this->form_validation->run('login/login_mail') == FALSE) {
        	
@@ -63,8 +57,6 @@ class Login_mail extends CI_Controller {
         $obj->senha = md5($obj->senha);
         $data['mensagem'] = '';
 
-        //informa o banco a ser utilizado, no caso o sso
-       // $this->load->database("sso", TRUE);
         $this->load->model('Login_model', '', TRUE);
         $user_cadastrado = $this->Login_model->get_usuario_mail($obj->login, $obj->senha);
         //echo $this->db->last_query();
@@ -113,6 +105,10 @@ class Login_mail extends CI_Controller {
 
 			}else{
 				
+				if(!$user_cadastrado->email){
+					$user_cadastrado->email = '';
+				}
+				
 				$dados = array(
 						'id_usuario' => $user_cadastrado->id,
 						'login' => $user_cadastrado->cpf,
@@ -120,17 +116,17 @@ class Login_mail extends CI_Controller {
 						'nome' => $user_cadastrado->nome,
 						'nivelId' => $user_cadastrado->nivel,
 						'setor' => $user_cadastrado->setor,
+						'email' => $user_cadastrado->email,
 						'logado' => TRUE,
 				);
 				
 				$this->load->database("default", TRUE);
 				$this->session->set_userdata($dados);
-				
-				$this->load->model('Auditoria_model','',TRUE);
-				
+							
 				//--- Executa a limpeza na tabela auditoria para esse usuario --//
+				$this->load->model('Auditoria_model','',TRUE);
 				$this->Auditoria_model->delete($user_cadastrado->id);
-				 
+				//--- Fim da limpeza ---//
 				 
 				if(!$user_cadastrado->email or $user_cadastrado->email == '' or $user_cadastrado->email == null){
 					redirect('usuario/cadastro');
@@ -167,6 +163,10 @@ class Login_mail extends CI_Controller {
     	$user_cadastrado = $_SESSION['usuario'];
     	unset($_SESSION['usuario']);
     	
+    	if(!$user_cadastrado->email){
+    		$user_cadastrado->email = '';
+    	}
+    	
     	 	$dados = array(
                 'id_usuario' => $user_cadastrado->id,
                 'login' => $user_cadastrado->cpf,
@@ -174,6 +174,7 @@ class Login_mail extends CI_Controller {
                 'nome' => $user_cadastrado->nome,
                 'nivelId' => $user_cadastrado->nivel,
             	'setor' => $id_setor,
+    	 		'email' => $user_cadastrado->email,
                 'logado' => TRUE,
             );
 
