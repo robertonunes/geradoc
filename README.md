@@ -13,23 +13,23 @@ Ele foi desenvolvido para facilitar a criação de documentos oficiais padroniza
 Benefícios:
 ===================================
 
-1. Padronização dos formatos dos documentos, como cabeçalhos, rodapés, posicionamentos de destinatários, assuntos, datas, referências, assinaturas, famílias e tamanhos de fontes;
+1. <strong>Padronização dos formatos</strong> dos documentos, como cabeçalhos, rodapés, posicionamentos de destinatários, assuntos, datas, referências, assinaturas, famílias e tamanhos de fontes;
 
-2. Controle da numeração dos documentos produzidos em cada setor;
+2. <strong>Controle da numeração</strong> dos documentos produzidos em cada setor;
 
-3. Maior praticidade, uma vez que os documentos são armazenados em nuvem e usuário pode gerenciá-los a partir de qualquer computador conectado à internet ou rede interna;
+3. <strong>Maior praticidade</strong>, uma vez que os documentos são armazenados em nuvem e usuário pode gerenciá-los a partir de qualquer computador conectado à internet ou rede interna;
 
-4. Controle de acesso e de alteração;
+4. <strong>Controle de acesso e de alteração</strong>;
 
-5. Agilidade na obtenção das informações através das consultas textuais no universo de documentos produzidos nos setores de um mesmo órgão;
+5. <strong>Agilidade na obtenção das informações</strong> através das consultas textuais no universo de documentos produzidos nos setores de um mesmo órgão;
 
-6. Facilidade de acompanhamento dos trabalhos desenvolvidos nos setores, através da visualização dos documentos gerados;
+6. <strong>Facilidade de acompanhamento dos trabalhos</strong> desenvolvidos nos setores, através da visualização dos documentos gerados;
 
-7. Rapidez na elaboração de um documento, uma vez que o usuário não se preocupa com as características da forma do tipo de documento, focando sua atenção e criatividade no conteúdo;
+7. <strong>Rapidez na elaboração de um documento</strong>, uma vez que o usuário não se preocupa com as características da forma do tipo de documento, focando sua atenção e criatividade no conteúdo;
 
-8. Possibilidade de colaboração entre os membros de um mesmo setor durante a criação de um documento antes de imprimi-lo;
+8. <strong>Possibilidade de colaboração</strong> entre os membros de um mesmo setor durante a criação de um documento antes de imprimi-lo;
 
-9. Armazenamento seguro, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários.
+9. <strong>Armazenamento seguro</strong>, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários.
 
 
 Requisitos:
