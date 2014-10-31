@@ -80,8 +80,8 @@ Demonstração:
 
 Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br/demo](http://www.geradox.com.br/demo "http://www.geradox.com.br/demo") e informe os dados abaixo:
 
-* E-mail: demo@geradox.com.br  
-* Senha: demo123  
+* E-mail: convidado@geradox.com.br  
+* Senha: convidado  
 
 
 
