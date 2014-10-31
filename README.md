@@ -1,6 +1,37 @@
 GeraDoc - Sistema Gerenciador de Documentos
 ===========================================
 
+
+Descrição:
+===================================
+
+O GeraDoc é um sistema de Gerenciamento de Conteúdo Corporativo (ECM - Enterprise Content Management).
+
+Ele foi desenvolvido para facilitar a criação de documentos oficiais padronizados, como ofícios, comunicações internas, despachos, pareceres técnicos, pareceres jurídicos, atos administrativos e notas de instrução nos diversos setores de instituições governamentais, mantendo as formas, controlando numerações, preservando as informações, controlando acessos e permissões, bem como possibilitando pesquisas textuais nos conteúdos dos documentos produzidos.
+
+
+Benefícios:
+===================================
+
+1. Padronização dos formatos dos documentos, como cabeçalhos, rodapés, posicionamentos de destinatários, assuntos, datas, referências, assinaturas, famílias e tamanhos de fontes;
+
+2. Controle da numeração dos documentos produzidos em cada setor;
+
+3. Maior praticidade, uma vez que os documentos são armazenados em nuvem e usuário pode gerenciá-los a partir de qualquer computador conectado à internet ou rede interna;
+
+4. Controle de acesso e de alteração;
+
+5. Agilidade na obtenção das informações através das consultas textuais no universo de documentos produzidos nos setores de um mesmo órgão;
+
+6. Facilidade de acompanhamento dos trabalhos desenvolvidos nos setores, através da visualização dos documentos gerados;
+
+7. Rapidez na elaboração de um documento, uma vez que o usuário não se preocupa com as características da forma do tipo de documento, focando sua atenção e criatividade no conteúdo;
+
+8. Possibilidade de colaboração entre os membros de um mesmo setor durante a criação de um documento antes de imprimi-lo;
+
+9. Armazenamento seguro, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários.
+
+
 Requisitos:
 ===================================
 
