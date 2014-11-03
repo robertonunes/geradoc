@@ -17,7 +17,7 @@ Benefícios:
 
 2. <strong>Controle da numeração</strong> dos documentos produzidos em cada setor;
 
-3. <strong>Maior praticidade</strong>, uma vez que os documentos são armazenados em nuvem e usuário pode gerenciá-los a partir de qualquer computador conectado à internet ou rede interna;
+3. <strong>Maior praticidade</strong>, uma vez que os documentos são armazenados em nuvem e o usuário pode gerenciá-los a partir de qualquer computador conectado à internet ou rede interna;
 
 4. <strong>Controle de acesso e de alteração</strong>;
 
