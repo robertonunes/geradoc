@@ -1114,7 +1114,7 @@ class Documento extends CI_Controller {
 		$data['objeto'] = $this->get_layout($data['objeto']);
 		
 		
-		$data['documento'] = $data['objeto']->tipoNome . " Nº " . $data['objeto']->numero . "/" . $data['objeto']->ano . " - " . $this->getCaminho($data['objeto']->setor) ;
+		$data['documento'] = $data['objeto']->tipoSigla . " Nº " . $data['objeto']->numero . "/" . $data['objeto']->ano . " - " . $this->getCaminho($data['objeto']->setor) ;
 			
 		$this->load->view($this->area.'/pdf', $data);
 
