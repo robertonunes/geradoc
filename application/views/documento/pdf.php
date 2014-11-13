@@ -43,7 +43,7 @@ $footer = '
 				</td>
 			</tr>
 			<tr>
-				<td align="right">{PAGENO}</td>
+				<td align="right">'.$documento.', página {PAGENO} de {nbpg}</td>
 			</tr>
 		</table>
 		';
