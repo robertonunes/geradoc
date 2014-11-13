@@ -1091,16 +1091,9 @@ class Documento extends CI_Controller {
 		// popula o array com os dados do objeto alimentado pela consulta
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
 		if(!$data['objeto']) die('Documento não encontrado!<br>É tudo o que sabemos.<br><br>CTIC/AESP<br><a href="'.site_url('documento').'">&lt;- &nbsp;Voltar para a lista de documentos</a>');
-		/*
-		if($data['objeto']->tipoID == 3 or $data['objeto']->tipoID == 5){
-			$tmp = $this->Documento_model->get_despacho_head($id);
-			$data['despacho_head'] = $tmp[0];
-			$tmp = NULL;
-		}
-		*/
+		
 		$data['objeto']->data_despacho = $data['objeto']->data;
-
-			
+	
 		// Definindo o cabecalho e o rodape do documento
 		$this->load->model('Tipo_model','',TRUE);
 		$timbre = $this->Tipo_model->get_by_id($data['objeto']->tipoID)->row();
@@ -1120,6 +1113,8 @@ class Documento extends CI_Controller {
 		
 		$data['objeto'] = $this->get_layout($data['objeto']);
 		
+		
+		$data['documento'] = $data['objeto']->tipoNome . " Nº " . $data['objeto']->numero . "/" . $data['objeto']->ano . " - " . $this->getCaminho($data['objeto']->setor) ;
 			
 		$this->load->view($this->area.'/pdf', $data);
 
