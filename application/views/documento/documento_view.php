@@ -66,13 +66,16 @@
 	$footer = '
 		<table width="100%" style="vertical-align: top;font-family:\'Times New Roman\',Times,serif; font-size: 11px;">
 			<tr>
-				<td align="center">
-				<div style="padding-top: 20px;">'.$rodape.'</div>
+				<td align="center" colspan="2">
+					<div style="padding-top: 20px;">'.$rodape.'</div>
 				</td>
+			</tr>
+			<tr>
+				<td style="font-size: 9px" align="left">'.$documento_identificacao.'</td>	
+				<td align="right">página x de x</td>
 			</tr>
 		</table>
 		';
-	
 	
 	echo $header;
 	echo $content;
@@ -80,12 +83,7 @@
 	
 	?>
 	
-	
-	
-	
-	
-	</div>
-	
+	</div>	
 
 	</div>
 	<!-- fim da div formulario -->
