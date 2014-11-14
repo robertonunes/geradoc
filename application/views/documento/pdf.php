@@ -43,7 +43,7 @@ $footer = '
 				</td>
 			</tr>
 			<tr>
-				<td style="font-size: 9px">'.$documento.'
+				<td style="font-size: 9px">'.$documento_identificacao.'
 				</td>	
 				<td align="right">página {PAGENO} de {nbpg}</td>
 			</tr>
