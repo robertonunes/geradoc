@@ -38,12 +38,14 @@ $content = '<div class="conteudo">
 $footer = '
 		<table width="100%" style="vertical-align: top;font-family:\'Times New Roman\',Times,serif; font-size: 11px;">
 			<tr>
-				<td align="center">
-				'.$rodape.'
+				<td align="center" colspan="2">
+					'.$rodape.'
 				</td>
 			</tr>
 			<tr>
-				<td align="right">'.$documento.', página {PAGENO} de {nbpg}.</td>
+				<td style="font-size: 9px">'.$documento.'
+				</td>	
+				<td align="right">página {PAGENO} de {nbpg}</td>
 			</tr>
 		</table>
 		';
