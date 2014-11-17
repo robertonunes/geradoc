@@ -7,10 +7,42 @@ $header = '<table width="100%" style="vertical-align: bottom;">
 			</table>';
 
 if($objeto->carimbo == 'S'){
-	$header .= '<div style="text-align: right; margin-top:-105px; margin-right:-73px; font-size: 10pt; color: #555; line-height:200%;">
+	$header .= '<div style="text-align: right; margin-top:-105px; margin-right:-73px;">
 						<img src="./images/carimbo_aesp.png" width="80px"/>
 				</div>';
 }
+
+if($objeto->carimbo_via == 'S'){
+	$header .= '<div style="text-align: right; margin-top:50px; margin-right:-45px;">
+						<img src="./images/carimbo_via_2.png" width="35px"/>
+					</div>';
+}else{
+	$header .= '<div style="text-align: right; margin-top:10px; margin-right: -45px;">
+						<img src="./images/carimbo_em_branco.png" width="35px"/>
+					</div>';
+}
+
+if($objeto->carimbo_confidencial == 'S'){
+	$header .= '<div style="text-align: right; margin-top:10px; margin-right: -49px;">
+						<img src="./images/carimbo_confidencial_2.png" width="40px"/>
+					</div>';
+}else{
+	$header .= '<div style="text-align: right; margin-top:20px; margin-right: -49px;">
+						<img src="./images/carimbo_em_branco.png" width="40px"/>
+					</div>';
+}
+
+if($objeto->carimbo_urgente == 'S'){
+	$header .= '<div style="text-align: right; margin-top:10px; margin-right: -51px;">
+						<img src="./images/carimbo_urgente_2.png" width="45px"/>
+					</div>';
+}else{
+	$header .= '<div style="text-align: right; margin-top:10px; margin-right: -51x;">
+						<img src="./images/carimbo_em_branco.png" width="45px"/>
+					</div>';
+}
+
+
 /*
 $content = '<div class="conteudo">
 				'.$objeto->layout.'

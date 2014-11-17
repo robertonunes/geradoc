@@ -881,25 +881,48 @@ class Documento extends CI_Controller {
 		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
 		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
 		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
-		$data['link_stamp'] = $this->Campo_model->make_link($this->area, 'stamp', $id);
 		$data['link_history'] = $this->Campo_model->make_link($this->area, 'history', $id);
 		$data['link_workflow'] = $this->Campo_model->make_link($this->area, 'workflow', $id);		
 		//--- FIM ---//
-		
-		
+
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
+
 		
+		//--- Carimbos ---//
+		$data['carimbo_pagina'] = '<a href="'.site_url($this->area.'/carimbo_pagina_on/'.$id).'">De página</a>';
+		
+		$data['carimbo_via'] = '<a href="'.site_url($this->area.'/carimbo_via_on/'.$id).'">De 2ª Via</a>';
+		
+		$data['carimbo_urgente'] = '<a href="'.site_url($this->area.'/carimbo_urgente_on/'.$id).'">De urgente</a>';
+		
+		$data['carimbo_confidencial'] = '<a href="'.site_url($this->area.'/carimbo_confidencial_on/'.$id).'">De confidencial</a>';
+
 		if($data['objeto']->carimbo == 'S'){
 			$data['link_stamp'] = $this->Campo_model->make_link($this->area, 'stamp_out', $id);
+			$data['carimbo_pagina'] = '<a href="'.site_url($this->area.'/carimbo_pagina_off/'.$id).'">De página <i class="fa fa-check"></i></a>';
 		}
+		
+		if($data['objeto']->carimbo_via == 'S'){
+			$data['carimbo_via'] = '<a href="'.site_url($this->area.'/carimbo_via_off/'.$id).'">De 2ª Via <i class="fa fa-check"></i></a>';
+		}
+		
+		if($data['objeto']->carimbo_urgente == 'S'){
+			$data['carimbo_urgente'] = '<a href="'.site_url($this->area.'/carimbo_urgente_off/'.$id).'">De urgente <i class="fa fa-check"></i></a>';
+		}
+		
+		if($data['objeto']->carimbo_confidencial == 'S'){
+			$data['carimbo_confidencial'] = '<a href="'.site_url($this->area.'/carimbo_confidencial_off/'.$id).'">De confidencial <i class="fa fa-check"></i></a>';
+		}
+		//--- Fim ---//
 		
 		//verifica a permissao de acesso ao documento e retira alguns botoes
 		$permissao = $this->get_permissao($data['objeto']->setor, $this->session->userdata('id_usuario'));
 		
+		$data['carimbos'] = 'yes';
 		if($data['objeto']->dono_cpf != $this->session->userdata('cpf') and $permissao < 2){
 				
 			$data['link_update_sm'] = '';
-			$data['link_stamp'] = '';
+			$data['carimbos'] = 'no';
 			$data['link_history'] = '';
 		}
 		// fim
@@ -1520,6 +1543,57 @@ class Documento extends CI_Controller {
 	
 	function stamp_out($id){
 		$obj["carimbo"] = "N";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	
+	function carimbo_pagina_on($id){
+		$obj["carimbo"] = "S";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	function carimbo_pagina_off($id){
+		$obj["carimbo"] = "N";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	function carimbo_via_on($id){
+		$obj["carimbo_via"] = "S";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	function carimbo_via_off($id){
+		$obj["carimbo_via"] = "N";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	
+	function carimbo_urgente_on($id){
+		$obj["carimbo_urgente"] = "S";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	function carimbo_urgente_off($id){
+		$obj["carimbo_urgente"] = "N";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	
+	function carimbo_confidencial_on($id){
+		$obj["carimbo_confidencial"] = "S";
+		$this->Documento_model->update($id,$obj);
+		redirect('documento/view/'.$id);
+	}
+	
+	function carimbo_confidencial_off($id){
+		$obj["carimbo_confidencial"] = "N";
 		$this->Documento_model->update($id,$obj);
 		redirect('documento/view/'.$id);
 	}
