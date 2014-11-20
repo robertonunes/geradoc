@@ -4,7 +4,7 @@ class Faleconosco extends CI_Controller {
 		
 	function mensagem (){
 		
-		$nome = $this->input->post('email');
+		$nome = $this->input->post('nome');
 		$email = $this->input->post('email');
 		$subject = $this->input->post('subject');
 		$message = $this->input->post('message');
