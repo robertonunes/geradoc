@@ -2,7 +2,7 @@
 
 class Faleconosco extends CI_Controller {
 		
-	function mensagem (){
+	function mensagem ($url_de_retorno){
 		
 		$nome = $this->input->post('nome');
 		$email = $this->input->post('email');
@@ -27,10 +27,17 @@ class Faleconosco extends CI_Controller {
 		$this->email->message($mensagem);
 	
 		if ( ! $this->email->send() ){
+			
 			echo $this->email->print_debugger();
+			
 			return false;
+			
 		} else {
+
+			redirect(site_url() . "/" . $url_de_retorno);
+			
 			return true;
+			
 		}
 		
 		
