@@ -951,7 +951,8 @@ class Documento extends CI_Controller {
 		
 		
 		//--- Aplica o Highlight no texto pesquisado---//
-		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strstr($_SESSION['homepage'], 'search', true)){
+		//if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strstr($_SESSION['homepage'], 'search', true)){
+		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strpos($_SESSION['homepage'], 'search') == true){
 			$data['objeto']->numero = $this->highlight($data['objeto']->numero, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->remetNome = $this->highlight($data['objeto']->remetNome, $_SESSION['keyword'.$this->area]);
 			$data['objeto']->remetCargoNome = $this->highlight($data['objeto']->remetCargoNome, $_SESSION['keyword'.$this->area]);
