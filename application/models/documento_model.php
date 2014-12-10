@@ -355,18 +355,8 @@ class Documento_model extends CI_Model {
 		$this->db->delete($this->tabela);
 	}
 	
-	function workflow($obj){
 	
-		$this->db->trans_start();
-
-			$this->db->insert('workflow', $obj);
-			$id = $this->db->insert_id();
-		
-		$this->db->trans_complete();
-		
-		return $id;
-	}
-	
+	/*
 	function list_workflow($id_documento){
 		$this->db->where('id_documento', $id_documento);
 		$this->db->order_by('id_workflow','desc');
@@ -389,18 +379,9 @@ class Documento_model extends CI_Model {
 	
 	}
 	
-	function workflow_update($id, $objeto){
-
-		$this->db->where('id_workflow =', $id);
-		$this->db->update('workflow', $objeto);
-
-	}
 	
-	function workflow_delete($id){
-		$this->db->where('id_workflow', $id);
-		$this->db->delete('workflow');
-	}
-	
+	*/
+
 	function check_workflow($id_setor_destino){
 	
 		$this->db->where('id_setor_destino', $id_setor_destino);
@@ -409,6 +390,7 @@ class Documento_model extends CI_Model {
 		return $this->db->get('workflow');
 	
 	}
+	
 
 	
 	/*

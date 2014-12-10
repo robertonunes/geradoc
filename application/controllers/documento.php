@@ -1144,6 +1144,7 @@ class Documento extends CI_Controller {
 			
 	}
 	
+	/*
 	function export_rtf($id){
 		// carrega as variaveis padroes
 		$data['titulo']         = $this->tituloView.$this->area;
@@ -1180,6 +1181,7 @@ class Documento extends CI_Controller {
 		}
 	
 	}
+	*/
 
 	
 	function history($id){
@@ -1236,306 +1238,15 @@ class Documento extends CI_Controller {
 		
 	
 	}
-	
-	function workflow($id){
-		$data['titulo']         = "Tramitação do documento";
-		$data['message']        = '';
-		
-		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
-		
-		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
-		
-		$data['form_action'] = site_url($this->area.'/workflow/'.$id);
-		
-		
-		$obj = $this->Documento_model->get_by_id($id)->row();
-		
-		$this->load->model('Setor_model','',TRUE);
-		$setores = $this->Setor_model->list_all()->result();
-		$arraySetores[0] = "SELECIONE O DESTINO";
-		if($setores){
-			foreach ($setores as $setor){
-				$arraySetores[$setor->id] = $setor->nome . ' - ' . $setor->sigla;
-			}
-		}else{
-			$arraySetores[1] = "";
-		}
-		$setoresDisponiveis  =  $arraySetores;
-		
-		
-		$setor_origem = $this->Setor_model->get_by_id($obj->setor)->row();
-		
-		//print_r($setor_origem);
-		
-		$data['setor_origem'] = $setor_origem->nome;
-		
-		$data['setor_destino'] = $obj->para;
-		
-		$doc = $this->Documento_model->get_by_id($id)->row();
-		$tipoNome = $this->Documento_model->get_tipo($doc->tipo)->row();	
-		$setorRemetente = $this->getCaminho($doc->setor);
-		
-		$data['assunto'] = $doc->assunto;
-		$data['identificacao'] = "$tipoNome->abreviacao Nº $doc->numero - $setorRemetente" . ' <a href="'.site_url().'/documento/view/'.$id.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>';
-		
-		
-		$campoSetor = '';
-		
-		if($obj->setor == $this->session->userdata('setor')){
 
-			$campoSetor = form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-default" data-live-search="true"');
-	
-		}
-
-		$tramitacoes = $this->Documento_model->list_workflow($id)->result();
-		
-		$linhas_tramitacao = '';
-		$recebimento_prendente = false;
-		
-		foreach ($tramitacoes as $tramitacao){
-			
-			if($tramitacao->id_setor_destino == $this->session->userdata('setor') and $tramitacao->data_recebimento != null){
-				$campoSetor = form_dropdown('campoSetor', $setoresDisponiveis, 0, 'class="form-control input-sm selectpicker" data-size="5" data-style="btn-default" data-live-search="true"');
-			}
-			
-			if($tramitacao->data_recebimento == null){
-				$tramitacao->data_recebimento = '-';
-				$recebimento_prendente = true;
-			}
-			
-			$remetente = $this->getUsuario($tramitacao->id_remetente);
-			
-			$setor = $this->getSetor($tramitacao->id_setor_destino);
-			
-			
-			$recebedor = $this->getUsuario($tramitacao->id_recebedor);
-			
-			if(isset($recebedor) and $recebedor != null){
-				$recebedorNome = $recebedor->nome;
-			}
-			
-			
-			if(isset($recebedor) and $recebedor == null and $tramitacao->id_remetente == $this->session->userdata('id_usuario')){
-				$recebedorNome = '<a href="'.site_url().'/documento/workflow_delete/'.$tramitacao->id_workflow.'/'.$tramitacao->id_documento.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Cancelar</a>';
-			}
-			
-			if(isset($recebedor) and $recebedor == null and $tramitacao->id_remetente != $this->session->userdata('id_usuario')){
-				$recebedorNome = '';
-			}
-			
-		
-				//$recebedorNome = '<a href="'.site_url().'/documento/workflow_delete/'.$tramitacao->id_workflow.'/'.$tramitacao->id_documento.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Cancelar</a>';
-			
-			
-			$linhas_tramitacao .= '<tr>
-									<td width="100px">
-										'.$this->datas->datetimeToBR($tramitacao->data_envio).'
-									</td>
-									<td>
-										'.$remetente->nome.'
-									</td>
-									<td>
-										'.$setor->nome.'
-									</td>
-									<td width="100px">
-										'.$this->datas->datetimeToBR($tramitacao->data_recebimento).'
-									</td>
-									<td>
-										'.$recebedorNome.'
-									</td>
-						        </tr>';
-			
-		}
-		
-		
-		if($recebimento_prendente == true){
-			$campoSetor = '';
-		}
-
-		$data['campoSetor'] = $campoSetor;
-		
-		$data['privado'] = $doc->oculto;
-		
-	
-		
-		$data['linhas_tramitacao'] = $linhas_tramitacao;
-		
-		if ($this->form_validation->run($this->area."/workflow") == FALSE) {
-			
-			$this->load->view($this->area.'/documento_tramitacao', $data);
-			
-		} else {
-			
-			//echo "passou";
-			
-			
-			//cria o objeto com os dados passados via post
-			$objeto_do_form = array(
-					'id_documento' => $id,
-					'id_setor_destino' => $this->input->post('campoSetor'),
-					'id_remetente' => $this->session->userdata('id_usuario'),
-					'data_envio' => date("Y-m-d H:i:s"),
-			);
-			
-			/*
-			echo "<pre>";
-			print_r($objeto_do_form);
-			echo "</pre>";
-			*/
-			
-			//exit;
-			
-			// Salva o registro
-				$this->Documento_model->workflow($objeto_do_form);
-	
-				$redirecionamento = site_url() . '/documento/workflow/' . $id;
-				
-				$this->js_custom = 'var sSecs = 4;
-                                function getSecs(){
-                                    sSecs--;
-                                    if(sSecs<0){ sSecs=59; sMins--; }
-                                    $("#clock1").html(sSecs+" segundos...");
-                                    setTimeout("getSecs()",1000);
-                                    var s =  $("#clock1").html();
-                                    if (s == "1 segundos..."){
-                                        window.location.href = "' .  $redirecionamento . '";
-                                    }
-                                }
-                                ';
-	
-				$data['mensagem'] = "<br /> Redirecionando em ";
-				$data['mensagem'] .= '<span id="clock1"> ' . "<script>setTimeout('getSecs()',1000);</script> </span>";
-				$data['link1'] = '';
-				$data['link2'] = '';
-	
-				$this->load->view('success', $data);
-			
-			
-			
-		}
-	}
-	
-	
-	function workflows(){
-		
-		$this->js[] = 'tramitacao';
-	
-		$data['titulo']     = 'Recebimento de Documentos';
-		$data['link_back'] = $this->Campo_model->make_link('', 'history_back');
-		$data['form_action'] = site_url($this->area.'/workflows/search');
-		
-		$id_setor = $this->session->userdata('setor');
-		
-		// BUSCA
-		$data['keyword_workflow'] = '';
-		if(isset($_SESSION['keyword_workflow']) == true and $_SESSION['keyword_workflow'] != null){
-			$data['keyword_workflow'] = $_SESSION['keyword_workflow'];
-			redirect($this->area.'workflows/search/');
-		}else{
-			$data['keyword_workflow'] = 'pesquisa textual';
-			$data['link_search_cancel'] = '';
-		}
-		// FIM DA BUSCA
-		
-		//Inicio da Paginacao
-		$this->load->library('pagination');
-		$maximo = 10;
-		$uri_segment = 3;
-		$inicio = (!$this->uri->segment($uri_segment, 0)) ? 0 : ($this->uri->segment($uri_segment, 0) - 1) * $maximo;
-		$_SESSION['novoinicio'] = current_url();
-		$config['base_url'] = site_url($this->area.'/workflows/');
-		$config['total_rows'] = $this->Documento_model->get_workflows($id_setor)->num_rows();
-		$config['per_page'] = $maximo;
-		
-		$this->pagination->initialize($config);
-		// fim da paginacao
-
-		$objetos = $this->Documento_model->get_workflows_paged_list($id_setor, $maximo, $inicio);
-	
-		// carregando os dados na tabela
-		$this->load->library('table');
-		$this->table->set_empty("&nbsp;");
-		$this->table->set_heading('Item', 'Data do envio', 'Documento', 'Para', 'Assunto', 'Ações');
-	
-		
-		foreach ($objetos as $objeto){
-			
-			$doc = $this->Documento_model->get_by_id($objeto->id_documento)->row();
-	
-			$tipoNome = $this->Documento_model->get_tipo($doc->tipo)->row();
-			
-			$setorRemetente = $this->getCaminho($doc->setor);
-			
-			if($objeto->data_recebimento == null){
-				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
-							<a href="'.site_url().'/documento/acusar_recebimento/'.$objeto->id_workflow.'" class="btn btn-primary btn-sm" 
-									data-container="body" data-toggle="popover" data-trigger="hover" data-placement="top" data-html="true" 
-									title="<strong>Atenção</strong> <i class=\'fa fa-exclamation-triangle fa-lg\' style=\'color: #FF9933;\'></i>" 
-									data-content="Este documento foi tramitado para o seu setor. Clique neste botão <strong>apenas</strong> se estiver com o documento em mãos. Caso não esteja, verifique com os demais membros do seu setor.">
-									<span class="glyphicon glyphicon-ok"></span> Acusar recebimento
-							</a>';
-			}else{
-				$botoes = '<a href="'.site_url().'/documento/view/'.$objeto->id_documento.'" class="btn btn-default btn-sm"><i class="cus-zoom"></i> Visualizar</a>
-							<a href="'.site_url().'/documento/desfazer_recebimento/'.$objeto->id_workflow.'" class="btn btn-default btn-sm"><i class="cus-cross"></i> Desfazer recebimento</a>
-							<a href="'.site_url().'/documento/workflow/'.$objeto->id_documento.'" class="btn btn-success btn-sm"><i class="cus-paper_airplane"></i> Tramitação</a>';
-			}
-			
-			if($doc->para == '0'){ // acontece com parecer tecnico 
-				$doc->para = ''; 
-			}
-			
-			$this->table->add_row($objeto->id_workflow, $this->datas->datetimeToBR($objeto->data_envio), 
-					
-				
-					"$tipoNome->abreviacao Nº $doc->numero <br> $setorRemetente",
-
-					$doc->para,
-					
-					$doc->assunto,
-					
-					'<div class="btn-group">'.$botoes.'</div>'
-			);
-						
-		}
-	
-		
-		//Monta a DataTable
-		$tmpl = $this->Grid_model->monta_tabela_list();
-		$this->table->set_template($tmpl);
-		// Fim da DataTable
-	
-		$data['table'] = $this->table->generate();
-		$data["total_rows"] = $config['total_rows'];
-		$data['pagination'] = $this->pagination->create_links();
-	
-		$this->load->view($this->area.'/documento_tramitacoes', $data);
-
-	}
-	
-	function acusar_recebimento($id){
-		$obj["id_recebedor"] = $this->session->userdata('id_usuario');
-		$obj["data_recebimento"] = date("Y-m-d H:i:s");
-		$this->Documento_model->workflow_update($id,$obj);
-		redirect('documento/workflows');
-	}
-	
-	function desfazer_recebimento($id){
-		$obj["data_recebimento"] = null;
-		$obj["id_recebedor"] = null;
-		$this->Documento_model->workflow_update($id,$obj);
-		redirect('documento/workflows');
-	}
-	
-	function workflow_delete($id, $id_doc){
-		$this->Documento_model->workflow_delete($id);
-		redirect('documento/workflow/'. $id_doc);
-	}
-	
+	/*
 	function workflow_wait(){
 		$_SESSION['workflow_wait'] = "wait";
 		redirect('documento/index/');
 	}
+	*/
 	
+	/*
 	function stamp($id){
 		$obj["carimbo"] = "S";
 		$this->Documento_model->update($id,$obj);
@@ -1547,6 +1258,7 @@ class Documento extends CI_Controller {
 		$this->Documento_model->update($id,$obj);
 		redirect('documento/view/'.$id);
 	}
+	*/
 	
 	
 	function carimbo_pagina_on($id){
@@ -1599,6 +1311,7 @@ class Documento extends CI_Controller {
 		redirect('documento/view/'.$id);
 	}
 	
+	/*
 	function lock($id){
 		$obj["cadeado"] = "S";
 		$this->Documento_model->update($id,$obj);
@@ -1610,6 +1323,7 @@ class Documento extends CI_Controller {
 		$this->Documento_model->update($id,$obj);
 		redirect('documento/index/');
 	}
+	*/
 
 	function hide($id){ 
 		$obj["oculto"] = "S";
