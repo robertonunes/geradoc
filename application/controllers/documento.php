@@ -329,6 +329,7 @@ class Documento extends CI_Controller {
 		
 		
 		//--- Cria a validacao dos campos dinamicos ---//
+		$_SESSION['data_original'] = '';
 		$validacao = $this->set_validacao();
 		
 		$campos_dinamicos = '';
@@ -1501,26 +1502,23 @@ class Documento extends CI_Controller {
 			
 			$ano_atual = $array_hoje[2];
 			
-			//para alteracoes de documentos do ano anterior
-			$array_original = explode('/', $_SESSION['data_original']);
-			
-			$ano_original = $array_original[2];
-			
-			//echo $ano_original;
-			
-			//exit;
-			
-
 			if($ano_postado < $ano_atual){
 				$this->form_validation->set_message('valid_date', 'O ano informado ('.$ano_postado.') era menor que o ano atual! Corrigimos para a data de hoje');
 				return false;
 			}
 			
-			if($ano_postado > $ano_original){
-				$this->form_validation->set_message('valid_date', 'O ano informado ('.$ano_postado.') é superior ao ano de criação do documento ('.$ano_original.') ! Você está tentando alterar a data de um documento de um ano anterior ao atual! Operação proibida!');
-				return false;
-			}
+			if(isset($_SESSION['data_original']) and $_SESSION['data_original'] != ''){
+				//para alteracoes de documentos do ano anterior
+				$array_original = explode('/', $_SESSION['data_original']);
 					
+				$ano_original = $array_original[2];
+				
+				if($ano_postado > $ano_original){
+					$this->form_validation->set_message('valid_date', 'O ano informado ('.$ano_postado.') é superior ao ano de criação do documento ('.$ano_original.') ! Você está tentando alterar a data de um documento de um ano anterior ao atual! Operação proibida!');
+					return false;
+				}
+			}
+		
 			return true;
 		}
 	
