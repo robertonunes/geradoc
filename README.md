@@ -58,7 +58,7 @@ Configuração da aplicação:
 	
 		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
-3. Na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>database.php</strong> com seguinte conteúdo:
+3. Na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>database.php</strong> com o seguinte conteúdo:
 
 		$active_group = 'default';
 		$active_record = TRUE;
@@ -79,8 +79,26 @@ Configuração da aplicação:
 		$db['default']['autoinit'] = TRUE;
 		$db['default']['stricton'] = FALSE;
 
+4. Ainda na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>email.php</strong> com o seguinte conteúdo:
+
+		<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+		//Para envio de e-mail usando uma conta g-mail com TLS
+
+		$config['protocol']='smtp';
+		$config['smtp_host']='smtp.gmail.com';
+		$config['smtp_crypto'] = 'tls';
+		$config['smtp_port']= 587;
+		$config['starttls'] = TRUE;
+		$config['validate']= TRUE;
+		$config['smtp_user']='';
+		$config['smtp_pass']='';
+		$config['mailtype']='html';
+		$config['charset'] = 'utf-8';
+		$config['wordwrap'] = 'TRUE';
+		$config['newline']="\r\n"; 
 	
-4. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pastas abaixo:
+5. Dê permissões de <strong>leitura e escrita</strong> para o servidor web nas pastas abaixo:
 
 		geradoc/files
 
