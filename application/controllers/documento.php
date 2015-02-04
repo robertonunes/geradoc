@@ -172,6 +172,7 @@ class Documento extends CI_Controller {
 		
 	}
 	
+
 	//--- CAMPOS PADROES ---//
 	public function set_validacao(){
 	
@@ -547,6 +548,12 @@ class Documento extends CI_Controller {
 			
 		}
 
+	}
+	
+	function set_icone_extensao($ext){
+	
+		return '<i class="cus-page_white_text"></i>';
+	
 	}
 
 	function update($id, $disabled = null){		
