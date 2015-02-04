@@ -328,6 +328,40 @@ class Documento extends CI_Controller {
 		//--- FIM ---//
 		
 		
+		
+		//--- POPULA O DROPDOWN DE ANEXOS ---//
+		$this->load->model('Repositorio_model','',TRUE);
+		$anexos = $this->Repositorio_model->list_by_setor($session_setor)->result();
+		$arrayAnexos = array();
+		if($anexos){
+			foreach ($anexos as $anexo_item){
+
+				$array_arquivo = explode('/', $anexo_item->arquivo);
+				
+				$arquivo = end($array_arquivo);
+				
+				$array_map_item = explode('.', $arquivo);
+				
+				$extensao = strtolower(end($array_map_item));
+				
+				if($extensao != strtolower($arquivo)){
+					
+					$arrayAnexos[$anexo_item->id] = $anexo_item->nome;
+					
+				}
+
+			}
+		}else{
+			$arrayAnexos[1] = "";
+		}
+		
+		$data['anexosDisponiveis']  =  $arrayAnexos;
+		
+		$data['anexoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : '';
+		
+		//--- FIM ---//
+		
+		
 		//--- Cria a validacao dos campos dinamicos ---//
 		$_SESSION['data_original'] = '';
 		$validacao = $this->set_validacao();
@@ -430,8 +464,13 @@ class Documento extends CI_Controller {
 					'carimbo' => $this->input->post('campoCarimbo'),
 	
 			);
-			
-			
+
+			$anexo = ',';
+			foreach ($this->input->post('campoAnexo') as $key => $value){
+				$anexo .= $value . ',';
+			}
+			$obj_do_form['anexos'] = $anexo;
+
 			
 			foreach ($campos_especiais as $key => $nome_campo){
 				
@@ -652,6 +691,44 @@ class Documento extends CI_Controller {
 		//--- FIM ---//
 		
 		
+		//--- POPULA O DROPDOWN DE ANEXOS ---//
+		$this->load->model('Repositorio_model','',TRUE);
+		$session_setor = $this->session->userdata('setor');
+		$anexos = $this->Repositorio_model->list_by_setor($session_setor)->result();
+		$arrayAnexos = array();
+		if($anexos){
+			foreach ($anexos as $anexo_item){
+		
+				$array_arquivo = explode('/', $anexo_item->arquivo);
+		
+				$arquivo = end($array_arquivo);
+		
+				$array_map_item = explode('.', $arquivo);
+		
+				$extensao = strtolower(end($array_map_item));
+		
+				if($extensao != strtolower($arquivo)){
+						
+					$arrayAnexos[$anexo_item->id] = $anexo_item->nome;
+						
+				}
+		
+			}
+		}else{
+			$arrayAnexos[1] = "";
+		}
+		
+		$data['anexosDisponiveis']  =  $arrayAnexos;
+		
+		$obj->anexos = substr($obj->anexos, 1, -1);
+
+		$obj->anexos = explode(',',$obj->anexos);
+		
+		$data['anexoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $obj->anexos;
+		
+		//--- FIM ---//
+		
+		
 		$data['campoData']['value']          = $this->_trata_dataDoBancoParaForm($obj->data);
 		$data['campoAssunto']['value']       = $obj->assunto;
 		$data['campoReferencia']['value']    = $obj->referencia;
@@ -792,6 +869,12 @@ class Documento extends CI_Controller {
 					'carimbo' => $this->input->post('campoCarimbo'),				
 			);
 			
+			$anexo = ',';
+			foreach ($this->input->post('campoAnexo') as $key => $value){
+				$anexo .= $value . ',';
+			}
+			$obj_do_form_complemento['anexos'] = $anexo;
+			
 			$obj_do_form = array_merge($obj_do_form, $obj_do_form_complemento);
 			
 			
@@ -916,6 +999,7 @@ class Documento extends CI_Controller {
 			$data['carimbo_confidencial'] = '<a href="'.site_url($this->area.'/carimbo_confidencial_off/'.$id).'">De confidencial <i class="fa fa-check"></i></a>';
 		}
 		//--- Fim ---//
+
 		
 		//verifica a permissao de acesso ao documento e retira alguns botoes
 		$permissao = $this->get_permissao($data['objeto']->setor, $this->session->userdata('id_usuario'));
@@ -971,69 +1055,24 @@ class Documento extends CI_Controller {
 		$data['objeto'] = $this->get_layout($data['objeto']);
 		
 		$data['documento_identificacao'] = $data['objeto']->tipoSigla . " Nº " . $data['objeto']->numero . "/" . $data['objeto']->ano . " - " . $this->getCaminho($data['objeto']->setor) ;
-			
-		//self::update($id, 'disabled');
-
-		/*
-		$data['titulo'] = $this->tituloView.$this->area;
-		$data['message'] = '';
-		
-		$data['link_back'] = anchor($_SESSION['homepage'].'#d'.$id,'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-default btn-sm'));
-		$data['link_update'] = anchor($this->area.'/update/'.$id,'<span class="glyphicon glyphicon-pencil"></span> Alterar', array('class'=>'btn btn-default btn-sm'));
-		$data['link_export'] = anchor($this->area.'/export/'.$id,'<span class="glyphicon glyphicon-print"></span> Exportar',array('class'=>'btn btn-default btn-sm', 'target'=>'_blank'));
-		
-		
-		$data['bt_ok'] = $_SESSION['homepage'].'#d'.$id;
-		// popula o array com os dados do objeto alimentado pela consulta
-		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
-		
-		
-		
-		if(!$data['objeto']) die('Documento não encontrado!<br>É tudo o que sabemos.<br><br>CTIC/AESP<br><a href="'.site_url('documento').'">&lt;- &nbsp;Voltar para a lista de documentos</a>');
-		if($data['objeto']->tipoID == 3 or $data['objeto']->tipoID == 5){
-			$tmp = $this->Documento_model->get_despacho_head($id);
-			$data['despacho_head'] = $tmp[0];
-			$data['objeto']->num_processo = $data['despacho_head']['num_processo'];
-			$data['objeto']->interessado = $data['despacho_head']['interessado'];
-			$tmp = NULL;
-		}
-		// trata os dados vindos do banco
-		$data['objeto']->tipoNome = mb_convert_case($data['objeto']->tipoNome, MB_CASE_TITLE, "UTF-8");
-		$data['objeto']->data_despacho = $data['objeto']->data;
-		$date = new DateTime($data['objeto']->data);
-		$data['objeto']->ano = $date->format('Y');
-		$data['objeto']->data = $this->_trata_data($data['objeto']->data);
-		$data['caminho'] = $this->getCaminho($data['objeto']->setor);
-		if($data['objeto']->destSexo = "M"){
-			$data['objeto']->destSexo = 'Ao Sr. ';
-		}else{
-			$data['objeto']->destSexo = 'À Sra. ';
-		}
-		$data['objeto']->remetNome = $this->_trata_contato($data['objeto']->remetNome);
-		$data['objeto']->remetCargoNome = mb_convert_case($data['objeto']->remetCargoNome, MB_CASE_TITLE, "UTF-8");
-		$data['objeto']->remetSetorArtigo ="d".mb_convert_case($data['objeto']->remetSetorArtigo, MB_CASE_LOWER, "UTF-8");
-		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strstr($_SESSION['homepage'], 'search', true)){
-			$data['objeto']->numero = $this->highlight($data['objeto']->numero, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->remetNome = $this->highlight($data['objeto']->remetNome, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->remetCargoNome = $this->highlight($data['objeto']->remetCargoNome, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->remetSetorArtigo = $this->highlight($data['objeto']->remetSetorArtigo, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->para = $this->highlight($data['objeto']->para, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->assunto = $this->highlight($data['objeto']->assunto, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->referencia = $this->highlight($data['objeto']->referencia, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
-		}
-		//--- FIM ---//
-		
-		
-		
-		$this->load->view($this->area.'/documento_view', $data);
-		*/
-		
+				
 		$this->load->view($this->area.'/documento_view', $data);
 		
 		$this->audita();
 		
 	}
+	
+	
+	function get_anexo($id){
+		
+		$this->load->model('Repositorio_model', '', TRUE);
+		
+		$obj = $this->Repositorio_model->get_by_id($id)->row();
+		
+		return $obj;
+		
+	}
+	
 	
 	function get_layout($objeto){
 		
@@ -1078,6 +1117,34 @@ class Documento extends CI_Controller {
 		$data['objeto']->layout = str_replace('[remetente_cargo]', mb_convert_case($data['objeto']->remetCargoNome . ' ' . $data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[remetente_setor_artigo]', $data['objeto']->remetSetorArtigo, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[remetente_setor_sigla]', $data['objeto']->remetSetorSigla, $data['objeto']->layout);
+		
+		
+		//--- Anexos ---//
+
+		$array_anexos = explode(',',$data['objeto']->anexos);
+		$array_anexos = array_slice($array_anexos, 1, -1); // remove o primeiro e o ultimo elemento
+		$anexos = null;
+
+		foreach ($array_anexos as $key => $value){
+
+			$caminho = base_url().'./'.$this->get_anexo($value)->arquivo;
+			
+			if($this->uri->segment(2) == 'view'){
+				$anexos .= '<a href="'.$caminho.'" target="_blank">'.$this->get_anexo($value)->nome.'</a>, ';
+			}else{
+				$anexos .= $this->get_anexo($value)->nome.', ';
+			}
+
+		}
+
+		$anexos = substr($anexos, 0, -2);
+		$data['objeto']->layout = str_replace('[anexos]', $anexos, $data['objeto']->layout);
+		
+		//--- Fim ---//
+		
+		
+		
+		
 		//--- FIM ---//
 		
 		
