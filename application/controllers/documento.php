@@ -549,12 +549,6 @@ class Documento extends CI_Controller {
 		}
 
 	}
-	
-	function set_icone_extensao($ext){
-	
-		return '<i class="cus-page_white_text"></i>';
-	
-	}
 
 	function update($id, $disabled = null){		
 		//--- VARIAVEIS COMUNS ---//
