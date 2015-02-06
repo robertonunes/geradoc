@@ -163,6 +163,8 @@ class Usuario extends CI_Controller {
 		$data['campoConfSenha'] = $this->Campo_model->usuario('campoConfSenha');
 		$data['niveisDisponiveis'] = $this->Campo_model->usuario('arrayNiveis');
 		$data['nivelSelecionado']  = '2';
+		$data['campoTamanhoUpload'] = $this->Campo_model->usuario('campoTamanhoUpload');
+		$data['campoTamanhoUpload']['value'] = 2048; // 2048 = 2 MB
 	
 			
 		//carrega os setores
@@ -194,7 +196,7 @@ class Usuario extends CI_Controller {
 					'setor' => $this->input->post('campoSetor'),
 					'setores' => $this->input->post('campoSetores'),
 					'nivel' => $this->input->post('campoNivel'),
-					
+					'upload' => $this->input->post('campoTamanhoUpload'),
 			);
 			
 			$campo_setores = null;
@@ -296,6 +298,9 @@ class Usuario extends CI_Controller {
 		
 		$data['niveisDisponiveis'] = $this->Campo_model->usuario('arrayNiveis');
 		$data['nivelSelecionado']  = $obj->nivel;
+		
+		$data['campoTamanhoUpload'] = $this->Campo_model->usuario('campoTamanhoUpload');
+		$data['campoTamanhoUpload']['value'] = $obj->upload;
 	
 			
 		//carrega os setores
@@ -341,6 +346,7 @@ class Usuario extends CI_Controller {
 					'senha' => $this->input->post('campoSenha'),
 					'setores' => $this->input->post('campoSetores'),
 					'nivel' => $this->input->post('campoNivel'),
+					'upload' => $this->input->post('campoTamanhoUpload'),
 					
 			);
 			

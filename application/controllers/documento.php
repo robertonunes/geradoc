@@ -55,7 +55,7 @@ class Documento extends CI_Controller {
 		$session_nivel = $this->session->userdata('nivel');
 		
 		$data['titulo']     = mb_convert_case($this->area, MB_CASE_TITLE, "ISO-8859-1").$this->tituloIndex;
-		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-primary'));
+		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo',array('class'=>'btn btn-primary'));
 		$data['form_action'] = site_url($this->area.'/search');
 
 		
