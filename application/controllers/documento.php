@@ -1070,7 +1070,13 @@ class Documento extends CI_Controller {
 		
 		$obj = $this->Repositorio_model->get_by_id($id)->row();
 		
-		return $obj;
+		if($obj){
+			return $obj;
+		}else{
+			return false;
+		}
+		
+		
 		
 	}
 	
@@ -1122,24 +1128,32 @@ class Documento extends CI_Controller {
 		
 		//--- Anexos ---//
 
+		if($data['objeto']->anexos){
 		$array_anexos = explode(',',$data['objeto']->anexos);
 		$array_anexos = array_slice($array_anexos, 1, -1); // remove o primeiro e o ultimo elemento
 		$anexos = null;
 
 		foreach ($array_anexos as $key => $value){
 
-			$caminho = base_url().'./'.$this->get_anexo($value)->arquivo;
+			if($this->get_anexo($value) != false){
+				
+				$caminho = base_url().'./'.$this->get_anexo($value)->arquivo;
 			
-			if($this->uri->segment(2) == 'view'){
-				$anexos .= '<a href="'.$caminho.'" target="_blank">'.$this->get_anexo($value)->nome.'</a>, ';
-			}else{
-				$anexos .= $this->get_anexo($value)->nome.', ';
+				if($this->uri->segment(2) == 'view'){
+					$anexos .= '<a href="'.$caminho.'" target="_blank">'.$this->get_anexo($value)->nome.'</a>, ';
+				}else{
+					$anexos .= $this->get_anexo($value)->nome.', ';
+				}
+			
 			}
 
 		}
 
 		$anexos = substr($anexos, 0, -2);
-		$data['objeto']->layout = str_replace('[anexos]', $anexos, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[anexos]', $anexos, $data['objeto']->layout);
+		}else{
+			$data['objeto']->layout = str_replace('[anexos]', '', $data['objeto']->layout);
+		}
 		
 		//--- Fim ---//
 		
