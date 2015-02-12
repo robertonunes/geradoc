@@ -550,6 +550,20 @@ class Documento extends CI_Controller {
 
 	}
 
+	function checa_tramitacao($id){
+		
+		$this->load->model('Workflow_model','',TRUE);
+		$obj = $this->Workflow_model->list_workflow($id)->row();
+		
+		if($obj){
+			redirect($this->area . '/update_negado/'.$id);
+		}else{
+			return FALSE;
+		}	
+		
+	}
+	
+	
 	function update($id, $disabled = null){		
 		//--- VARIAVEIS COMUNS ---//
 
@@ -597,6 +611,13 @@ class Documento extends CI_Controller {
 			redirect($this->area . '/cancelado/'.$id);
 		}
 		//--- FIM DA PERMISSAO DE ACESSO AO REGISTRO ---//
+		
+		
+		//--- CHECAGEM DE TRAMITACAO PARA EVITAR A ALTERACAO DO DOCUMENTO ---//
+		
+		$this->checa_tramitacao($id);
+			
+		//--- FIM ---//
 	
 		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
 	
@@ -1544,6 +1565,17 @@ class Documento extends CI_Controller {
 		//--- FIM ---//
 	
 		$this->load->view($this->area . "/" . $this->area.'_negado', $data);
+		$this->audita();
+		$_SESSION['homepage'] = null;
+	}
+	
+	function update_negado($id){
+
+		$data['titulo'] = 'Alteração negada';
+    	$data['message'] = 'Este documento foi tramitado. <br> Para alterá-lo é necessário o cancelamento da tramitação.';
+    	$data['message'] .= '<p><a href="javascript: window.history.go(-1)" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-arrow-left"></span> Voltar</a></p>';
+    	$this->load->view('erro', $data);
+	    	
 		$this->audita();
 		$_SESSION['homepage'] = null;
 	}
