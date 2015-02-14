@@ -31,7 +31,7 @@ Benefícios:
 
 9. <strong>Armazenamento seguro</strong>, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários;
 
-10. <strong>Workflow</strong>, controle do fluxo de trabalho e registro das tramitações dos documentos nos setores da instituição;
+10. <strong>Workflow</strong>, controle teste do fluxo de trabalho e registro das tramitações dos documentos nos setores da instituição;
 
 11. <strong>Repositório</strong>, possibilidade de armazenar os anexos dos documentos de cada setor, evitando a necessidade de impressões desses arquivos.
 
