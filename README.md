@@ -29,9 +29,9 @@ Benefícios:
 
 8. <strong>Possibilidade de colaboração</strong> entre os membros de um mesmo setor durante a criação de um documento antes de imprimi-lo;
 
-9. <strong>Armazenamento seguro</strong>, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários.
+9. <strong>Armazenamento seguro</strong>, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários;
 
-10. <strong>Workflow</strong>, controle do fluxo de trabalho e registro das tramitações dos documentos nos setores da instituição.
+10. <strong>Workflow</strong>, controle do fluxo de trabalho e registro das tramitações dos documentos nos setores da instituição;
 
 11. <strong>Repositório</strong>, possibilidade de armazenar os anexos dos documentos de cada setor, evitando a necessidade de impressões desses arquivos.
 
