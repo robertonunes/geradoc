@@ -59,6 +59,7 @@ Configuração da aplicação:
 		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
 3. Na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>database.php</strong> com o seguinte conteúdo:
+		<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 		$active_group = 'default';
 		$active_record = TRUE;
@@ -127,11 +128,7 @@ Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
 Demonstração:
 ===================================
 
-Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br/demo](http://www.geradox.com.br/demo "http://www.geradox.com.br/demo") e informe os dados abaixo:
-
-* E-mail: convidado@geradox.com.br  
-* Senha: convidado  
-
+Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br](http://www.geradox.com.br "http://www.geradox.com.br").
 
 
 
