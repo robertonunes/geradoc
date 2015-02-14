@@ -59,8 +59,9 @@ Configuração da aplicação:
 		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
 3. Na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>database.php</strong> com o seguinte conteúdo:
+		
 		<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
+		
 		$active_group = 'default';
 		$active_record = TRUE;
 
