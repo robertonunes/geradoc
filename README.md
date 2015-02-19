@@ -29,7 +29,11 @@ Benefícios:
 
 8. <strong>Possibilidade de colaboração</strong> entre os membros de um mesmo setor durante a criação de um documento antes de imprimi-lo;
 
-9. <strong>Armazenamento seguro</strong>, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários.
+9. <strong>Armazenamento seguro</strong>, uma vez que os registros são gravados em nuvem, com rotinas de backup, e não nos computadores dos usuários;
+
+10. <strong>Workflow</strong>, controle do fluxo de trabalho e registro das tramitações dos documentos nos setores da instituição;
+
+11. <strong>Repositório</strong>, possibilidade de armazenar os anexos dos documentos de cada setor, evitando a necessidade de impressões desses arquivos.
 
 
 Requisitos:
@@ -59,7 +63,9 @@ Configuração da aplicação:
 		$config['base_url']	= "http://localhost/geradoc/"; // colocar a url de seu servidor.
 
 3. Na pasta <strong>geradoc/application/config/</strong> crie um arquivo com o nome <strong>database.php</strong> com o seguinte conteúdo:
-
+		
+		<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+		
 		$active_group = 'default';
 		$active_record = TRUE;
 
@@ -127,11 +133,7 @@ Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
 Demonstração:
 ===================================
 
-Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br/demo](http://www.geradox.com.br/demo "http://www.geradox.com.br/demo") e informe os dados abaixo:
-
-* E-mail: convidado@geradox.com.br  
-* Senha: convidado  
-
+Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br](http://www.geradox.com.br "http://www.geradox.com.br").
 
 
 
