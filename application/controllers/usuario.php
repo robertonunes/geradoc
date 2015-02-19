@@ -690,7 +690,7 @@ class Usuario extends CI_Controller {
 	}
 	
 	
-public function search($page = 1) { 
+	public function search($page = 1) { 
 	$this->load->library('restrict_page');
 	
     	$this->js[] = 'usuario';
