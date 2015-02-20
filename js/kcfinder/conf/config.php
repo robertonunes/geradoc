@@ -1,14 +1,7 @@
 <?php
-
-// $CI 			= & get_instance();
-// $CI->load->library(array('session'));
-
-// $id_usuario 	= 	$CI->session->userdata('id_usuario');
-
 session_start();
-
+$base_url = $_SESSION['base_url'];
 $upload_path = $_SESSION['upload_path'];
-//echo $upload_path ;
 
 /** This file is part of KCFinder project
   *
@@ -27,19 +20,19 @@ $upload_path = $_SESSION['upload_path'];
    See http://kcfinder.sunhater.com/install for setting descriptions */
 
 if (!file_exists($upload_path)) {
-	echo "<br> diretorio não existe";
+	//echo "<br> diretorio não existe";
 	mkdir($upload_path, 0777, true);
 }
 
+$uploadURL = $base_url . 'js/kcfinder/' .substr($upload_path, 2);
 
 $_CONFIG = array(
-
 
 // GENERAL SETTINGS
 
     'disabled' => false,
-    'uploadURL' => $upload_path,
-    'uploadDir' => "",
+    'uploadURL' => $uploadURL,
+    'uploadDir' => '',
     'theme' => "default",
 
     'types' => array(

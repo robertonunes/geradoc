@@ -466,11 +466,13 @@ class Documento extends CI_Controller {
 	
 			);
 
-			$anexo = ',';
-			foreach ($this->input->post('campoAnexo') as $key => $value){
-				$anexo .= $value . ',';
+			if($this->input->post('campoAnexo')){
+				$anexo = ',';
+				foreach ($this->input->post('campoAnexo') as $key => $value){
+					$anexo .= $value . ',';
+				}
+				$obj_do_form['anexos'] = $anexo;
 			}
-			$obj_do_form['anexos'] = $anexo;
 
 			
 			foreach ($campos_especiais as $key => $nome_campo){
@@ -891,11 +893,13 @@ class Documento extends CI_Controller {
 					'carimbo' => $this->input->post('campoCarimbo'),				
 			);
 			
-			$anexo = ',';
-			foreach ($this->input->post('campoAnexo') as $key => $value){
-				$anexo .= $value . ',';
+			if($this->input->post('campoAnexo')){
+				$anexo = ',';
+				foreach ($this->input->post('campoAnexo') as $key => $value){
+					$anexo .= $value . ',';
+				}
+				$obj_do_form_complemento['anexos'] = $anexo;
 			}
-			$obj_do_form_complemento['anexos'] = $anexo;
 			
 			$obj_do_form = array_merge($obj_do_form, $obj_do_form_complemento);
 			
