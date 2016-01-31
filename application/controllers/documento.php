@@ -57,16 +57,26 @@ class Documento extends CI_Controller {
 		$data['titulo']     = mb_convert_case($this->area, MB_CASE_TITLE, "ISO-8859-1").$this->tituloIndex;
 		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo',array('class'=>'btn btn-primary'));
 		$data['form_action'] = site_url($this->area.'/search');
-
 		
+		
+		$data['campoSearchText'] = '<input type="text" class="form-control" id="search" name="searchText" placeholder="Ex.: teste">';
+		
+		$data['campoSearchNumber'] = '<input type="text" class="form-control" id="searchNumero" name="searchNumber" placeholder="Ex.: 1">';
+
+
 		//--- BUSCA ---//	
 		$data['keyword_'.$this->area] = '';
+
 		if(isset($_SESSION['keyword_'.$this->area]) == true and $_SESSION['keyword_'.$this->area] != null){
 			$data['keyword_'.$this->area] = $_SESSION['keyword_'.$this->area];
 			redirect($this->area.'/search/');
 		}else{
 			$data['keyword_'.$this->area] = 'pesquisa textual';
 			$data['link_search_cancel'] = '';
+			$data['btn_search_cancel'] = '';
+			
+// 			$_SESSION['keyword'.$this->area] = null;
+// 			unset($_SESSION['keyword'.$this->area]);
 		}
 		//--- FIM ---//	
 			
@@ -75,7 +85,7 @@ class Documento extends CI_Controller {
 		$this->load->model('Setor_model','',TRUE);
 		
 		$session_setor = $this->session->userdata('setor');
-		
+
 		$restricao = $this->Setor_model->get_by_id($session_setor)->row();
 		
 		if(isset($restricao->restricao) and $restricao->restricao == 'S'){
@@ -90,9 +100,10 @@ class Documento extends CI_Controller {
 
 		}
 		
-		foreach ($data['setores']as $setor){
+		foreach ($data['setores'] as $setor){
 			$arraySetores[$setor->id] = "$setor->sigla" . " - " . $setor->nome;
 		}
+		
 		$data['setoresDisponiveis']  =  $arraySetores;
 			
 		$uri_setor = substr($this->uri->segment(3), 1);
@@ -100,13 +111,14 @@ class Documento extends CI_Controller {
 		$_SESSION['setorSelecionado'] = ($uri_setor) ? $uri_setor : $session_setor;
 			
 		$data['setorSelecionado'] = $_SESSION['setorSelecionado'];
-		//--- FIM ---//	
+		
 		
 		if($data['setorSelecionado'] == 'all'){
 			$data['setorCaminho'] = "TODOS";
 		}else{
 			$data['setorCaminho'] = $this->getCaminho($data['setorSelecionado']);
 		}
+		//--- FIM ---//
 		
 		
 		$maximo = 10;
@@ -122,18 +134,24 @@ class Documento extends CI_Controller {
 			$contagem = $this->Documento_model->lista_busca($this->session->userdata('cpf'), $this->input->post('txt_busca'))->num_rows();
 			
 		}else{
+			
+			$config_listagem = $this->get_config();
+			
+			$data_inicial = $config_listagem->data_inicial;
+			
+			$data_final = $config_listagem->data_final;
 
 			if($data['setorSelecionado'] == 0){ // zero significa todos os documentos
 
-				$documentos = $this->Documento_model->lista_todos_documentos($inicio, $maximo, $this->session->userdata('cpf'));
+				$documentos = $this->Documento_model->lista_todos_documentos($inicio, $maximo, $this->session->userdata('cpf'), $data_inicial, $data_final);
 				
-				$contagem = $this->Documento_model->conta_todos_documentos($this->session->userdata('cpf'));
+				$contagem = $this->Documento_model->conta_todos_documentos($this->session->userdata('cpf'), $data_inicial, $data_final);
 
 			}else{
 
-				$documentos = $this->Documento_model->lista_documentos_por_setor($inicio, $maximo, $data['setorSelecionado'], $this->session->userdata('cpf'));
-				
-				$contagem = $this->Documento_model->conta_documentos_por_setor($data['setorSelecionado'], $this->session->userdata('cpf'));
+				$documentos = $this->Documento_model->lista_documentos_por_setor($inicio, $maximo, $data['setorSelecionado'], $this->session->userdata('cpf'), $data_inicial, $data_final);
+
+				$contagem = $this->Documento_model->conta_documentos_por_setor($data['setorSelecionado'], $this->session->userdata('cpf'), $data_inicial, $data_final);
 			
 			}
 		}
@@ -150,7 +168,7 @@ class Documento extends CI_Controller {
 
 		// carregando os dados na tabela
 		$this->table->set_empty("&nbsp;");
-		$this->table->set_heading('Identificação', 'Assunto', 'Autor', 'Data','Ação');
+		$this->table->set_heading('Identificação', 'Assunto', 'Autor', 'Criado em','Ação');
 
 		//Monta a DataTable
         $tmpl = $this->Grid_model->monta_tabela_list();
@@ -165,13 +183,191 @@ class Documento extends CI_Controller {
         //checa documentos pendentes de recebimento
         $data['workflow'] = $this->Documento_model->check_workflow($this->session->userdata('setor'))->num_rows();
         //fim
+        
+        
+/*
+|--------------------------------------------------------------------------
+| Alertas
+|--------------------------------------------------------------------------
+*/
+       
+        $data['alerta_documento_conteudo'] = '';
+        $data['form_action_alerta_update'] = '';
+        
+        $alerta = $this->Documento_model->check_alerta_by_date($this->session->userdata('id_usuario'),  date("Y-m-d"));
+        $data['alerta'] = $alerta;
+        if(count($alerta) > 0){
 
+        	$id_documento = $alerta[0]['id_documento'];
+        	$id_alerta = $alerta[0]['id_alerta'];
+        	
+        	$alerta_documento_conteudo = $this->Documento_model->get_historico($id_documento)->result();
+
+        	$data['data_alerta_banco'] = $this->_trata_dataDoBancoParaForm($alerta[0]['data_alerta']);
+        	
+        	$data['alerta_documento_conteudo'] = $alerta_documento_conteudo[0]->texto;
+        	
+        	$data['data_alerta'] = $this->_trata_dataDoBancoParaForm($alerta[0]['data_alerta']) . " às " . $this->datas->trataHoraBancoForm($alerta[0]['hora_alerta']);
+        	
+        	$data['id_documento_alerta'] = $id_documento;
+        	
+        	$data['motivo_alerta'] = $alerta[0]['motivo_alerta'];
+        	
+        	$data['form_action_alerta_update']	= site_url($this->area.'/alerta_update/'.$id_alerta);
+        	
+        }else{
+        	$_SESSION['tem_alerta'] = 0;
+        }
+        
+        
+        
+/*
+|--------------------------------------------------------------------------
+| Dropdown tipos de documentos
+|--------------------------------------------------------------------------
+*/        
+        
+        //--- POPULA O DROPDOWN DE TIPOS ---//
+        $this->load->model('Tipo_model','',TRUE);
+        $tipos = $this->Tipo_model->list_all_actives()->result();
+        $arrayTipos[0] = "TODOS OS DOCUMENTOS";
+        if($tipos){
+        	foreach ($tipos as $tipo){
+        		$arrayTipos[$tipo->id] = $tipo->nome;
+        	}
+        }else{
+        	$arrayTipos[1] = "";
+        }
+        
+        $data['tiposDisponiveis']  =  $arrayTipos;
+        
+//         $_SESSION['tipoSelecionado'] = $this->uri->segment(6) ? $this->uri->segment(6) : 0;
+        	
+//    $data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : $_SESSION['tipoSelecionado'];
+
+        $data['tipoSelecionado'] = $this->input->post('campoTipo') ? $this->input->post('campoTipo') : 0;
+        
+        //--- FIM ---//
+        
+        
+/*
+|--------------------------------------------------------------------------
+| Configuracao de listagem de documentos
+|--------------------------------------------------------------------------
+*/
+
+        $config_listagem = self::_config_listagem();
+        
+        $data['link_periodo_cancel'] = $config_listagem->link_periodo_cancel;
+        $data['form_action_config_update'] = $config_listagem->form_action_config_update;
+        $data['dataInicial'] = $config_listagem->dataInicial;
+        $data['dataFinal'] = $config_listagem->dataFinal;
+       	 
+/*
+|--------------------------------------------------------------------------
+| Fim
+|--------------------------------------------------------------------------
+*/
+        
+        $data['searchText'] = '';
+        $data['searchNumber'] = '';
+        
 		$this->load->view($this->area.'/'.$this->area.'_list', $data);
 		
 		$this->audita();
 		
 	}
 	
+	
+	public function _config_listagem(){
+		
+		$obj = new stdClass();
+		
+		$obj->form_action_config_update	= site_url($this->area.'/config_update/');
+		
+		$config_listagem = $this->get_config();
+		
+		$obj->link_periodo_cancel = '';
+		
+		if(isset($config_listagem->data_inicial)){
+			$obj->dataInicial = $this->datas->datetimeToBR($config_listagem->data_inicial);
+		}else{
+			$obj->dataInicial = date('d/m/Y', mktime (0, 0, 0, date("m")  , date("d")-365, date("Y")));
+		}
+		
+		if(isset($config_listagem->data_final)){
+			$obj->dataFinal = $this->datas->datetimeToBR($config_listagem->data_final);
+		}else{
+			$obj->dataFinal = date('d/m/Y');
+		}
+		
+		$obj->link_periodo_cancel = $config_listagem->link_periodo_cancel;
+
+		return $obj;
+	}
+	
+	public function periodo_reset(){
+		
+		$id_usuario = $this->session->userdata('id_usuario');
+		
+		$this->Documento_model->periodo_reset($id_usuario);
+		
+		self::search_cancel();
+		
+		redirect($this->area . "/index/s" . $_SESSION['setorSelecionado']);
+	}
+	
+	
+	public function get_config(){
+	
+		$id_usuario = $this->session->userdata('id_usuario');
+		
+		$config = $this->Documento_model->get_config($id_usuario);
+		
+		if(count($config) == 0){
+			$config = new stdClass();
+			$config->data_inicial = date('Y-m-d', mktime (0, 0, 0, date("m")  , date("d")-365, date("Y")));
+			$config->data_final = date('Y-m-d');
+			$config->link_periodo_cancel = '';
+		}else{
+			
+			$config->link_periodo_cancel = '<a class="btn btn-warning" href="'.base_url().'index.php/documento/periodo_reset" role="button"><i class="fa fa-refresh"></i> <strong>Valores padrões</strong></a>';
+			
+		}
+		
+		return $config;
+	
+	}
+	
+	public function config_update(){
+		
+		$data_inicial = date('d/m/Y', mktime (0, 0, 0, date("m")  , date("d")-365, date("Y"))) ;
+		
+		$data_final = date('d/m/Y');
+		
+		if($this->input->post('campoDataInicial')){
+			$data_inicial = $this->input->post('campoDataInicial');
+		}
+		
+		if($this->input->post('campoDataFinal')){
+			$data_final = $this->input->post('campoDataFinal');
+		}
+
+		$obj['data_inicial'] = $this->datas->dateToUS($data_inicial);
+		$obj['data_final'] = $this->datas->dateToUS($data_final);
+		$obj['id_usuario'] = $this->session->userdata('id_usuario');
+
+		$this->Documento_model->config_update($obj);
+		
+		self::search_cancel();
+		
+		redirect($this->area . "/index/s" . $_SESSION['setorSelecionado']);
+
+// 		print_r($obj);
+		
+// 		exit();
+
+	}
 
 	//--- CAMPOS PADROES ---//
 	public function set_validacao(){
@@ -228,8 +424,14 @@ class Documento extends CI_Controller {
 		$data['acao']          	= "add";
 		$data['disabled'] = '';
 		
-		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
-		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		if(isset($_SESSION['homepage'])){
+			$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'], 'voltar_doc');
+			$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		}else{
+			$data['link_back'] = '';
+			$data['link_cancelar'] = '';
+		}
+		
 		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
 		
 		//$data['link_back'] = anchor($_SESSION['homepage'],'<span class="glyphicon glyphicon-arrow-left"></span> Voltar',array('class'=>'btn btn-warning btn-sm'));
@@ -291,6 +493,7 @@ class Documento extends CI_Controller {
 		//--- MOSTRA A SIGLA DO SETOR E COLOCA O SETORID EM UM CAMPO HIDDEN ---//
 		if($data['remetenteSelecionado'])
 			$setor = $this->Documento_model->get_setor($data['remetenteSelecionado'])->row();
+			
 		else $setor = null;
 		if(isset($setor)){
 			if($setor->setorPaiSigla == "NENHUM" or $setor->setorPaiSigla == $setor->sigla){
@@ -298,12 +501,17 @@ class Documento extends CI_Controller {
 			}else{
 				$data['campoSetor']['value'] = "$setor->sigla/$setor->setorPaiSigla";
 			}
-	
+			
 			$data['setorId'] = $setor->setorId;
+			
+			$remetente = $this->Contato_model->get_by_id($data['remetenteSelecionado'])->row();
+			$data['campoAssinatura']['value'] = $remetente->assinatura;
+			
 		}
 		else{
 			$data['campoSetor']['value'] = ' ';
 			$data['setorId'] = ' ';
+			$data['campoAssinatura']['value'] = ' ';
 		}
 		//--- FIM ---//
 		
@@ -489,6 +697,10 @@ class Documento extends CI_Controller {
 			//--- MAGICA DA CONTAGEM! Esse eh o miolo do sistema! Se quiser que tudo continue funcionando NAO BULA AQUI! VC FOI AVISADO!!! ---//
 			$inicio_contagem = $this->Documento_model->get_inicio_contagem($obj_do_form['tipo'], $this->datas->get_year_US($obj_do_form['data']));
 			
+ 			$assinatura = $this->Contato_model->get_by_id($obj_do_form['remetente'])->row();
+
+			$obj_do_form["assinatura"] = $assinatura->assinatura;
+			
 			$obj_do_form["numero"] =  $this->_set_number($obj_do_form['setor'], $obj_do_form['tipo'], $inicio_contagem, $this->datas->get_year_US($obj_do_form['data']));
 
 			$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'], $this->datas->get_year_US($obj_do_form['data']))->row();
@@ -672,8 +884,10 @@ class Documento extends CI_Controller {
 		//--- MOSTRA A SIGLA DO SETOR E COLOCA O SETORID EM UM CAMPO HIDDEN ---//
 		if($data['remetenteSelecionado']){
 			$setor = $this->Documento_model->get_setor($data['remetenteSelecionado'])->row();
+			$remetente = $this->Contato_model->get_by_id($data['remetenteSelecionado'])->row();
 		}else{
 			$setor = $this->Documento_model->get_setor($obj->remetente)->row();
+			$remetente = $this->Contato_model->get_by_id($obj->remetente)->row();
 		}
 		if(isset($setor)){
 			if($setor->setorPaiSigla == "NENHUM" or $setor->setorPaiSigla == $setor->sigla){
@@ -681,12 +895,16 @@ class Documento extends CI_Controller {
 			}else{
 				$data['campoSetor']['value'] = "$setor->sigla/$setor->setorPaiSigla";
 			}
+			
+			$data['campoAssinatura']['value'] = $remetente->assinatura;
 	
 			$data['setorId'] = $setor->setorId;
 		}
 		else{
 			$data['campoSetor']['value'] = "$setor->sigla/$setor->setorPaiSigla";
 			$data['setorId'] = $obj->setor;
+			
+			$data['campoAssinatura']['value'] = $remetente->assinatura;
 		}
 		//--- FIM ---//
 	
@@ -899,6 +1117,8 @@ class Documento extends CI_Controller {
 					$anexo .= $value . ',';
 				}
 				$obj_do_form_complemento['anexos'] = $anexo;
+			}else{
+				$obj_do_form_complemento['anexos'] = null;
 			}
 			
 			$obj_do_form = array_merge($obj_do_form, $obj_do_form_complemento);
@@ -907,7 +1127,7 @@ class Documento extends CI_Controller {
 			//--- ATENCAO! --//
 			//--- MAGICA DA CONTAGEM! Esse eh o miolo do sistema! Se quiser que tudo continue funcionando NAO BULA AQUI! VC FOI AVISADO!!! ---//
 			$inicio_contagem = $this->Documento_model->get_inicio_contagem($obj_do_form['tipo'], $this->datas->get_year_US($obj_do_form['data']));
-				
+		
 			$obj_do_form["numero"] =  $this->_set_number($obj_do_form['setor'], $obj_do_form['tipo'], $inicio_contagem, $this->datas->get_year_US($obj_do_form['data']));
 				
 			$checa_existencia = $this->Documento_model->get_by_numero($obj_do_form['numero'], $obj_do_form['tipo'], $obj_do_form['setor'], $this->datas->get_year_US($obj_do_form['data']))->row();
@@ -978,6 +1198,91 @@ class Documento extends CI_Controller {
 	
 	}
 	
+	function alerta_add($id_documento){
+		
+		$obj["id_documento"] = $id_documento;
+		$obj["id_usuario_alerta"] = $this->session->userdata('id_usuario');
+		$obj["data_alerta"] = $this->datas->dateToUS($this->input->post('campoDataAlerta'));
+		
+// 		$hora_alerta = $this->input->post('campoHoraAlerta');
+		
+// 		$minuto_alerta = $this->input->post('campoMinutoAlerta');
+				
+// 		$obj["hora_alerta"] = $hora_alerta . $minuto_alerta;
+		
+		$obj["motivo_alerta"] = $this->input->post('campoMotivoAlerta');
+		
+		
+		if($this->input->post('campoHoraMinutoAlerta')){
+		
+			$hora = $this->input->post('campoHoraMinutoAlerta');
+				
+			$hora = $this->datas->trataHoraFormBanco($hora);
+		
+			$obj["hora_alerta"] = $hora;
+		}
+		
+// 		print_r($obj);
+// 		exit;
+		
+		$this->Documento_model->alerta_add($obj);
+		
+		redirect('documento/view/'.$id_documento);
+		
+	}
+	
+	function alerta_update($id_alerta){
+	
+		
+		if($this->input->post('campoDataAlerta')){
+			$obj["data_alerta"] = $this->datas->dateToUS($this->input->post('campoDataAlerta'));
+		}
+		
+		if($this->input->post('campoHoraAlerta')){
+			
+			$hora = $this->input->post('campoHoraAlerta');
+			
+			$hora = $this->datas->trataHoraFormBanco($hora);
+			
+			$obj["hora_alerta"] = $hora;
+		}
+		
+		
+// 		echo $this->input->post('campoHoraMinutoAlerta');
+		
+		if($this->input->post('campoHoraMinutoAlerta')){
+				
+			$hora = $this->input->post('campoHoraMinutoAlerta');
+			
+			
+				
+			$hora = $this->datas->trataHoraFormBanco($hora);
+				
+			$obj["hora_alerta"] = $hora;
+		}
+
+		if($this->input->post('campoMotivoAlerta')){
+			$obj["motivo_alerta"] = $this->input->post('campoMotivoAlerta');
+		}
+		
+		if($this->input->post('campoConclusaoAlerta')){
+			$obj["conclusao_alerta"] = $this->input->post('campoConclusaoAlerta');
+		}
+		
+// 		print_r($obj);
+		
+// 		exit;
+		
+		if($this->input->post('campoDataAlerta') or $this->input->post('campoConclusaoAlerta')){
+
+			$this->Documento_model->alerta_update($id_alerta,$obj);
+		}
+		
+		redirect('documento');
+		
+	
+	}
+	
 	function view($id){
 		
 		//--- VARIAVEIS COMUNS ---//	
@@ -985,19 +1290,29 @@ class Documento extends CI_Controller {
 		$data['message']        = '';
 		$data['acao']          	= "update";
 		
-		$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'history_back');
+		$data['link_back'] = '';
+		$data['link_cancelar'] = '';
 		
-		$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		if(isset($_SESSION['homepage'])){
+			$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'history_back');
+			$data['link_cancelar'] = $this->Campo_model->make_link($_SESSION['homepage'], 'cancelar_doc');
+		}
+
 		$data['link_update'] = $this->Campo_model->make_link($this->area, 'alterar', $id);
 		$data['link_update_sm'] = $this->Campo_model->make_link($this->area, 'alterar_doc', $id);
 		$data['link_export'] = $this->Campo_model->make_link($this->area, 'exportar_doc', $id);
 		$data['link_export_sm'] = $this->Campo_model->make_link($this->area, 'exportar', $id);
 		$data['link_history'] = $this->Campo_model->make_link($this->area, 'history', $id);
-		$data['link_workflow'] = $this->Campo_model->make_link($this->area, 'workflow', $id);		
+		$data['link_workflow'] = $this->Campo_model->make_link($this->area, 'workflow', $id);	
+		
+		$data['form_action_alerta']	= site_url($this->area.'/alerta_add/'.$id);
 		//--- FIM ---//
 
 		$data['objeto'] = $this->Documento_model->get_by_id($id)->row();
-
+		
+// 		echo "<pre>";
+// 		print_r($data['objeto']);
+// 		echo "</pre>";
 		
 		//--- Carimbos ---//
 		$data['carimbo_pagina'] = '<a href="'.site_url($this->area.'/carimbo_pagina_on/'.$id).'">De página</a>';
@@ -1025,6 +1340,76 @@ class Documento extends CI_Controller {
 			$data['carimbo_confidencial'] = '<a href="'.site_url($this->area.'/carimbo_confidencial_off/'.$id).'">De confidencial <i class="fa fa-check"></i></a>';
 		}
 		//--- Fim ---//
+		
+		
+
+		//--- Alerta ---//
+		
+		$data['campoDataAlerta'] = '';
+		$check_alerta_by_doc = $this->Documento_model->check_alerta_by_doc($this->session->userdata('id_usuario'),  $id);
+		
+		$data['mostraFormAddAlerta'] = true;
+		
+		if(count($check_alerta_by_doc) > 0){
+			
+			//echo $check_alerta_by_doc[0]['conclusao_alerta'];
+			//echo date('H:i');
+			
+// 			echo "<pre>";
+// 			print_r($check_alerta_by_doc[0]);
+// 			echo "</pre>";
+			
+			if($check_alerta_by_doc[0]['conclusao_alerta'] == ''){
+				
+
+				if($check_alerta_by_doc[0]['data_alerta'] < date('Y-m-d')){
+					
+					$data['mostraFormAddAlerta'] = true;
+					
+				}else{
+					
+					$data['campoDataAlerta'] = $this->_trata_dataDoBancoParaForm($check_alerta_by_doc[0]['data_alerta']);
+					
+					$data['campoHoraAlerta'] = $this->datas->trataHoraBancoForm($check_alerta_by_doc[0]['hora_alerta']);
+					
+					$data['mostraFormAddAlerta'] = false;
+				}
+
+				
+			}else{
+				$data['campoDataAlerta'] = '';
+			}
+			
+			
+// 			if($check_alerta_by_doc[0]['data_alerta'] < date('Y-m-d') and $check_alerta_by_doc[0]['hora_alerta'] < date('Hi') and $check_alerta_by_doc[0]['conclusao_alerta'] == ''){
+// 				$data['mostraFormAddAlerta'] = false;
+// 			}
+			
+// 			if($check_alerta_by_doc[0]['data_alerta'] >= date('Y-m-d') and $check_alerta_by_doc[0]['conclusao_alerta'] != ''){
+// 				$data['mostraFormAddAlerta'] = false;
+// 			}
+			
+			
+			
+			
+		}
+		
+		$data['campoHoraMinutoAlerta'] = $this->Campo_model->alerta('campoHoraMinutoAlerta');
+		
+// 		$data['campoHoraAlerta'] = $this->Campo_model->alerta('campoHoraAlerta');
+// 		$data['HorasDisponiveis'] = $this->Campo_model->alerta('arrayHoras');
+// 		$data['HoraSelecionada'] = '0';
+		
+// 		$data['campoMinutoAlerta'] = $this->Campo_model->alerta('campoMinutoAlerta');
+// 		$data['MinutosDisponiveis'] = $this->Campo_model->alerta('arrayMinutos');
+// 		$data['MinutoSelecionado'] = '0';
+		
+		
+
+		
+// 		if(isset($data['objeto']->data_alerta)){
+// 			$data['campoDataAlerta'] = $this->_trata_dataDoBancoParaForm($data['objeto']->data_alerta);
+// 		}
 
 		
 		//verifica a permissao de acesso ao documento e retira alguns botoes
@@ -1061,24 +1446,28 @@ class Documento extends CI_Controller {
 		}
 		//--- FIM ---//
 		
+		$data['objeto'] = $this->get_layout($data['objeto']);
 		
 		//--- Aplica o Highlight no texto pesquisado---//
-		//if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strstr($_SESSION['homepage'], 'search', true)){
-		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and strpos($_SESSION['homepage'], 'search') == true){
-			$data['objeto']->numero = $this->highlight($data['objeto']->numero, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->remetNome = $this->highlight($data['objeto']->remetNome, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->remetCargoNome = $this->highlight($data['objeto']->remetCargoNome, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->remetSetorArtigo = $this->highlight($data['objeto']->remetSetorArtigo, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->para = $this->highlight($data['objeto']->para, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->assunto = $this->highlight($data['objeto']->assunto, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->referencia = $this->highlight($data['objeto']->referencia, $_SESSION['keyword'.$this->area]);
-			$data['objeto']->redacao = $this->highlight($data['objeto']->redacao, $_SESSION['keyword'.$this->area]);
+		if(isset($_SESSION['keyword_'.$this->area]) == true and $_SESSION['keyword_'.$this->area] != null and strpos($_SESSION['homepage'], 'search') == true){
+			
+			$palavra_destacada = $_SESSION['keyword_'.$this->area];
+			
+			$jogodavelha = stripos($_SESSION['keyword_'.$this->area], "#");
+			
+			if ($jogodavelha !== false) {
+			
+				$palavra_destacada = str_replace("#", "", $palavra_destacada);
+			
+			}
+
+			$data['objeto']->layout = $this->highlight($data['objeto']->layout, $palavra_destacada);
 			
 			$data['link_back'] = $this->Campo_model->make_link($_SESSION['homepage'].'#d'.$id, 'voltar_doc');
+			
 		}
 		//--- FIM ---//
 		
-		$data['objeto'] = $this->get_layout($data['objeto']);
 		
 		$data['documento_identificacao'] = $data['objeto']->tipoSigla . " Nº " . $data['objeto']->numero . "/" . $data['objeto']->ano . " - " . $this->getCaminho($data['objeto']->setor) ;
 				
@@ -1110,6 +1499,10 @@ class Documento extends CI_Controller {
 		
 		$data['objeto'] = $objeto;
 		
+// 		echo "<pre>";
+// 		print_r($objeto);
+// 		echo "</pre>";
+		
 		// trata os dados vindos do banco
 		$data['objeto']->tipoNome = mb_convert_case($data['objeto']->tipoNome, MB_CASE_TITLE, "UTF-8");
 		$date = new DateTime($data['objeto']->data);
@@ -1136,13 +1529,34 @@ class Documento extends CI_Controller {
 		$data['objeto']->layout = str_replace('[data]', $data['objeto']->data, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[destinatario]', $data['objeto']->para, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[assunto]', $data['objeto']->assunto, $data['objeto']->layout);
+		
+		
+		if($data['objeto']->referencia and $data['objeto']->referencia != null){
+			$data['objeto']->layout = str_replace('[referencia]', '<strong>Referência: </strong>'.$data['objeto']->referencia, $data['objeto']->layout);
+		}else{
+			$data['objeto']->layout = str_replace('[referencia]', '', $data['objeto']->layout);
+		}
+			
 		$data['objeto']->layout = str_replace('[referencia]', $data['objeto']->referencia, $data['objeto']->layout);
 		
 		$data['objeto']->layout = str_replace('[redacao]', $data['objeto']->redacao, $data['objeto']->layout);
 		
+		
 		if(!$data['objeto']->assinatura){
 			$data['objeto']->assinatura = $data['objeto']->remetNome . '<br>'.$data['objeto']->remetCargoNome.' '.$data['objeto']->remetSetorArtigo.' '.$data['objeto']->remetSetorSigla.'';
 		}
+		
+		
+		/* 
+		 * Eh comum que o remetente tenha a assinatura modificada ao longo do tempo, principlamente quando ele eh promovido
+		 * As linhas abaixo servem para trazer a assinatura anterior
+		*/
+		
+		$doc_assinatura = $this->Documento_model->get_assinatura($objeto->id)->row();
+		if(isset($doc_assinatura->assinatura)){
+			$data['objeto']->assinatura = $doc_assinatura->assinatura;
+		}
+		
 		$data['objeto']->assinatura = '<div style="line-height: 125%;">'.$data['objeto']->assinatura.'</div>';
 		$data['objeto']->layout = str_replace('[remetente_assinatura]', $data['objeto']->assinatura, $data['objeto']->layout);
 		$data['objeto']->layout = str_replace('[remetente_nome]', mb_convert_case($data['objeto']->remetNome, MB_CASE_UPPER, "UTF-8"), $data['objeto']->layout);
@@ -1153,7 +1567,7 @@ class Documento extends CI_Controller {
 		
 		//--- Anexos ---//
 
-		if($data['objeto']->anexos){
+		if($data['objeto']->anexos and $data['objeto']->anexos != null){
 		$array_anexos = explode(',',$data['objeto']->anexos);
 		$array_anexos = array_slice($array_anexos, 1, -1); // remove o primeiro e o ultimo elemento
 		$anexos = null;
@@ -1175,7 +1589,7 @@ class Documento extends CI_Controller {
 		}
 
 		$anexos = substr($anexos, 0, -2);
-			$data['objeto']->layout = str_replace('[anexos]', $anexos, $data['objeto']->layout);
+			$data['objeto']->layout = str_replace('[anexos]', '<strong>Anexos: </strong>'.$anexos, $data['objeto']->layout);
 		}else{
 			$data['objeto']->layout = str_replace('[anexos]', '', $data['objeto']->layout);
 		}
@@ -1470,26 +1884,152 @@ class Documento extends CI_Controller {
 	}
 	
 	public function search($page = 1) {
+		
 		$_SESSION['homepage'] = current_url();
+		
 		$this->js[] = 'documento';
+		
+		$data['titulo'] = 'Documentos';
 	
-		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo documento',array('class'=>'btn btn-primary'));
-		$data['link_search_cancel'] = anchor($this->area.'/search_cancel/','Cancelar pesquisa',array('class'=>'btn btn-warning'));
+		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Novo',array('class'=>'btn btn-primary'));
+		
 		$data['form_action'] = site_url($this->area.'/search');
+		
+		$data['campoSearchText'] = '<input type="text" class="form-control" id="search" name="searchText" placeholder="Ex.: teste">';
+		
+		$data['campoSearchNumber'] = '<input type="text" class="form-control" id="searchNumero" name="searchNumber" placeholder="Ex.: 1">';
+		
+		$btn_search_cancel = '<a href="'.base_url().'index.php/documento/search_cancel" class="btn btn-warning"><i class="fa fa-times"></i> Limpar</a>';
+		
+		$data['btn_search_cancel'] = $btn_search_cancel;
+		
 	
 		$this->load->library(array('pagination', 'table'));
 	
 		$data['keyword_'.$this->area] = '';
-		if(isset($_SESSION['keyword'.$this->area]) == true and $_SESSION['keyword'.$this->area] != null and $this->input->post('search') == null){
-			$keyword = $_SESSION['keyword'.$this->area];
+
+		if($this->input->post('searchText') != null or $this->input->post('searchNumber') != null or $this->input->post('campoTipo') != null){
+			
+			$obj = array(
+						'campoDataInicial' 	=>  $this->datas->dateToUS($this->input->post('campoDataInicial')),
+						'campoDataFinal' 	=> $this->datas->dateToUS($this->input->post('campoDataFinal')),
+						'campoTipo'			=>  $this->input->post('campoTipo') ,
+						'setorPesquisa' 	=> $this->input->post('setorPesquisa'),
+						'searchText' 		=> $this->input->post('searchText'),
+						'searchNumber' 		=> $this->input->post('searchNumber')
+			);
+
+			$_SESSION['objPesquisa'] = $obj;
+				
 		}else{
-			$keyword = ($this->input->post('search') == null or $this->input->post('search') == "pesquisa textual") ? redirect($this->area.'/index/') : $this->input->post('search');
-			 
-			$_SESSION['keyword'.$this->area] = $keyword;
+			
+			$obj = $_SESSION['objPesquisa'];
+
 		}
+
+// 		print_r($obj);
+
+		$busca = null;
+		
+		if($_SESSION['objPesquisa']['searchText'] != null){
+
+			$busca = $_SESSION['objPesquisa']['searchText'];
+
+			$data['campoSearchText'] = '<div class="input-group has-warning">';
+			$data['campoSearchText'] .= '<input type="text" class="form-control" id="search" name="searchText" placeholder="Ex.: teste" value='.$busca.' style="background-color: #fcf8e3;">';
+			$data['campoSearchText'] .= '<span class="input-group-btn">';
+			$data['campoSearchText'] .= $btn_search_cancel;
+			$data['campoSearchText'] .= '</span></div>';
+											    
+			$data['campoSearchNumber'] = '<input type="text" class="form-control" id="searchNumero" name="searchNumber" placeholder="Ex.: 1" disabled>';
+
+		}
+		
+		if($_SESSION['objPesquisa']['searchNumber'] != null){
+			
+			$busca = $_SESSION['objPesquisa']['searchNumber'];
+			
+			$data['campoSearchNumber'] = '<div class="input-group has-warning">';
+			$data['campoSearchNumber'] .= '<input type="text" class="form-control" id="searchNumero" name="searchNumber" placeholder="Ex.: 1" value='.$busca.' style="background-color: #fcf8e3;">';
+			$data['campoSearchNumber'] .= '<span class="input-group-btn">';
+			$data['campoSearchNumber'] .= $btn_search_cancel;
+			$data['campoSearchNumber'] .= '</span></div>';
+			
+			$data['campoSearchText'] = '<input type="text" class="form-control" id="search" name="searchText" placeholder="Ex.: teste" disabled>';
+
+		}
+		
+		$link_search_cancel_tipo = '';
+		
+		if($_SESSION['objPesquisa']['searchText'] == null and $_SESSION['objPesquisa']['searchNumber'] == null and $_SESSION['objPesquisa']['campoTipo'] != null){
+			
+			$nome_tipo = "TODOS";
+			
+			if($_SESSION['objPesquisa']['campoTipo'] != 0){
+				
+				$nome_tipo = $this->getTipo($_SESSION['objPesquisa']['campoTipo']);
+				
+				$nome_tipo = $nome_tipo[0]->nome;
+					
+			}
+
+			$valor_busca = "Tipo: ".$nome_tipo;
+			
+			$link_search_cancel_tipo = '<div class="input-group">';
+			$link_search_cancel_tipo .= '<input type="text" class="form-control" value="'.$valor_busca.'" disabled style="background-color: #fcf8e3;"><span class="input-group-btn"><a href="'.base_url().'index.php/documento/search_cancel" class="btn btn-danger"><i class="fa fa-times"></i> Limpar</a></span>';
+			$link_search_cancel_tipo .= '</div>';
+		
+		}
+		
+		$data['searchText'] = isset($_SESSION['objPesquisa']['searchText']) ? $_SESSION['objPesquisa']['searchText'] : '';
+		$data['searchNumber'] = isset($_SESSION['objPesquisa']['searchNumber']) ? $_SESSION['objPesquisa']['searchNumber'] : '';
+		
+		$data['dataInicial'] = $this->datas->dateToBr($_SESSION['objPesquisa']['campoDataInicial']);
+		$data['dataFinal'] = $this->datas->dateToBr($_SESSION['objPesquisa']['campoDataFinal']);
+
+		
+		if(isset($_SESSION['keyword_'.$this->area]) == true and $_SESSION['keyword_'.$this->area] != null and $busca == null){
+			
+			$keyword = $_SESSION['keyword_'.$this->area];
+			
+		}else{
+			
+			//$keyword = ($busca == null or $busca == "pesquisa textual") ? redirect($this->area.'/index/') : $busca; // $keyword recebe $busca do formulátio
+			
+			$keyword = ($busca == "pesquisa textual") ? redirect($this->area.'/index/') : $busca; // $keyword recebe $busca do formulátio
+			
+			
+			if($_SESSION['objPesquisa']['searchText'] != null){
+					
+				$keyword = $busca;
+
+			}
+			
+			if($_SESSION['objPesquisa']['searchNumber'] != null){
+			
+				$keyword = "#".$busca;
+			
+			}
+			 
+			$_SESSION['keyword_'.$this->area] = $keyword;
+		}
+		
+		
 		$data['keyword_'.$this->area] = $keyword;
-	
-		$data['titulo'] = 'Resultado da busca por <mark>'. $keyword .'</mark> nos conteúdos dos documentos.';
+		
+		if($link_search_cancel_tipo == ''){
+			
+			$data['link_search_cancel'] = '<div class="input-group">';
+			$data['link_search_cancel'] .= '<input type="text" class="form-control" value="'.$keyword.'" disabled style="background-color: #fcf8e3;"><span class="input-group-btn"><a href="'.base_url().'index.php/documento/search_cancel" class="btn btn-danger"><i class="fa fa-times"></i> Limpar pesquisa</a></span>';
+			$data['link_search_cancel'] .= '</div>';
+		
+		}else{
+			
+			$data['link_search_cancel'] = $link_search_cancel_tipo;
+			
+		}
+		
+		
 		$this->audita($keyword);
 	
 		$maximo = 10;
@@ -1507,20 +2047,76 @@ class Documento extends CI_Controller {
 		
 		$keyword = htmlentities($keyword, ENT_COMPAT, "UTF-8");
 		
-		//echo $keyword;
-		if($restricao == 'S'){
+		$config_listagem = $this->get_config();
 			
-			$rows = $this->Documento_model->listAllSearchPag($keyword, $maximo, $inicio, $this->session->userdata('cpf'), $session_setor);
+		$data_inicial = $config_listagem->data_inicial;
 			
-			$config['total_rows'] = $this->Documento_model->count_all_search($keyword, $this->session->userdata('cpf'), $session_setor);
+		$data_final = $config_listagem->data_final;
 
+		
+		//--- SETORES ---//
+		$this->load->model('Setor_model','',TRUE);
+		
+		$session_setor = $this->session->userdata('setor');
+		
+		$restricao = $this->Setor_model->get_by_id($session_setor)->row();
+		
+		if(isset($restricao->restricao) and $restricao->restricao == 'S'){
+				
+			$data['setores'] = $this->Setor_model->get_by_id($session_setor)->result();
+				
 		}else{
-			
-			$rows = $this->Documento_model->listAllSearchPag($keyword, $maximo, $inicio, $this->session->userdata('cpf'));
-			
-			$config['total_rows'] = $this->Documento_model->count_all_search($keyword, $this->session->userdata('cpf'));
-
+				
+			$data['setores'] = $this->Setor_model->list_all()->result();
+				
+			$arraySetores['all'] = "TODOS";
+		
 		}
+		
+		foreach ($data['setores']as $setor){
+			$arraySetores[$setor->id] = "$setor->sigla" . " - " . $setor->nome;
+		}
+		$data['setoresDisponiveis']  =  $arraySetores;
+			
+		//$_SESSION['setorSelecionado'] = $_SESSION['objPesquisa']['setorPesquisa'];
+		
+		$data['setorSelecionado'] = $_SESSION['objPesquisa']['setorPesquisa'];
+		
+
+		if($data['setorSelecionado'] == 'all'){
+			$data['setorCaminho'] = "TODOS";
+		}else{
+			$data['setorCaminho'] = $this->getCaminho($data['setorSelecionado']);
+		}
+
+		//--- FIM ---//
+		
+
+		//--- POPULA O DROPDOWN DE TIPOS ---//
+		$this->load->model('Tipo_model','',TRUE);
+		$tipos = $this->Tipo_model->list_all_actives()->result();
+		$arrayTipos[0] = "TODOS OS DOCUMENTOS";
+		if($tipos){
+			foreach ($tipos as $tipo){
+				$arrayTipos[$tipo->id] = $tipo->nome;
+			}
+		}else{
+			$arrayTipos[1] = "";
+		}
+		
+		$data['tiposDisponiveis']  =  $arrayTipos;
+		
+		$data['tipoSelecionado'] = $_SESSION['objPesquisa']['campoTipo'];
+		
+		$this->load->model('Coluna_model','',TRUE);
+		$colunas = $this->Coluna_model->list_all();
+		
+		
+
+		$rows = $this->Documento_model->listAllSearchPag($colunas, $keyword, $maximo, $inicio, $this->session->userdata('cpf'), $_SESSION['objPesquisa']['setorPesquisa'], $_SESSION['objPesquisa']['campoDataInicial'], $_SESSION['objPesquisa']['campoDataFinal'], $_SESSION['objPesquisa']['campoTipo']);
+			
+		$config['total_rows'] = $this->Documento_model->count_all_search($colunas, $keyword, $this->session->userdata('cpf'), $_SESSION['objPesquisa']['setorPesquisa'], $_SESSION['objPesquisa']['campoDataInicial'], $_SESSION['objPesquisa']['campoDataFinal'], $_SESSION['objPesquisa']['campoTipo']);
+		
 		
 		$keyword = html_entity_decode($keyword, ENT_COMPAT, "UTF-8");
 		//--- Fim da restricao do universo de pesquisa ---//
@@ -1551,6 +2147,51 @@ class Documento extends CI_Controller {
 		//checa documentos pendentes de recebimento
 		$data['workflow'] = $this->Documento_model->check_workflow($this->session->userdata('setor'))->num_rows();
 		//fim
+		
+		
+		
+		//--- CHECA ALERTAS ---//
+		 
+		$data['alerta_documento_conteudo'] = '';
+		$alerta = $this->Documento_model->check_alerta_by_date($this->session->userdata('id_usuario'),  date("Y-m-d"));
+		$data['alerta'] = $alerta;
+		if(count($alerta) > 0){
+		
+			$id_documento = $alerta[0]['id_documento'];
+			$id_alerta = $alerta[0]['id_alerta'];
+			 
+			$alerta_documento_conteudo = $this->Documento_model->get_historico($id_documento)->result();
+		
+			$data['data_alerta_banco'] = $this->_trata_dataDoBancoParaForm($alerta[0]['data_alerta']);
+			 
+			$data['alerta_documento_conteudo'] = $alerta_documento_conteudo[0]->texto;
+			 
+			$data['data_alerta'] = $this->_trata_dataDoBancoParaForm($alerta[0]['data_alerta']) . " às " . $this->datas->trataHoraBancoForm($alerta[0]['hora_alerta']);
+			 
+			$data['id_documento_alerta'] = $id_documento;
+			 
+			$data['motivo_alerta'] = $alerta[0]['motivo_alerta'];
+			 
+			$data['form_action_alerta_update']	= site_url($this->area.'/alerta_update/'.$id_alerta);
+			 
+		}else{
+			$_SESSION['tem_alerta'] = 0;
+		}
+		//--- FIM DOS ALERTAS ---//
+		
+		
+/*
+|--------------------------------------------------------------------------
+| Configuracao de listagem de documentos
+|--------------------------------------------------------------------------
+*/
+		
+		$config_listagem = self::_config_listagem();
+		
+		$data['link_periodo_cancel'] = $config_listagem->link_periodo_cancel;
+		$data['form_action_config_update'] = $config_listagem->form_action_config_update;
+// 		$data['dataInicial'] = $config_listagem->dataInicial;
+// 		$data['dataFinal'] = $config_listagem->dataFinal;
 		
 		// load view
 		$this->audita();
@@ -1735,19 +2376,29 @@ class Documento extends CI_Controller {
 		
 	}
 
-	function _monta_assunto($assunto, $maximo = 45){
-
+	function _monta_assunto($assunto, $maximo = 75){
+		
 		$texto = null;
-
+		
 		if(strlen($assunto)>$maximo){
-			$texto = substr($assunto, 0, $maximo) . "...";
-			$ultimo_espaco = strripos($texto, " ");
-			$texto = substr($assunto, 0, $ultimo_espaco) . "...";
+			
+			$texto = substr($assunto, 0, $maximo) . '...';
+			
+			$ultimo_espaco = strripos($texto, ' ');
+			
+			$texto = substr($assunto, 0, $ultimo_espaco);
+			
+			$texto = mb_convert_case($texto, MB_CASE_UPPER, "UTF-8");
+			
+			$texto = '<a href="#" class="text-info" data-toggle="popover" id="btnPopoverSetor" data-container="body" data-trigger="hover" data-placement="top" data-html="true" data-content="'.$assunto.'"><strong>'.$texto.'...</strong></a>';
+			
 		}else{
-			$texto = $assunto;
+			
+			$texto = mb_convert_case($assunto, MB_CASE_UPPER, "UTF-8");
+
 		}
 
-		return mb_convert_case($texto, MB_CASE_UPPER, "UTF-8");
+		return $texto;
 	}
 	
 	function _encurta_texto($assunto, $maximo = 200){
@@ -1847,12 +2498,25 @@ class Documento extends CI_Controller {
 			$acoes .= '</div>';
 		//--- FIM ---//
 
+			
+			$documento->assunto = $this->_monta_assunto($documento->assunto);
+			
+			if(isset($_SESSION['keyword_'.$this->area])){
+			
+				$documento->assunto = $this->highlight($documento->assunto, $_SESSION['keyword_'.$this->area]);
 				
+				$obj->dono = $this->highlight($obj->dono, $_SESSION['keyword_'.$this->area]);
+				
+				$numero_procurado = str_replace("#", "", $_SESSION['keyword_'.$this->area]);
+				
+				$documento->numero = $this->highlight($documento->numero, $numero_procurado);
+			}
+
 			$linha = $this->table->add_row(
 					'<a name="d'.$documento->id.'" id="d'.$documento->id.'"></a>' .
 					"$tipoNome->abreviacao Nº $documento->numero <br> $setorRemetente",
-					$this->_monta_assunto($documento->assunto),
-					$obj->dono,
+					'<small>'.$documento->assunto.'</small>',
+					'<small>'.$obj->dono.'</small>',
 					$this->_trata_dataDoBancoParaForm($documento->data_criacao),
 					$acoes
 			);
@@ -1874,14 +2538,23 @@ class Documento extends CI_Controller {
 		
 		$words = htmlentities($words, ENT_COMPAT, "UTF-8");
 		
-		return str_ireplace($words, "<span style='background-color:#FFFF00'>$words</span>", $text);
+		//return str_ireplace($words, "<span style='background-color:#FFFF00'>$words</span>", $text);
+		
+		return preg_replace("/($words)/i", '<span style="background-color:#FFFF00">$0</span>', $text);
+
+
 	}
 
 
     public function search_cancel() { 
         
-        $_SESSION['keyword'.$this->area] = null;
+        $_SESSION['keyword_'.$this->area] = null;
+        unset($_SESSION['keyword_'.$this->area]);
         
+        
+        $_SESSION['objPesquisa'] = null;
+        unset($_SESSION['objPesquisa']);
+
         $this->audita();
         redirect('documento/index/');
 

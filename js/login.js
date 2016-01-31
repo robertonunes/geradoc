@@ -9,5 +9,20 @@ $(document).ready(function(){
 	$("#topo_right").mouseover(function(){
 		$(this).css("cursor","pointer");
 	});
+	
+	
+	
+	
+	$('#txtSenha').keypress(function(e) { 
+	    var s = String.fromCharCode( e.which );
+	    if ( s.toUpperCase() === s && s.toLowerCase() !== s && !e.shiftKey ) {
+//	        alert('caps is on');
+	       // $("#alertCapsLock").show();
+	        $("#alertCapsLock").css("display","block");
+	    }else{
+	    	$("#alertCapsLock").css("display","none");
+	    	
+	    }
+	});
 		
 });

@@ -34,11 +34,13 @@ class Login_mail extends CI_Controller {
        $qtd_usuarios = $this->Usuario_model->count_all();
        
        if($qtd_usuarios == 0){
-       	
        		echo "NENHUM USUÁRIO CADASTRADO";
-       		redirect('usuario/add');	
+       		
+       		
+       		redirect('usuario/add');
+       		
        }
-       
+
        if ($this->form_validation->run('login/login_mail') == FALSE) {
        	
        		$this->load->view('login/login_mail', $data);
@@ -67,13 +69,28 @@ class Login_mail extends CI_Controller {
         
         if (empty($user_cadastrado) or $user_cadastrado->email == null) {
         	
-        	//echo "2";
+//         	echo "2";
+//         	exit;
+        	
             $data['mensagem'] = '<div class="alert alert-danger"><center><img class="img_align" src="{TPL_images}/error.png" alt="! " /> E-mail ou senha inválidos! </center></div>';
             $data['link1'] = '<a class="link1" href="javascript:window.history.back();" title="Tentar novamente"> &raquo; tentar novamente</a>';
             $this->load->view('login/login_mail', $data);
             
         } else {
-        	//echo "3";
+//         	echo "3";
+        	
+        	// limpa a variavel de sessao 'workflow_wait'para obrigar a visualizacao do alerta caso exista documento aguardando recebimento.
+        	$_SESSION['workflow_wait'] = null;
+        	
+        	// limpa as configuracoes de periodo de listagem dos documentos;
+        	$this->Login_model->delete_config($user_cadastrado->id); 
+        	
+        	/*
+        	if(!isset($user_cadastrado->setores)){
+        		echo "O campo setores não existe na tabela usuarios";
+        		exit;
+        	}
+        	*/
         	
         	if($user_cadastrado->setores != null){
         		//echo "4";
@@ -146,6 +163,7 @@ class Login_mail extends CI_Controller {
     	
     	$obj = $this->Setor_model->get_by_id($id_setor)->row();
     	
+    	/*
     	if($obj){
 
     		$setor = "$obj->sigla/$obj->setorPaiSigla";
@@ -153,6 +171,21 @@ class Login_mail extends CI_Controller {
     	}else{
     		$setor = "NENHUM";
     	}
+    	*/
+    	
+    	if($obj){
+    	
+    		if($obj->sigla != $obj->setorPaiSigla){
+    			$setor = "$obj->sigla/$obj->setorPaiSigla";
+    		}else{
+    			$setor = "$obj->sigla";
+    		}
+    	
+    	}else{
+    		$setor = "NENHUM";
+    	}
+    	
+    	
  
     	return anchor('login/set_setor/'.$id_setor, $setor,array('class'=>'link1'));
 
