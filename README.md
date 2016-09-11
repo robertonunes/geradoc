@@ -108,9 +108,6 @@ Configuração da aplicação:
 
 		geradoc/files
 
-		geradoc/temp
-
-
 
 
 Acesso ao sistema:
