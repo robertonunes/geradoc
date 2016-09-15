@@ -8,7 +8,7 @@ $CI =& get_instance();
       <div class="sm-12 text-center" >
       	<i id="emblema" class="fa fa-file-text-o fa-5x" style="color: #555;"></i>
       </div>
-        <h3 class="form-signin-heading" style="color: #555;">GeraDox</h3>
+        <h3 class="form-signin-heading" style="color: #555;"><?php echo $CI->config->item('title');?></h3>
         
         <?php 
 			echo form_error('email');
