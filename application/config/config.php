@@ -17,16 +17,16 @@
 
 $config['orgao'] = 'localhost';
 
-$config['title']	= "GeraDox";
+$config['title']	= "GeraDoc";
 
-$config['title_short']	= "GeraDox <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.6</div>";
+$config['title_short']	= "GeraDoc <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.6</div>";
 
 $config['base_url']	= '';
 
-$config['rodape_sistema']  = 'GeraDox © 2013-2016. Todos os direitos reservados. ';
+$config['rodape_sistema']  = 'GeraDoc © 2013-2016. Todos os direitos reservados. ';
 $config['rodape_sistema'] .= '<a href="http://www.geradox.com.br" target="_blank"style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a>';
 
-$config['rodape_documento']  = '<strong>Copyright © 2014 GeraDox - by GeraDox</strong><br>';
+$config['rodape_documento']  = '<strong>Copyright © 2014 GeraDoc - by GeraDox</strong><br>';
 $config['rodape_documento'] .= 'www.geradox.com.br';
 
 
