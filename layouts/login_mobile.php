@@ -11,9 +11,9 @@ $CI = & get_instance();
 	<meta name="author" content="Tarso de Castro">
 	<meta name="reply-to" content="tarsodecastro@gmail.com">
 	<meta name="revised" content="Tarso de Castro, 14/09/2016" />
-	<meta name="description" content="GeraDoc - Gerenciamento de documentos oficiais padronizados com facilidade. Mais informações em http://www.geradox.com.br/">
-	<meta name="abstract" content="GeraDoc">
-	<meta name="keywords" content="gerenciador de conteúdo corporativo, ecm, enterprise content management, aesp, geradoc, geradox, documento, oficio, ofício, comunicacao interna, comunicação interna, memorando, despacho, portaria, corpo de bombeiros, cbmce">
+	<meta name="abstract" content="GeraDox - Gerenciamento de documentos padronizados com facilidade">
+	<meta name="description" content="GeraDox - Criação, armazenamento, catálogo e pesquisa de documentos padronizados. Gerenciamento de Conteúdo Corporativo. ECM - Enterprise Content Management ">
+	<meta name="keywords" content="geradoc, geradox, gerenciador de conteúdo corporativo, ecm, enterprise content management, documento, oficio, ofício, comunicacao interna, comunicação interna, memorando, despacho, portaria, php">
 	<meta name="ROBOT" content="Index,Follow">
 
    	<link rel="shortcut icon" href="{TPL_images}file-text-o_4e8079_128.ico" type="image/x-icon" />
