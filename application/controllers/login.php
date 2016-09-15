@@ -46,7 +46,7 @@ class Login extends CI_Controller {
        
        
        if ($this->form_validation->run() == FALSE) {
-       		$this->load->view('login/login', $data);
+       		$this->load->view('login', $data);
        } else {                
        		$this->autentica();
        }        
@@ -65,22 +65,15 @@ class Login extends CI_Controller {
         $this->load->model('Login_model', '', TRUE);
         $user_cadastrado = $this->Login_model->get_usuario($obj->login, $obj->senha);
         //echo $this->db->last_query();
-        
-        
+
         if ($user_cadastrado == null) {
         	
         	$data['form_action'] = site_url('/login');
             $data['mensagem'] = '<span class="error_field"><center><br><img class="img_align" src="{TPL_images}/error.png" alt="! " /> CPF ou senha inválidos! </center></span>';
             $data['link1'] = '<a class="link1" href="javascript:window.history.back();" title="Tentar novamente"> &raquo; tentar novamente</a>';
-            $this->load->view('login/login', $data);
+            $this->load->view('login', $data);
             
         } else {
-        	
-        	// limpa a variavel de sessao 'workflow_wait'para obrigar a visualizacao do alerta caso exista documento aguardando recebimento.
-        	$_SESSION['workflow_wait'] = null;
-        	
-        	// limpa as configuracoes de periodo de listagem dos documentos;
-        	$this->Login_model->delete_config($user_cadastrado->id); 
         	
         	/*
         	if(!isset($user_cadastrado->setores)){
@@ -109,7 +102,7 @@ class Login extends CI_Controller {
 					
 					$data['setores'] = $nome_setor;
 					
-					$this->load->view('login/login', $data);
+					$this->load->view('login', $data);
 					
 				}else{
 					
@@ -145,10 +138,11 @@ class Login extends CI_Controller {
 				}
 						
 			}	
-
-
+			
+			// limpa a variavel de sessao 'workflow_wait'para obrigar a visualizacao do alerta caso exista documento aguardando recebimento.
+			$_SESSION['workflow_wait'] = null;
+			
         }
-    
         
     }
     
@@ -188,40 +182,30 @@ class Login extends CI_Controller {
     
     function set_setor($id_setor){
     	
-    	if(isset($_SESSION['usuario'])){
-    		
-    		$user_cadastrado = $_SESSION['usuario'];
-    		unset($_SESSION['usuario']);
-    		 
-    		$dados = array(
-    				'id_usuario' => $user_cadastrado->id,
-    				'login' => $user_cadastrado->cpf,
-    				'cpf' => $user_cadastrado->cpf,
-    				'nome' => $user_cadastrado->nome,
-    				'nivelId' => $user_cadastrado->nivel,
-    				'setor' => $id_setor,
-    				'logado' => TRUE,
-    		);
-    		
-    		$this->load->database("default", TRUE);
-    		$this->session->set_userdata($dados);
-    		
-    		$this->load->model('Auditoria_model','',TRUE);
-    		$this->Auditoria_model->delete($dados['id_usuario']);
-    		
-    		if(!$user_cadastrado->email or $user_cadastrado->email == '' or $user_cadastrado->email == null){
-    			redirect('usuario/cadastro');
-    		}else{
-    			redirect('documento/');
-    		}
-    		
-    	}else{
-    		
-    		redirect('login/logoff');
-    		
-    	}
+    	$user_cadastrado = $_SESSION['usuario'];
+    	unset($_SESSION['usuario']);
     	
-    
+    	 	$dados = array(
+                'id_usuario' => $user_cadastrado->id,
+                'login' => $user_cadastrado->cpf,
+            	'cpf' => $user_cadastrado->cpf,
+                'nome' => $user_cadastrado->nome,
+                'nivelId' => $user_cadastrado->nivel,
+            	'setor' => $id_setor,
+                'logado' => TRUE,
+            );
+
+            $this->load->database("default", TRUE);
+            $this->session->set_userdata($dados);    
+
+            $this->load->model('Auditoria_model','',TRUE);
+            $this->Auditoria_model->delete($dados['id_usuario']);
+
+            if(!$user_cadastrado->email or $user_cadastrado->email == '' or $user_cadastrado->email == null){
+				redirect('usuario/cadastro');
+            }else{
+            	redirect('documento/');
+            }
     
     }
     

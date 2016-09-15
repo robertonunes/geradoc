@@ -25,11 +25,11 @@ class Usuario extends CI_Controller {
 		$this->load->model('Usuario_model','',TRUE);
 		$this->load->model('Grid_model','',TRUE);
 		$this->load->model('Campo_model','',TRUE);
-		$this->load->library(array('session', 'form_validation', 'convert', 'datas'));
+		$this->load->library('session');
+		$this->load->library('convert');
 		//$this->load->library('restrict_page');
 		$this->modal = $this->load->view('about_modal', '', TRUE);
 		session_start();
-		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
 	}
 	
 	
@@ -39,7 +39,7 @@ class Usuario extends CI_Controller {
 		$this->js[] = 'usuario';
 	
 		$data['titulo']     = 'Usuários';
-		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Adicionar',array('class'=>'btn btn-primary'));
+		$data['link_add']   = anchor($this->area.'/add/','<span class="glyphicon glyphicon-plus"></span> Adicionar',array('class'=>'btn btn-primary btn-sm'));
 		$data['link_back']  = anchor('documento/index/','Lista de Documentos',array('class'=>'back'));
 		$data['form_action'] = site_url($this->area.'/search');
 	
@@ -137,6 +137,9 @@ class Usuario extends CI_Controller {
 		}
 	
 		$this->js[] = 'usuario';
+	
+		$this->load->library(array('form_validation'));
+		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
 	
 		$data['titulo'] = 'Novo';
 		
@@ -255,6 +258,8 @@ class Usuario extends CI_Controller {
 	
 		$this->load->library(array('form_validation'));
 		
+		$this->form_validation->set_error_delimiters('<div class="error_field"> <img class="img_align" src="{TPL_images}/error.png" alt="! " /> ', '</div>');
+	
 		$data['titulo'] = 'Alteração';
 		
 		$data['disabled'] = ($disabled != null) ? 'disabled' : '';
@@ -406,7 +411,10 @@ class Usuario extends CI_Controller {
 		$this->load->library('restrict_page'); 
 
 		$this->js[] = 'cadastro';
-
+	
+		$this->load->library(array('form_validation','datas'));
+		$this->form_validation->set_error_delimiters('<div class="glyphicon glyphicon-warning-sign">', '</div>');
+		 
 		$data['titulo'] = 'Meu cadastro';
 		$data['link_salvar'] = $this->Campo_model->make_link($this->area, 'salvar');
 		$data['form_action'] = site_url("/usuario/cadastro");
@@ -489,6 +497,9 @@ class Usuario extends CI_Controller {
 
 	public function altsenha(){
 		$this->load->library('restrict_page');
+
+	    $this->load->library(array('form_validation','datas'));    		
+    	$this->form_validation->set_error_delimiters('<div>', '</div>');
       					
 	  	$data['titulo'] = 'Alterar minha senha de acesso';
 	  	$data['form_action'] = site_url("/usuario/altsenha");	  	
@@ -610,6 +621,8 @@ class Usuario extends CI_Controller {
 		$this->layout = 'public';
 		$this->js[] = 'nova_senha';
 	
+		$this->load->library(array('form_validation','datas'));
+		$this->form_validation->set_error_delimiters('<div>', '</div>');
 		$data['titulo'] = 'Nova senha';
 		$data['form_action'] = site_url("/usuario/nova_senha");
 		
