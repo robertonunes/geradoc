@@ -17,83 +17,17 @@
 
 $config['orgao'] = 'localhost';
 
-if($config['orgao'] == '172.17.156.114'){
-	$config['orgao'] = 'localhost';
-}
+$config['title']	= "GeraDox";
 
 $config['title_short']	= "GeraDox <br><div style='font-size:10pt; text-align:right; margin-right:30px;'>Versão 2.6</div>";
 
-switch ($config['orgao']){
-	
-		case 'localhost':
-			
-		$config['title']	= "GeraDox";
-		
-		$config['base_url']	= '';
-		
-		$config['rodape_sistema'] = '<p class="text-muted">Copyright © 2014 GeraDox - by GeraDox<br />
-       								 <a href="http://www.geradox.com.br" style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a> </p>';
-		
-		$config['rodape_documento'] = '<strong>Copyright © 2014 GeraDox - by GeraDox</strong><br>
-										www.geradox.com.br';
-		break;
-		
-		case 'geradox':
-				
-			$config['title']	= "GeraDox";
-		
-			$config['base_url']	= '';
-		
-			$config['rodape_sistema'] = '<p class="text-muted">Copyright © 2014 GeraDox - by GeraDox<br />
-       								 	<a href="http://www.geradox.com.br" style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a> </p>';
-		
-			$config['rodape_documento'] = '<strong>Copyright © 2014 GeraDox - by GeraDox</strong><br>
-											www.geradox.com.br';
-		break;
-		
-		case 'aesp':
-			
-		$config['title']	= "AESP - GeraDoc";
-		
-		$config['base_url']	= 'http://geradoc/'; //servidor da AESP
-		
-		//$config['base_url']	= ''; //servidor local
-		
-		$config['rodape_sistema'] = '<p>CTIC - Célula de Tecnologia da Informação e Comunicação. Telefone: (85) 3296-0015 <br />
-       							 	<a href="http://www.aesp.ce.gov.br" style="color:#037E45; text-decoration: none; font-weight:bold;">Academia Estadual de Segurança Pública do Ceará</a> </p>';
-		
-		$config['rodape_documento'] = '<strong>ACADEMIA ESTADUAL DE SEGURANÇA PÚBLICA DO CEARÁ - AESP/CE</strong><br>
-									Av. Presidente Costa e Silva, 1251, Mondubim, Cep: 60761-505<br>
-									Fone/Fax: (85) 3296-0469 - Fortaleza, Ceará';
-		break;
-		
-		case 'cmcb':
-		$config['title']	= "CMCB - GeraDoc";
+$config['base_url']	= '';
 
-		$config['base_url']	= 'http://localhost/aesp/intranet/geradoc/';
-		
-		$config['rodape_sistema'] = '<p>ATI - Assessoria de Tecnologia da Informação. Telefone: (85) 3101-6586<br />
-       								 <a href="http://www.cm.cb.ce.gov.br" style="color:#037E45; text-decoration: none; font-weight:bold;">Colégio Militar do Corpo de Bombeiros do Ceará</a></p>';
-		
-		$config['rodape_documento'] = '<strong>Colégio Militar do Corpo de Bombeiros do Estado do Ceará - CMCB/CE</strong><br>
-									Av. Presidente Costa e Silva, 1251, Mondubim, Cep: 60761-505<br>
-									Fone/Fax: (85) 3296-0469 - Fortaleza, Ceará';
-		break;
-		
-		case 'cbmce':
-			
-		$config['title']	= "CBMCE - GeraDoc";
+$config['rodape_sistema']  = 'GeraDox © 2013-2016. Todos os direitos reservados. ';
+$config['rodape_sistema'] .= '<a href="http://www.geradox.com.br" target="_blank"style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a>';
 
-		$config['base_url']	= 'http://localhost/aesp/intranet/geradoc/';
-		
-		$config['rodape_sistema'] = '<p>ATI - Assessoria de Tecnologia da Informação. Telefone: (85) 3101-6586<br />
-       							 	<a href="http://www.cb.ce.gov.br" style="color:#037E45; text-decoration: none; font-weight:bold;">Corpo de Bombeiros Militar do Ceará</a></p>';
-		
-		$config['rodape_documento'] = '<strong>Corpo de Bombeiros Militar do Ceará - CBMCE</strong><br>
-									Av. Presidente Costa e Silva, 1251, Mondubim, Cep: 60761-505<br>
-									Fone/Fax: (85) 3296-0469 - Fortaleza, Ceará';
-		break;	
-}
+$config['rodape_documento']  = '<strong>Copyright © 2014 GeraDox - by GeraDox</strong><br>';
+$config['rodape_documento'] .= 'www.geradox.com.br';
 
 
 /*
