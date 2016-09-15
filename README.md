@@ -36,15 +36,25 @@ Benefícios:
 11. <strong>Repositório</strong>, possibilidade de armazenar os anexos dos documentos de cada setor, evitando a necessidade de impressões desses arquivos.
 
 
+Suporte:
+===================================
+
+Este sistema é um software livre baseado em outros softwares lives; você pode redistribuí-lo e/ou modificá-lo dentro dos termos da Licença Pública Geral GNU como publicada pela Fundação do Software Livre (FSF); na versão 3 da Licença.
+
+Este programa é distribuído na esperança de que possa ser  útil, mas SEM NENHUMA GARANTIA; sem uma garantia implícita de ADEQUAÇÃO a qualquer MERCADO ou APLICAÇÃO EM PARTICULAR. Veja a Licença Pública Geral GNU para maiores detalhes.
+
+Em caso de dúvidas, erros ou sugestões, por favor, envie e-mail para tarsodecastro@gmail.com
+
+
 Requisitos:
 ===================================
 
 1. Apache 2.0.63
 2. PHP 5.3.2
-3. MySQL Server 5.1.44
+3. MySQL Server 5.1.44 ou MariaDB 5.5
 
 
-MySQL:
+Banco de Dados:
 ===================================
 
 1. Crie a base de dados <strong>geradoc</strong> e importe o arquivo: <strong>geradoc/docs/geradoc.sql</strong>
@@ -109,7 +119,6 @@ Configuração da aplicação:
 		geradoc/files
 
 
-
 Acesso ao sistema:
 ===================================
 
@@ -119,19 +128,8 @@ Acesse [http://localhost/geradoc](http://localhost/geradoc "http://localhost/ger
 * Senha: admin  
 
 
-Observação:
-===================================
- 
-Favor manter os créditos nos códigos que compõem o sistema.
-
-Em caso de dúvidas, envie e-mail para tarsodecastro@gmail.com
-
-
 Demonstração:
 ===================================
 
-Para ver uma demonstração do sistema pronto acesse [http://www.geradox.com.br](http://www.geradox.com.br "http://www.geradox.com.br").
-
-
-
+Para mais informações e demonstração do sistema acesse [http://www.geradox.com.br](http://www.geradox.com.br "http://www.geradox.com.br").
 
