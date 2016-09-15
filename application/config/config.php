@@ -23,10 +23,10 @@ $config['title_short']	= "GeraDoc <br><div style='font-size:10pt; text-align:rig
 
 $config['base_url']	= '';
 
-$config['rodape_sistema']  = 'GeraDoc © 2013-2016. Todos os direitos reservados. ';
+$config['rodape_sistema']  = 'Copyright © 2013-2016 GeraDoc - by GeraDox. Todos os direitos reservados. ';
 $config['rodape_sistema'] .= '<a href="http://www.geradox.com.br" target="_blank"style="color:#037E45; text-decoration: none; font-weight:bold;">www.geradox.com.br</a>';
 
-$config['rodape_documento']  = '<strong>Copyright © 2014 GeraDoc - by GeraDox</strong><br>';
+$config['rodape_documento']  = '<strong>Copyright © 2013-2016 GeraDoc - by GeraDox. Todos os direitos reservados.</strong><br>';
 $config['rodape_documento'] .= 'www.geradox.com.br';
 
 
