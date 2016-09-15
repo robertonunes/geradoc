@@ -144,74 +144,46 @@ class Documento_model extends CI_Model {
 		return $this->db->get($this->tabela, $limit, $offset);
 	}
 
-	function lista_todos_documentos($inicio = 0, $maximo = 10, $cpf, $data_inicial, $data_final){
-		
-		
+	function lista_todos_documentos($inicio = 0, $maximo = 10, $cpf){
 
+		$this->db->order_by('id','desc');
 		$this->db->where('oculto =', 'N');
-		
-		$this->db->where('data_criacao >=', $data_inicial);
-		$this->db->where('data_criacao <=', $data_final);
+		$this->db->or_where('dono_cpf =', $cpf); 
 
-		$this->db->or_where("(oculto = 'S' AND dono_cpf = '$cpf' AND data_criacao >= '$data_inicial' AND data_criacao <= '$data_final')", null, false);
-		
-		$this->db->order_by('data_criacao','desc');
-		
-		$query = $this->db->get('documento', $maximo, $inicio)->result();
-		
-// 		echo $this->db->last_query();
-		
-// 		exit();
-
-		return $query;
+		return $this->db->get('documento', $maximo, $inicio)->result();
 		
 	}
 
-	function conta_todos_documentos($cpf, $data_inicial, $data_final){
+	function conta_todos_documentos($cpf){
 
 		$this->db->where('oculto =', 'N');
-		
-		$this->db->where('data_criacao >=', $data_inicial);
-		$this->db->where('data_criacao <=', $data_final);
-		
-		$this->db->or_where("(oculto = 'S' AND dono_cpf = '$cpf' AND data_criacao >= '$data_inicial' AND data_criacao <= '$data_final')", null, false);
+		$this->db->or_where('dono_cpf =', $cpf); 
 
 		return $this->db->get('documento')->num_rows;
 	}
 
-	function lista_documentos_por_setor($inicio = 0, $maximo = 10, $setor, $cpf, $data_inicial, $data_final){
+	function lista_documentos_por_setor($inicio = 0, $maximo = 10, $setor, $cpf){
+		
 		
 		$this->db->where('oculto =', 'N');
 		$this->db->where('setor =', $setor);
+		//$this->db->or_where('dono_cpf =', $cpf);
+		$this->db->or_where("(oculto = 'S' AND setor = $setor AND dono_cpf = $cpf)", null, false);
+		//$this->db->or_where("(oculto = 'N' AND setor = $setor)", null, false);
 		
-		$this->db->where('data_criacao >=', $data_inicial);
-		$this->db->where('data_criacao <=', $data_final);
-
-		$this->db->or_where("(oculto = 'S' AND setor = '$setor' AND dono_cpf = '$cpf' AND data_criacao >= '$data_inicial' AND data_criacao <= '$data_final')", null, false);
-		
-		$this->db->order_by('data_criacao','desc');
 		$this->db->order_by('id','desc');
 		
-		$query = $this->db->get($this->tabela, $maximo, $inicio)->result();
-		
-// 		echo $this->db->last_query();
-		
-// 		exit;
-		
-		
-		return $query;
+		return $this->db->get($this->tabela, $maximo, $inicio)->result();
 
 	}
 
-	function conta_documentos_por_setor($setor, $cpf, $data_inicial, $data_final){
+	function conta_documentos_por_setor($setor, $cpf){
 
 		$this->db->where('oculto =', 'N');
 		$this->db->where('setor =', $setor);
-		
-		$this->db->where('data_criacao >=', $data_inicial);
-		$this->db->where('data_criacao <=', $data_final);
-		
-		$this->db->or_where("(oculto = 'S' AND setor = '$setor' AND dono_cpf = '$cpf' AND data_criacao >= '$data_inicial' AND data_criacao <= '$data_final')", null, false);
+		//$this->db->or_where('dono_cpf =', $cpf);
+		$this->db->or_where("(oculto = 'S' AND setor = $setor AND dono_cpf = $cpf)", null, false);
+		//$this->db->or_where("(oculto = 'N' AND setor = $setor)", null, false);
 		
 		return $this->db->get('documento')->num_rows();
 
@@ -227,15 +199,6 @@ class Documento_model extends CI_Model {
 		$sql = $sql."d.id = $id and t.id = d.tipo and s.id = d.setor and o.id = s.orgao and remet.id = d.remetente and remetCargo.id = remet.cargo and remetSetor.id = remet.setor";
 
 		return $this->db->query($sql);
-	}
-	
-	function get_assinatura($id){
-	
-		$this->db->select("assinatura");
-		$this->db->where('id',$id);
-		$query = $this->db->get('documento');
-	
-		return $query;	
 	}
 	
 	function get_despacho_head($despacho_id){
@@ -392,18 +355,8 @@ class Documento_model extends CI_Model {
 		$this->db->delete($this->tabela);
 	}
 	
-	function workflow($obj){
 	
-		$this->db->trans_start();
-
-			$this->db->insert('workflow', $obj);
-			$id = $this->db->insert_id();
-		
-		$this->db->trans_complete();
-		
-		return $id;
-	}
-	
+	/*
 	function list_workflow($id_documento){
 		$this->db->where('id_documento', $id_documento);
 		$this->db->order_by('id_workflow','desc');
@@ -426,18 +379,9 @@ class Documento_model extends CI_Model {
 	
 	}
 	
-	function workflow_update($id, $objeto){
-
-		$this->db->where('id_workflow =', $id);
-		$this->db->update('workflow', $objeto);
-
-	}
 	
-	function workflow_delete($id){
-		$this->db->where('id_workflow', $id);
-		$this->db->delete('workflow');
-	}
-	
+	*/
+
 	function check_workflow($id_setor_destino){
 	
 		$this->db->where('id_setor_destino', $id_setor_destino);
@@ -446,100 +390,6 @@ class Documento_model extends CI_Model {
 		return $this->db->get('workflow');
 	
 	}
-	
-	
-// 	function check_alerta($id_usuario_alerta, $data_alerta){
-	
-// 		$this->db->select('id, id_usuario_alerta, data_alerta');
-// 		$this->db->where('id_usuario_alerta', $id_usuario_alerta);
-// 		$this->db->where('data_alerta <=', $data_alerta);
-// 		$this->db->order_by('data_alerta','desc');
-		
-// 		$query = $this->db->get('documento');
-		
-// 		return $query->result_array();
-	
-// 	}
-
-	function get_config($id_usuario){
-	
-		$this->db->where('id_usuario', $id_usuario);
-	
-		$query = $this->db->get('config')->row();
-		
-// 		echo $this->db->last_query();
-		
-// 		exit;
-	
-		return $query;
-
-	}
-
-	function config_update($objeto){
-		
-		$this->db->where('id_usuario', $objeto['id_usuario']);
-		
-		$query = $this->db->get('config')->result_array();
-
-		if(count($query) == 0){
-			
-			return $this->db->insert('config', $objeto);
-			
-		}else{
-			
-			$this->db->where('id_usuario', $objeto['id_usuario']);
-			
-			return $this->db->update('config', $objeto);
-			
-		}
-		
-	}
-	
-
-	function alerta_add($objeto){
-		$this->db->insert('alerta', $objeto);
-		return $this->db->insert_id();
-	}
-	
-	function alerta_update($id_alerta, $objeto){
-		$this->db->where('id_alerta', $id_alerta);
-		$this->db->update('alerta', $objeto);
-	}
-	
-
-	function check_alerta_by_date($id_usuario_alerta, $data_alerta){
-	
-		
-		$hora_atual = date("Hi"); 
-		
-		
-		$this->db->where('id_usuario_alerta', $id_usuario_alerta);
-		$this->db->where('data_alerta <=', $data_alerta);
-		
-		$this->db->where('hora_alerta <=', $hora_atual);
-		
-		$this->db->where('conclusao_alerta', null);
-		$this->db->order_by('id_alerta','desc');
-	
-		$query = $this->db->get('alerta');
-	
-		return $query->result_array();
-	
-	}
-	
-	
-	function check_alerta_by_doc($id_usuario_alerta, $id_documento){
-	
-		$this->db->where('id_usuario_alerta', $id_usuario_alerta);
-		$this->db->where('id_documento', $id_documento);
-		$this->db->order_by('id_alerta','desc');
-	
-		$query = $this->db->get('alerta');
-	
-		return $query->result_array();
-	
-	}
-	
 	
 
 	
@@ -557,158 +407,79 @@ class Documento_model extends CI_Model {
 	}
 	*/
 	
-	public function get_condition($colunas, $keyword, $data_inicial, $data_final){
-		
-		$condicao = "(";
-		
-		foreach ($colunas as $key => $value){
-		
-			$condicao .= "LOCATE ('$keyword', d.".$value.") > 0 OR ";
-		
-		}
-		
-		$condicao = substr($condicao, 0, -4); //retira " OR " do final
-		$condicao .= ") ";
-		$condicao .= "AND d.data_criacao >= '$data_inicial' AND d.data_criacao <= '$data_final'";
-		
-		return $condicao;
-		
-	}
 
 	/* -- BUSCA -- */
-	public function listAllSearchPag($colunas, $keyword, $maximo, $inicio, $cpf, $setor = 0, $data_inicial, $data_final, $tipo_doc){
+	public function listAllSearchPag($keyword, $maximo, $inicio, $cpf, $setor = 0){
 				
 		$keyword = $this->getDateSearch($keyword);	
-		
-		$condicao = self::get_condition($colunas, $keyword, $data_inicial, $data_final);
-	
-/*		
-		$condicao = "(LOCATE ('$keyword', d.redacao) > 0
-						OR LOCATE ('$keyword', d.para) > 0
-						OR LOCATE ('$keyword', d.numero) > 0
-						OR LOCATE ('$keyword', d.assunto) > 0
-						OR LOCATE ('$keyword', d.dono) > 0)
-					AND d.data_criacao >= '$data_inicial'
-					AND d.data_criacao <= '$data_final'";
-*/
-		
+			
 		$jogodavelha = stripos($keyword, "#");
 		
 		if ($jogodavelha === false) {
-			
-			if($setor != 0){
-				$condicao .= "AND d.setor = '$setor'";
-			}
-			
-
-			if($tipo_doc != 0){
-				$condicao .= "AND d.tipo = '$tipo_doc'";
-			}
-			
 			$this->db->select("d.*");
-			
-			$this->db->where($condicao . " AND d.oculto = 'N'");
-			
-			$this->db->or_where($condicao . " AND d.dono_cpf = '$cpf'");
+			if($setor > 0){
+				$this->db->where('setor', $setor);
+			}
+			$this->db->where("(LOCATE ('$keyword', d.redacao) > 0
+			OR LOCATE ('$keyword', d.para) > 0
+			OR LOCATE ('$keyword', d.numero) > 0
+			OR LOCATE ('$keyword', d.assunto) > 0
+			OR d.data = '$keyword'
+			OR LOCATE ('$keyword', d.dono) > 0)
+			AND d.oculto = 'N'");
+			$this->db->or_where("(LOCATE ('$keyword', d.redacao) > 0
+			OR LOCATE ('$keyword', d.para) > 0
+			OR LOCATE ('$keyword', d.numero) > 0
+			OR LOCATE ('$keyword', d.assunto) > 0
+			OR d.data = '$keyword'
+			OR LOCATE ('$keyword', d.dono) > 0)
+			AND d.dono_cpf = '$cpf'");
 			
 		}else{
 			
 			$keyword = str_replace("#", "", $keyword);
-			
-		//	$condicao = self::get_condition($colunas, $keyword, $data_inicial, $data_final);
-			
-			$condicao = "(LOCATE ('$keyword', d.numero) > 0)
-					AND d.data_criacao >= '$data_inicial'
-					AND d.data_criacao <= '$data_final'";
-			
-			if($setor != 0){
-				$condicao .= "AND d.setor = '$setor'";
-			}
-			
-			if($tipo_doc != 0){
-				$condicao .= "AND d.tipo = '$tipo_doc'";
-			}
-			
 			$this->db->select("d.*");
-			
-			//$this->db->where("d.numero = $keyword AND d.oculto = 'N' AND d.setor = '$setor' AND d.data_criacao >= '$data_inicial' AND d.data_criacao <= '$data_final'");
- 			$this->db->where($condicao . " AND d.oculto = 'N'");
-				
-			$this->db->or_where($condicao . " AND d.dono_cpf = '$cpf'");
+			$this->db->where("d.numero = $keyword AND d.oculto = 'N'");
 		}
 		
-		$this->db->order_by('d.data_criacao','desc');	
-		
-		$this->db->order_by('id','desc');
-		
+		//$this->db->where("(LOCATE('$keyword', d.redacao) > 0)");
+		$this->db->order_by('d.id','desc');	
 		$query = $this->db->get('documento d', $maximo, $inicio);
-		
-		//echo $this->db->last_query();
 			
 		return $query->result();	
 	}
 
-	public function count_all_search($colunas, $keyword, $cpf, $setor = 0, $data_inicial, $data_final, $tipo_doc){
+	public function count_all_search($keyword, $cpf, $setor = 0){
 		
 		$keyword = $this->getDateSearch($keyword);	
-		
-		
-		$condicao = self::get_condition($colunas, $keyword, $data_inicial, $data_final);
-		
-		/*
-		$condicao = "(LOCATE ('$keyword', d.redacao) > 0
-						OR LOCATE ('$keyword', d.para) > 0
-						OR LOCATE ('$keyword', d.numero) > 0
-						OR LOCATE ('$keyword', d.assunto) > 0
-						OR LOCATE ('$keyword', d.dono) > 0)
-					AND d.data_criacao >= '$data_inicial'
-					AND d.data_criacao <= '$data_final'";
-		*/
-				
+					
 		$jogodavelha = stripos($keyword, "#");
 		
 		if ($jogodavelha === false) {
-			
-			if($setor != 0){
-				$condicao .= "AND d.setor = '$setor'";
-			}
-			
-			if($tipo_doc != 0){
-				$condicao .= "AND d.tipo = '$tipo_doc'";
-			}
-			
 			$this->db->select("d.*");
-			
-			$this->db->where($condicao . " AND d.oculto = 'N'");
-			
-			$this->db->or_where($condicao . " AND d.dono_cpf = '$cpf'");
+			if($setor > 0){
+				$this->db->where('setor', $setor);
+			}
+			$this->db->where("(LOCATE ('$keyword', d.redacao) > 0
+			OR LOCATE ('$keyword', d.para) > 0
+			OR LOCATE ('$keyword', d.numero) > 0
+			OR LOCATE ('$keyword', d.assunto) > 0
+			OR d.data = '$keyword'
+			OR LOCATE ('$keyword', d.dono) > 0)
+			AND d.oculto = 'N'");
+			$this->db->or_where("(LOCATE ('$keyword', d.redacao) > 0
+			OR LOCATE ('$keyword', d.para) > 0
+			OR LOCATE ('$keyword', d.numero) > 0
+			OR LOCATE ('$keyword', d.assunto) > 0
+			OR d.data = '$keyword'
+			OR LOCATE ('$keyword', d.dono) > 0)
+			AND d.dono_cpf = '$cpf'");
 			
 		}else{
 			
 			$keyword = str_replace("#", "", $keyword);
-			
-		//	$condicao = self::get_condition($colunas, $keyword, $data_inicial, $data_final);
-			
-			$condicao = "(LOCATE ('$keyword', d.numero) > 0)
-			AND d.data_criacao >= '$data_inicial'
-			AND d.data_criacao <= '$data_final'";
-
-
-			if($setor != 0){
-				$condicao .= "AND d.setor = '$setor'";
-			}
-			
-			if($tipo_doc != 0){
-				$condicao .= "AND d.tipo = '$tipo_doc'";
-			}
-			
 			$this->db->select("d.*");
-			
-// 			$this->db->where("d.numero = $keyword AND d.oculto = 'N' AND d.setor = '$setor' AND d.data_criacao >= '$data_inicial' AND d.data_criacao <= '$data_final'");
-			
-			$this->db->where($condicao . " AND d.oculto = 'N'");
-			
-			$this->db->or_where($condicao . " AND d.dono_cpf = '$cpf'");
+			$this->db->where("d.numero = $keyword AND d.oculto = 'N'");
 		}
 			
 			$query = $this->db->get('documento d');	
@@ -742,12 +513,6 @@ class Documento_model extends CI_Model {
 			
 	}
 	/* -- FIM DA BUSCA -- */
-	
-	
-	function periodo_reset($id_usuario){
-		$this->db->where('id_usuario', $id_usuario);
-		return $this->db->delete('config');
-	}
 
 
 }
