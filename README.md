@@ -36,7 +36,7 @@ Benefícios:
 11. <strong>Repositório</strong>, possibilidade de armazenar os anexos dos documentos de cada setor, evitando a necessidade de impressões desses arquivos.
 
 
-Suporte:
+Licença e suporte:
 ===================================
 
 Este sistema é um software livre baseado em outros softwares lives; você pode redistribuí-lo e/ou modificá-lo dentro dos termos da Licença Pública Geral GNU como publicada pela Fundação do Software Livre (FSF); na versão 3 da Licença.
