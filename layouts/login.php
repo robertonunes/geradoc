@@ -8,13 +8,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="content-language" content="pt-br" />
-	<meta name="author" content="Tarso de Castro">
-	<meta name="reply-to" content="tarsodecastro@gmail.com">
-	<meta name="revised" content="Tarso de Castro, 12/09/2013" />
-	<meta name="description" content="GeraDoc - Sistema desenvolvido para facilitar a criação de documentos oficiais padronizados nos 45 setores da Academia Estadual de Segurança Pública do Estado do Ceará.">
-	<meta name="abstract" content="GeraDoc - AESP-CE.">
-	<meta name="keywords" content="aluno on-line, fale conosco, aesp, geradoc, documento, oficio, comunicacao interna, memorando, despacho, portaria, php, software livre, corpo de bombeiros">
-	<meta name="ROBOT" content="Index,Follow">
+
+	<meta name="author" content="GeraDox">
+	<meta name="reply-to" content="contato.geradox@gmail.com">
+	<meta name="revised" content="GeraDox, 14/09/2016" />
+	<meta name="abstract" content="GeraDox - Documentos padronizados com facilidade">
 
 	<link rel="shortcut icon" href="{TPL_images}file-text-o_4e8079_128.ico" type="image/x-icon" />
 	<link rel="icon" href="{TPL_images}file-text-o_4e8079_128.ico" />
